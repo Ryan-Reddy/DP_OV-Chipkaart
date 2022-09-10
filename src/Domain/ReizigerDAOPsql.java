@@ -5,7 +5,15 @@ import java.sql.*;
 
 
 public class ReizigerDAOPsql implements ReizigerDAO {
-        public static void main(String[]args) throws SQLException {
+//    Connection mijnConn;
+    Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
+
+    public ReizigerDAOPsql() throws SQLException {
+    // 2. Creeer een statement
+    Statement myStatement = mijnConn.createStatement();
+    }
+
+    public static void main(String[]args) throws SQLException {
         try {
         // 1. Connect met de database
         Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
@@ -35,6 +43,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
     @Override
     public boolean save(Reiziger reiziger) {
+//
+//        // 3. Execute een SQL query
+//        ResultSet myRs = myStatement.executeQuery("select * from reiziger");
         return false;
     }
 
