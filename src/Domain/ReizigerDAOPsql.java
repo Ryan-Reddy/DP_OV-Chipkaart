@@ -5,52 +5,24 @@ import java.sql.*;
 
 
 public class ReizigerDAOPsql implements ReizigerDAO {
-//    Connection mijnConn;
-    Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
 
-    public ReizigerDAOPsql() throws SQLException {
-    // 2. Creeer een statement
-    Statement myStatement = mijnConn.createStatement();
-    }
-
-    public static void main(String[]args) throws SQLException {
-        try {
-        // 1. Connect met de database
-        Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
-
-        // 2. Creeer een statement
-        Statement myStatement = mijnConn.createStatement();
-
-        // 3. Execute een SQL query
-        ResultSet myRs = myStatement.executeQuery("select * from reiziger");
-
-        // 4. Proces de set aan resultaten
-        int counter = 0;
-        while (myRs.next()) {
-        counter++;
-        System.out.println("#" + counter + ": " + myRs.getString("achternaam") + ", { " + myRs.getString("geboortedatum") + " }");
-        }
-        } catch (Exception exc) {
-        exc.printStackTrace();
-        }
-        }
-
+    // TODO initializeer de ReizigerDAOPsql connectie, ongeveer zo:
+//    AdresDAOPsql adao = new AdresDAOPsql(mijnConn);
 
     /**
      * @param reiziger
+     * de reiziger aanmaken, wijzigingen opslaan
      * @return het opslaan gelukt?
      */
 
     @Override
     public boolean save(Reiziger reiziger) {
-//
-//        // 3. Execute een SQL query
-//        ResultSet myRs = myStatement.executeQuery("select * from reiziger");
         return false;
     }
 
     /**
      * @param reiziger
+     * de up te daten reiziger
      * @return het updaten gelukt?
      */
     @Override
@@ -60,7 +32,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
     /**
      * @param reiziger
-     * @return
+     * de te verwijderen reiziger
+     * @return boolean of het gelukt is
      */
     @Override
     public boolean delete(Reiziger reiziger) {
@@ -69,6 +42,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
     /**
      * @param id
+     * id waarnaar gezocht moet worden
      * @return informatie over de reiziger, of null.
      */
     @Override
@@ -78,6 +52,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
     /**
      * @param datum
+     * De reizigers van deze specifieke geboortedatum vinden
      * @return lijst van Reizigers wiens geboortedatum overeenkomt met de invoer.
      */
     @Override

@@ -10,9 +10,13 @@ public class Reiziger {
     private String achternaam;
     private Date geboortedatum;
 
-//    public void Reiziger(){ TODO: bron: klassendiagram, wat is dit?
-//    };
-
+    public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
+        this.id = id;
+        this.voorletters = voorletters;
+        this.tussenvoegsel = tussenvoegsel;
+        this.achternaam = achternaam;
+        this.geboortedatum = geboortedatum;
+    }
     public int getId() {
         return id;
     }
