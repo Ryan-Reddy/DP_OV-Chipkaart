@@ -1,5 +1,6 @@
 package Domain;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public interface ReizigerDAO {
 
     Reiziger findById(int id);
 
-    List<Reiziger> findByGbDatum(String datum);
+    List<Reiziger> findByGbDatum(String datum) throws SQLException;
 
-    List<Reiziger> findAll();
+    List<Reiziger> findAll() throws SQLException;
 }
