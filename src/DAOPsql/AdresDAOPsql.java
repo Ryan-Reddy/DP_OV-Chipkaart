@@ -1,4 +1,4 @@
-package Domain;
+package DAOPsql;
 
 public class AdresDAOPsql {
 }

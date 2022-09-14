@@ -1,4 +1,4 @@
-package Domain;
+package domain;
 
 import java.util.Date;
 
@@ -17,8 +17,8 @@ public class Reiziger {
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
     }
-    public int getId() {
-        return id;
+    public String getId() {
+        return String.valueOf(id);
     }
 
     public void setId(int id) {

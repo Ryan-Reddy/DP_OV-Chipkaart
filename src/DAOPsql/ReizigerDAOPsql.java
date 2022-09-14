@@ -1,4 +1,7 @@
-package Domain;
+package DAOPsql;
+
+import DAO.ReizigerDAO;
+import domain.Reiziger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +27,22 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public boolean save(Reiziger reiziger) {
         List<Reiziger> alleReizigers = new ArrayList<>();
         try {
-            ResultSet myResultSet = myStatement.executeQuery(
-                    "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
-                            "VALUES (reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum()");
+            String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
+                    "VALUES (?, ?, ?, ?, ?)";
 
-            return true;
+            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setString(1, reiziger.getId());
+            ps.setString(2, reiziger.getVoorletters());
+            ps.setString(3, reiziger.getTussenvoegsel());
+            ps.setString(4, reiziger.getAchternaam());
+            ps.setString(5, reiziger.getGeboortedatum().toString());
+
+            if (ps.executeUpdate() == 1) {
+                return true;
+            } else {
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -43,6 +57,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public boolean update(Reiziger reiziger) {
 
             try {
+                
                 ResultSet myResultSet = myStatement.executeQuery(
                         "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
                                 "VALUES (reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum()");
@@ -136,20 +151,5 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     }
         // TODO schrijf functie findAll()
         //https://github.com/eugenp/tutorials/blob/master/patterns/design-patterns-architectural/src/main/java/com/baeldung/daopattern/daos/JpaUserDao.java
-        /*        Query query = entityManager.createQuery("SELECT e FROM User e");
-        return query.getResultList(); */
-
-       /* Statement myStatement = null;
-        try {
-            myStatement = localConn.createStatement();
-            ResultSet myRs = myStatement.executeQuery("select * from reiziger");
-            return (List<Reiziger>) myRs;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        */
-
-
     }
 }

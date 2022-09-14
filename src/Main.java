@@ -1,6 +1,6 @@
-import Domain.Reiziger;
-import Domain.ReizigerDAO;
-import Domain.ReizigerDAOPsql;
+import domain.Reiziger;
+import DAO.ReizigerDAO;
+import DAOPsql.ReizigerDAOPsql;
 
 import java.sql.*;
 import java.util.List;

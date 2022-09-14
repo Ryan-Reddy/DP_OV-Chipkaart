@@ -1,7 +1,7 @@
-package Domain;
+package DAO;
 
-import java.sql.SQLException;
-import java.util.List;
+import domain.Adres;
+import domain.Reiziger;
 
 public interface AdresDAO {
 

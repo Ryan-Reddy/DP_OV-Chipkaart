@@ -1,8 +1,9 @@
-package Domain;
+package DAO;
+
+import domain.Reiziger;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 /* Dit is de DAO (Data Access Object), een structureel patroon dat ons toelaat om de
 // applicatie/business layer te isoleren van de persistancy/db layer
