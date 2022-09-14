@@ -25,7 +25,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public boolean save(Reiziger reiziger) {
-        List<Reiziger> alleReizigers = new ArrayList<>();
         try {
             String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
                     "VALUES (?, ?, ?, ?, ?)";
@@ -55,16 +54,26 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public boolean update(Reiziger reiziger) {
+        try {
+            String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
+                    "VALUES (?, ?, ?, ?, ?)";
 
-            try {
-                
-                ResultSet myResultSet = myStatement.executeQuery(
-                        "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
-                                "VALUES (reiziger.getId(), reiziger.getVoorletters(), reiziger.getTussenvoegsel(), reiziger.getAchternaam(), reiziger.getGeboortedatum()");
+            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setString(1, reiziger.getId());
+            ps.setString(2, reiziger.getVoorletters());
+            ps.setString(3, reiziger.getTussenvoegsel());
+            ps.setString(4, reiziger.getAchternaam());
+            ps.setString(5, reiziger.getGeboortedatum().toString());
+
+            if (ps.executeUpdate() == 1) {
                 return true;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            } else {
+                return false;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -73,13 +82,17 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public boolean delete(Reiziger reiziger) {
-            try {
-                ResultSet myResultSet = myStatement.executeQuery(
-                        String.format("DELETE FROM reiziger WHERE reiziger_id = %s", reiziger.getId()));
-                return true;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            String query = "DELETE FROM reiziger WHERE reiziger_id = (reiziger_id) VALUES (?)";
+
+            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setString(1, reiziger.getId());
+            ps.executeQuery();
+        return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -108,6 +121,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public List<Reiziger> findByGbDatum(String datum) throws SQLException {
+        //TODO write prepared statement sql for this query
+
         List<Reiziger> alleReizigers = new ArrayList<>();
 
         Statement myStatement = null;
@@ -127,6 +142,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public List<Reiziger> findAll() throws SQLException {
+        //TODO write prepared statement sql for this query
+
         List<Reiziger> alleReizigers = new ArrayList<>();
 
         Statement myStatement = null;
