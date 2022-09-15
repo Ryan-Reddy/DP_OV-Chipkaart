@@ -5,6 +5,7 @@ import domain.Adres;
 import domain.Reiziger;
 
 import java.sql.*;
+import java.util.List;
 
 public class AdresDAOPsql implements AdresDAO {
     private Connection localConn;
@@ -119,6 +120,20 @@ public class AdresDAOPsql implements AdresDAO {
 
             ResultSet myResultSet = ps.executeQuery();
             return (Adres) myResultSet;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Adres> findAll() throws SQLException {
+        String query = "select * from adres";
+
+        try {
+            PreparedStatement ps = localConn.prepareStatement(query);
+
+            ResultSet myResultSet = ps.executeQuery();
+            return (List<Adres>) myResultSet;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
