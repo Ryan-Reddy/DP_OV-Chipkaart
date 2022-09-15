@@ -20,7 +20,9 @@ public interface ReizigerDAO {
 
     boolean delete(Reiziger reiziger);
 
-    Reiziger findById(int id);
+    static Reiziger findReizigerById(int id)    {
+        return (Reiziger) ReizigerDAO.findReizigerById(id);
+    }
 
     List<Reiziger> findByGbDatum(String datum) throws SQLException;
 

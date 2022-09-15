@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.List;
 
 public class AdresDAOPsql implements AdresDAO {
-    private Connection localConn;
+    private static Connection localConn;
     private Statement myStatement;
 
     public AdresDAOPsql(Connection conn) throws SQLException {
@@ -89,8 +89,7 @@ public class AdresDAOPsql implements AdresDAO {
      * @param id
      * @return
      */
-    @Override
-    public Adres findById(int id) {
+    public static Adres findAdresById(int id) {
         String query = "SELECT * FROM adres WHERE adres_id =  VALUES (?)";
 
         try {
@@ -110,8 +109,7 @@ public class AdresDAOPsql implements AdresDAO {
      * @param reiziger
      * @return
      */
-    @Override
-    public Adres findByReiziger(Reiziger reiziger) {
+    public static Adres findAdresByReiziger(Reiziger reiziger) {
         String query = "SELECT * FROM adres WHERE reiziger_id =  VALUES (?)";
 
         try {

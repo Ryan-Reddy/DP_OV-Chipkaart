@@ -9,7 +9,7 @@ import java.sql.*;
 
 
 public class ReizigerDAOPsql implements ReizigerDAO {
-    private Connection localConn;
+    private static Connection localConn;
     private Statement myStatement;
 
     public ReizigerDAOPsql(Connection conn) throws SQLException {
@@ -102,7 +102,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return informatie over de reiziger, of null.
      */
     @Override
-    public Reiziger findById(int id) {
+    public static Reiziger findReizigerById(int id) {
         String query = "SELECT * FROM reiziger WHERE reiziger_id =  VALUES (?)";
 
         try {

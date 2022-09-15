@@ -72,11 +72,12 @@ public class Reiziger {
     @Override
     public String toString() {
         return "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~" +
-                "\nvoorletters=   " + voorletters +
-                "\ntussenvoegsel= " + tussenvoegsel +
-                "\nachternaam=    " + achternaam +
-                "\ngeboortedatum= " + geboortedatum +
-                "\nmet id:        " + id +
+                "\nvoorletters=   \t" + voorletters +
+                "\ntussenvoegsel= \t" + tussenvoegsel +
+                "\nachternaam=    \t" + achternaam +
+                "\ngeboortedatum= \t" + geboortedatum +
+                "\nmet id:        \t" + id +
+                "\nadres_id:      \t" + adres_id +
                 "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~";
     }
 }

@@ -1,3 +1,4 @@
+import DAO.AdresDAO;
 import domain.Reiziger;
 import DAO.ReizigerDAO;
 import DAOPsql.ReizigerDAOPsql;
@@ -32,6 +33,16 @@ public class Main {
         }
 
     }
+    private static void testAdresDAO() {
+        System.out.println("\n---------- Test AdresDAO -------------");
+        System.out.println(AdresDAO.findAdresById(1));
+
+        System.out.println(AdresDAO.findAdresByReiziger(ReizigerDAO.findReizigerById(2)));
+        System.out.println(AdresDAO.(1));
+
+
+    }
+
     /**
      * P2. Reiziger DAO: persistentie van een klasse
      *
@@ -60,5 +71,6 @@ public class Main {
 
         // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
     }
+
 }
 
