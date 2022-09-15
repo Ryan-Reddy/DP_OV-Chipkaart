@@ -27,8 +27,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public boolean save(Reiziger reiziger) {
         try {
-            String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum, adres_id) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -37,6 +37,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setString(3, reiziger.getTussenvoegsel());
             ps.setString(4, reiziger.getAchternaam());
             ps.setString(5, reiziger.getGeboortedatum().toString());
+            ps.setString(6, String.valueOf(reiziger.getAdres_id()));
 
             if (ps.executeUpdate() == 1) {
                 return true;

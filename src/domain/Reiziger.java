@@ -10,6 +10,8 @@ public class Reiziger {
     private String achternaam;
     private Date geboortedatum;
 
+    private int adres_id;
+
     public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
         this.id = id;
         this.voorletters = voorletters;
@@ -57,6 +59,14 @@ public class Reiziger {
 
     public void setGeboortedatum(Date geboortedatum) {
         this.geboortedatum = geboortedatum;
+    }
+
+    public int getAdres_id() {
+        return adres_id;
+    }
+
+    public void setAdres_id(int adres_id) {
+        this.adres_id = adres_id;
     }
 
     @Override

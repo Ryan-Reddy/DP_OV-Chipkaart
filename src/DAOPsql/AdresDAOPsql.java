@@ -18,8 +18,8 @@ public class AdresDAOPsql implements AdresDAO {
     }
 
     public boolean save(Adres adres) {
-        String query = "INSERT INTO adres (adres_id, postcode, huisnummer, straat, woonplaats) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO adres (adres_id, postcode, huisnummer, straat, woonplaats, reiziger_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
@@ -29,6 +29,7 @@ public class AdresDAOPsql implements AdresDAO {
             ps.setString(3, adres.getHuisnummer());
             ps.setString(4, adres.getStraat());
             ps.setString(5, adres.getWoonplaats());
+            ps.setString(6, adres.getReiziger_id());
 
             if (ps.executeUpdate() == 1) {
                 return true;
