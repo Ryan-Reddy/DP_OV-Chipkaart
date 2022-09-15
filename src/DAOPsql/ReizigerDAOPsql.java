@@ -11,6 +11,7 @@ import java.sql.*;
 public class ReizigerDAOPsql implements ReizigerDAO {
     private Connection localConn;
     private Statement myStatement;
+
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
@@ -89,7 +90,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setString(1, reiziger.getId());
             ps.executeQuery();
-        return true;
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -101,14 +102,13 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public Reiziger findById(int id) {
-        List<Reiziger> alleReizigers = new ArrayList<>();
+        String query = "SELECT * FROM reiziger WHERE reiziger_id =  VALUES (?)";
 
-        Statement myStatement = null;
         try {
-            myStatement = localConn.createStatement();
-            ResultSet myResultSet = myStatement.executeQuery("" +
-                    "SELECT * FROM reiziger WHERE reiziger_id = " + id);
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setString(1, String.valueOf(id));
 
+            ResultSet myResultSet = ps.executeQuery();
             return (Reiziger) myResultSet;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -121,20 +121,19 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public List<Reiziger> findByGbDatum(String datum) throws SQLException {
-        //TODO write prepared statement sql for this query
 
         List<Reiziger> alleReizigers = new ArrayList<>();
+        String query = "SELECT * FROM reiziger WHERE geboortedatum =  VALUES (?)";
 
-        Statement myStatement = null;
         try {
-            myStatement = localConn.createStatement();
-        ResultSet myResultSet = myStatement.executeQuery("" +
-                "SELECT * FROM reiziger WHERE geboortedatum = " + datum);
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setString(1, datum);
 
-        return (List<Reiziger>) myResultSet;
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
-    }
+            ResultSet myResultSet = ps.executeQuery();
+            return (List<Reiziger>) myResultSet;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -142,31 +141,15 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      */
     @Override
     public List<Reiziger> findAll() throws SQLException {
-        //TODO write prepared statement sql for this query
+        String query = "select * from reiziger";
 
-        List<Reiziger> alleReizigers = new ArrayList<>();
-
-        Statement myStatement = null;
         try {
-            myStatement = localConn.createStatement();
-            ResultSet myResultSet = myStatement.executeQuery("select * from reiziger");
+            PreparedStatement ps = localConn.prepareStatement(query);
 
-            int counter = 0;
-            while (myResultSet.next()) {
-                int id = myResultSet.getInt("reiziger_id");
-                String voorletters = myResultSet.getString("voorletters");
-                String tussenvoegsel = myResultSet.getString("tussenvoegsel");
-                String achternaam = myResultSet.getString("achternaam");
-                Date geboortedatum = myResultSet.getDate("geboortedatum");
-
-                alleReizigers.add(new Reiziger(id, voorletters, tussenvoegsel, achternaam, geboortedatum));
-            }
-        return alleReizigers;
-
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
-    }
-        // TODO schrijf functie findAll()
-        //https://github.com/eugenp/tutorials/blob/master/patterns/design-patterns-architectural/src/main/java/com/baeldung/daopattern/daos/JpaUserDao.java
+            ResultSet myResultSet = ps.executeQuery();
+            return (List<Reiziger>) myResultSet;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
