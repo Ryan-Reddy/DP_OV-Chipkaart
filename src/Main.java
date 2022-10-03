@@ -38,7 +38,6 @@ public class Main {
         System.out.println(AdresDAO.findAdresById(1));
 
         System.out.println(AdresDAO.findAdresByReiziger(ReizigerDAO.findReizigerById(2)));
-        System.out.println(AdresDAO.(1));
 
 
     }

@@ -101,8 +101,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @param id id waarnaar gezocht moet worden
      * @return informatie over de reiziger, of null.
      */
-    @Override
-    public static Reiziger findReizigerById(int id) {
+    public Reiziger findReizigerById(int id) {
         String query = "SELECT * FROM reiziger WHERE reiziger_id =  VALUES (?)";
 
         try {
