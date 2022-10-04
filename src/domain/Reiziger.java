@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Reiziger {
@@ -11,6 +12,8 @@ public class Reiziger {
     private Date geboortedatum;
 
     private int adres_id;
+
+    private ArrayList<OVChipkaart> alleKaartenVanReiziger;
 
     public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
         this.id = id;

@@ -4,15 +4,16 @@ import java.util.Date;
 
 public class OVChipkaart {
     private int kaart_nummer;
-    private int product_nummer;
-    private String status;
-    private Date last_update;
+    private Date geldig_tot;
+    private int klasse;
+    private String saldo;
+    private int reiziger_id;
 
-    public OVChipkaart(int kaart_nummer, int product_nummer, String status, Date last_update) {
+    public OVChipkaart(int kaart_nummer, int klasse, String saldo, Date geldig_tot) {
         this.kaart_nummer = kaart_nummer;
-        this.product_nummer = product_nummer;
-        this.status = status;
-        this.last_update = last_update;
+        this.klasse = klasse;
+        this.saldo = saldo;
+        this.geldig_tot = geldig_tot;
     }
 
     public int getKaart_nummer() {
@@ -23,37 +24,45 @@ public class OVChipkaart {
         this.kaart_nummer = kaart_nummer;
     }
 
-    public int getProduct_nummer() {
-        return product_nummer;
+    public int getKlasse() {
+        return klasse;
     }
 
-    public void setProduct_nummer(int product_nummer) {
-        this.product_nummer = product_nummer;
+    public void setKlasse(int klasse) {
+        this.klasse = klasse;
     }
 
-    public String getStatus() {
-        return status;
+    public String getSaldo() {
+        return saldo;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setSaldo(String saldo) {
+        this.saldo = saldo;
     }
 
-    public Date getLast_update() {
-        return last_update;
+    public Date getGeldig_tot() {
+        return geldig_tot;
     }
 
-    public void setLast_update(Date last_update) {
-        this.last_update = last_update;
+    public void setGeldig_tot(Date geldig_tot) {
+        this.geldig_tot = geldig_tot;
+    }
+
+    public int getReiziger_id() {
+        return reiziger_id;
+    }
+
+    public void setReiziger_id(int reiziger_id) {
+        this.reiziger_id = reiziger_id;
     }
 
     @Override
     public String toString() {
         return "OVChipkaart{" +
                 "kaart_nummer=" + kaart_nummer +
-                ", product_nummer=" + product_nummer +
-                ", status='" + status + '\'' +
-                ", last_update=" + last_update +
+                ", product_nummer=" + klasse +
+                ", status='" + saldo + '\'' +
+                ", last_update=" + geldig_tot +
                 '}';
     }
 }
