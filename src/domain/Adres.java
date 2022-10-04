@@ -59,12 +59,13 @@ public class Adres {
     @Override
     public String toString() {
         return "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~" +
-                "\nid=   \t" + id +
-                "\npostcode= \t" + postcode +
-                "\nhuisnummer=    \t" + huisnummer +
-                "\nstraat= \t" + straat +
-                "\nwoonplaats:        \t" + woonplaats +
-                "\nreiziger_id:      \t" + reiziger_id +
+                "\n     Id=   \t" + id +
+                "\n     Postcode= \t" + postcode +
+                "\n     Huisnummer=    \t" + huisnummer +
+                "\n     Straat= \t" + straat +
+                "\n     Woonplaats:        \t" + woonplaats +
+                "\n     Reiziger_id:      \t" + reiziger_id +
+                "\n     Naam reiziger:      \t" + reiziger_id +
                 "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~";
     }
 }
