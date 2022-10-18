@@ -8,6 +8,9 @@ public class Product {
     private String beschrijving;
     private int prijs;
 
+
+
+
     private ArrayList<OVChipkaart> alleKaartenMetProduct;
 
     public Product(int product_nummer, String naam, String beschrijving, int prijs) {
@@ -17,39 +20,45 @@ public class Product {
         this.prijs = prijs;
     }
 
-    public int getProduct_nummer() {
-        return product_nummer;
+    public boolean voegKaartToeAanLijstKaartenMetProduct(OVChipkaart ovChipkaart) {
+        try {
+            return alleKaartenMetProduct.add(ovChipkaart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public void setProduct_nummer(int product_nummer) {
-        this.product_nummer = product_nummer;
+    public boolean verwijderKaartUitLijstKaartenMetProduct(OVChipkaart ovChipkaart) {
+        try {
+            return alleKaartenMetProduct.remove(ovChipkaart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int getProduct_nummer() {
+        return product_nummer;
     }
 
     public String getNaam() {
         return naam;
     }
 
-    public void setNaam(String naam) {
-        this.naam = naam;
-    }
-
     public String getBeschrijving() {
         return beschrijving;
-    }
-
-    public void setBeschrijving(String beschrijving) {
-        this.beschrijving = beschrijving;
     }
 
     public int getPrijs() {
         return prijs;
     }
 
-    public void setPrijs(int prijs) {
-        this.prijs = prijs;
-    }
-
     public boolean removeKaartVanProductKaartenLijst(OVChipkaart ovChipkaart) {
             return alleKaartenMetProduct.remove(ovChipkaart);
+    }
+
+    public ArrayList<OVChipkaart> getAlleKaartenMetProduct() {
+        return alleKaartenMetProduct;
     }
 }

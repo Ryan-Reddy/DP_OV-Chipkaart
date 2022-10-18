@@ -1,6 +1,7 @@
 package DAOPsql;
 
 import DAO.ProductDAO;
+import domain.OVChipkaart;
 import domain.Product;
 import domain.Reiziger;
 
@@ -25,17 +26,36 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public boolean save(Product product) {
         try {
-            String query = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
+            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
                     "VALUES (?, ?, ?, ?)";
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
-            PreparedStatement ps = localConn.prepareStatement(query);
+            PreparedStatement ps = localConn.prepareStatement(query_prod);
             ps.setString(1, String.valueOf(product.getProduct_nummer()));
             ps.setString(2, product.getNaam());
             ps.setString(3, product.getBeschrijving());
             ps.setString(4, String.valueOf(product.getPrijs()));
 
-            if (ps.executeUpdate() == 1) {
+            int result2 = 0;
+
+            ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
+            for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
+
+                String query_ovc_prod = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update) " +
+                        "VALUES (?, ?, ?, ?)";
+                PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
+
+                ps.setString(1, String.valueOf(ovchipkaart.getKaart_nummer()));
+                ps.setString(2, String.valueOf(product.getProduct_nummer()));
+                // TODO schrijf ergens status als attribuut
+                // TODO schrijf ergens last edit als attribuut
+                //  hiervoor is ook nog een methode nodig
+
+                result2 = ps.executeUpdate();
+
+            }
+
+            if ((ps.executeUpdate() + result2) == 2) {
                 return true;
             } else {
                 return false;

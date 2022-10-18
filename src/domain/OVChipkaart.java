@@ -39,49 +39,45 @@ public class OVChipkaart {
         return kaart_nummer;
     }
 
-    public void setKaart_nummer(int kaart_nummer) {
-        this.kaart_nummer = kaart_nummer;
-    }
-
     public int getKlasse() {
         return klasse;
-    }
-
-    public void setKlasse(int klasse) {
-        this.klasse = klasse;
     }
 
     public String getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(String saldo) {
-        this.saldo = saldo;
-    }
 
     public Date getGeldig_tot() {
         return geldig_tot;
     }
 
-    public void setGeldig_tot(Date geldig_tot) {
-        this.geldig_tot = geldig_tot;
-    }
 
     public int getReiziger_id() {
         return reiziger_id;
     }
 
-    public void setReiziger_id(int reiziger_id) {
-        this.reiziger_id = reiziger_id;
-    }
 
     public boolean removeProductVanKaart(Product product) {
-        productOpDezeKaart = null;
-        return product.removeKaartVanProductKaartenLijst(this);
+        try {
+            product.removeKaartVanProductKaartenLijst(this);
+            this.productOpDezeKaart = null;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public void addProductAanKaart(Product product) {
-        productOpDezeKaart = product;
+    public boolean addProductAanKaart(Product product) {
+        try {
+            product.voegKaartToeAanLijstKaartenMetProduct(this);
+            this.productOpDezeKaart = product;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
