@@ -9,6 +9,25 @@ public class OVChipkaart {
     private String saldo;
     private int reiziger_id;
 
+    private Product productOpDezeKaart;
+
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, String saldo, int reiziger_id, Product productOpDezeKaart) {
+        this.kaart_nummer = kaart_nummer;
+        this.geldig_tot = geldig_tot;
+        this.klasse = klasse;
+        this.saldo = saldo;
+        this.reiziger_id = reiziger_id;
+        this.productOpDezeKaart = productOpDezeKaart;
+    }
+
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, String saldo, int reiziger_id) {
+        this.kaart_nummer = kaart_nummer;
+        this.geldig_tot = geldig_tot;
+        this.klasse = klasse;
+        this.saldo = saldo;
+        this.reiziger_id = reiziger_id;
+    }
+
     public OVChipkaart(int kaart_nummer, int klasse, String saldo, Date geldig_tot) {
         this.kaart_nummer = kaart_nummer;
         this.klasse = klasse;
@@ -55,6 +74,16 @@ public class OVChipkaart {
     public void setReiziger_id(int reiziger_id) {
         this.reiziger_id = reiziger_id;
     }
+
+    public boolean removeProductVanKaart(Product product) {
+        productOpDezeKaart = null;
+        return product.removeKaartVanProductKaartenLijst(this);
+    }
+
+    public void addProductAanKaart(Product product) {
+        productOpDezeKaart = product;
+    }
+
 
     @Override
     public String toString() {

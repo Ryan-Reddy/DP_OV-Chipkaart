@@ -39,6 +39,7 @@ public class Main {
 
         System.out.println(AdresDAO.findAdresByReiziger(ReizigerDAO.findReizigerById(2)));
 
+        // TODO schrijf CRUD TESTS
 
     }
 
@@ -69,6 +70,7 @@ public class Main {
         System.out.println(reizigers.size() + " reizigers\n");
 
         // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
+        // TODO schrijf CRUD TESTS
     }
 
 }
