@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.Date;
+import java.util.List;
 
 public class OVChipkaart {
     private int kaart_nummer;
@@ -9,9 +10,9 @@ public class OVChipkaart {
     private String saldo;
     private int reiziger_id;
 
-    private Product productOpDezeKaart;
+    private List<Product> productOpDezeKaart;
 
-    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, String saldo, int reiziger_id, Product productOpDezeKaart) {
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, String saldo, int reiziger_id, List<Product> productOpDezeKaart) {
         this.kaart_nummer = kaart_nummer;
         this.geldig_tot = geldig_tot;
         this.klasse = klasse;
@@ -72,7 +73,7 @@ public class OVChipkaart {
     public boolean addProductAanKaart(Product product) {
         try {
             product.voegKaartToeAanLijstKaartenMetProduct(this);
-            this.productOpDezeKaart = product;
+            this.productOpDezeKaart.add(product);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

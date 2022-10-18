@@ -4,10 +4,13 @@ import DAO.ReizigerDAO;
 import DAOPsql.ReizigerDAOPsql;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
+        System.out.println(LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" +  LocalDateTime.now().getDayOfMonth());
+
         try {
             // 1. Connect met de database
             Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");

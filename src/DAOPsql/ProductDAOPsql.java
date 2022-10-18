@@ -3,9 +3,10 @@ package DAOPsql;
 import DAO.ProductDAO;
 import domain.OVChipkaart;
 import domain.Product;
-import domain.Reiziger;
+import domain.productStatusEnum;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ProductDAOPsql implements ProductDAO {
@@ -26,8 +27,7 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public boolean save(Product product) {
         try {
-            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
-                    "VALUES (?, ?, ?, ?)";
+            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " + "VALUES (?, ?, ?, ?)";
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query_prod);
@@ -36,34 +36,29 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setString(3, product.getBeschrijving());
             ps.setString(4, String.valueOf(product.getPrijs()));
 
-            int result2 = 0;
-
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
             for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
+                try {
+                    String query_ovc_prod = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update) " + "VALUES (?, ?, ?, ?)";
+                    PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
 
-                String query_ovc_prod = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update) " +
-                        "VALUES (?, ?, ?, ?)";
-                PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
+                    ps.setString(1, String.valueOf(ovchipkaart.getKaart_nummer()));
+                    ps.setString(2, String.valueOf(product.getProduct_nummer()));
+                    // TODO schrijf ergens status als attribuut
+                    // TODO schrijf ergens last edit als attribuut
+                    //  hiervoor is ook nog een methode nodig
 
-                ps.setString(1, String.valueOf(ovchipkaart.getKaart_nummer()));
-                ps.setString(2, String.valueOf(product.getProduct_nummer()));
-                // TODO schrijf ergens status als attribuut
-                // TODO schrijf ergens last edit als attribuut
-                //  hiervoor is ook nog een methode nodig
-
-                result2 = ps.executeUpdate();
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
-
-            if ((ps.executeUpdate() + result2) == 2) {
-                return true;
-            } else {
-                return false;
-            }
+            return (ps.executeUpdate()) == 1;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * @param product het up te daten product
      * @return het updaten gelukt?
@@ -71,8 +66,7 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public boolean update(Product product) {
         try {
-            String query = "INSERT INTO product WHERE product_nummer = (product_nummer) (product_nummer, naam, beschrijving, prijs) " +
-                    "VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO product WHERE product_nummer = (product_nummer) (product_nummer, naam, beschrijving, prijs) " + "VALUES (?, ?, ?, ?)";
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -83,15 +77,12 @@ public class ProductDAOPsql implements ProductDAO {
 
             // TODO schrijf breid update uit zodat er relaties kunnen worden gepersisteerd
 
-            if (ps.executeUpdate() == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * @param product het te verwijderen product
      * @return boolean of het gelukt is
@@ -100,11 +91,25 @@ public class ProductDAOPsql implements ProductDAO {
     public boolean delete(Product product) {
         try {
             String query = "DELETE FROM product WHERE product_nummer = (product_nummer) VALUES (?)";
-
-            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setString(1, String.valueOf(product.getProduct_nummer()));
             ps.executeQuery();
+
+            ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
+            for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
+                try {
+                    String query_ovc_prod = "INSERT INTO ov_chipkaart_product WHERE product_nummer = (product_nummer) (status, last_update) " + "VALUES (?, ?)";
+                    PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
+
+                    // Verander status naar gestopt
+                    ps.setString(2, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
+                    // Wijzig last_update naar vandaag
+                    ps.setString(3, LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getDayOfMonth());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -115,19 +120,15 @@ public class ProductDAOPsql implements ProductDAO {
      * @param id id waarnaar gezocht moet worden
      * @return informatie over het product, of null.
      */
-    public  Product findByID(int id) {
+    public Product findByID(int id) {
         String query = "SELECT * FROM product WHERE product_nummer = (product_nummer) VALUES (?)";
-
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setString(1, String.valueOf(id));
-
             ResultSet myResultSet = ps.executeQuery();
-
             return (Product) myResultSet;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-    }
+}
