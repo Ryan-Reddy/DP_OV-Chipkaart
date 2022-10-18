@@ -36,6 +36,7 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setString(3, product.getBeschrijving());
             ps.setString(4, String.valueOf(product.getPrijs()));
 
+            // hieronder volgt het deel relatie
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
             for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
                 try {
@@ -75,7 +76,28 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setString(3, product.getBeschrijving());
             ps.setString(4, String.valueOf(product.getPrijs()));
 
-            // TODO schrijf breid update uit zodat er relaties kunnen worden gepersisteerd
+            // hieronder volgt het deel relatie
+            ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
+            for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
+                try {
+                    String query_ovc_prod = "INSERT INTO ov_chipkaart_product WHERE product_nummer = (product_nummer) (product_nummer, kaart_nummer, status, last_update) " + "VALUES (?, ?)";
+                    PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
+
+                    ps.setString(1, String.valueOf(product.getProduct_nummer()));
+                    ps.setString(2, String.valueOf(ovchipkaart.getKaart_nummer()));
+                    // Verander status naar gestopt
+                    ps.setString(3, String.valueOf(productStatusEnum.GEUPDATE));
+                    // Wijzig last_update naar vandaag
+                    ps.setString(4, LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getDayOfMonth());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+
+
+
 
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {
@@ -95,6 +117,7 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setString(1, String.valueOf(product.getProduct_nummer()));
             ps.executeQuery();
 
+            // hieronder volgt het deel relatie
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
             for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
                 try {
@@ -102,9 +125,9 @@ public class ProductDAOPsql implements ProductDAO {
                     PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
 
                     // Verander status naar gestopt
-                    ps.setString(2, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
+                    ps.setString(1, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
                     // Wijzig last_update naar vandaag
-                    ps.setString(3, LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getDayOfMonth());
+                    ps.setString(2, LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getDayOfMonth());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;

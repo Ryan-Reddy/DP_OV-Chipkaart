@@ -5,5 +5,5 @@ public enum productStatusEnum {
     GEACTIVEERD,
     VERLOPEN,
     PRODUCT_GESTOPT,
-    ;
+    GEUPDATE;
 }
