@@ -74,16 +74,17 @@ public class Reiziger {
 
     @Override
     public String toString() {
-        return "Voorletters= " + voorletters +
-                "\n Tussenvoegsel= " + tussenvoegsel +
-                "\n Achternaam= " + achternaam +
-                "\n Geboortedatum= " + geboortedatum +
-                "\n Get id: " + id +
-                "\n Adres_id: " + adres_id +
-                "\n Adres: " + adres_id +
-                "\n Woonplaats " + adres_id;
+        return "Reiziger{" +
+                "id=" + id +
+                ", voorletters='" + voorletters + '\'' +
+                ", tussenvoegsel='" + tussenvoegsel + '\'' +
+                ", achternaam='" + achternaam + '\'' +
+                ", geboortedatum=" + geboortedatum +
+                ", adres_id=" + adres_id +
+                ", alleKaartenVanReiziger=" + alleKaartenVanReiziger +
+                '}';
     }
-//    return "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~" +
+    //    return "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~" +
 //                "\n     Voorletters=   \t" + voorletters +
 //                "\n     Tussenvoegsel= \t" + tussenvoegsel +
 //                "\n     Achternaam=    \t" + achternaam +
