@@ -8,9 +8,6 @@ public class Product {
     private String beschrijving;
     private int prijs;
 
-
-
-
     private ArrayList<OVChipkaart> alleKaartenMetProduct;
 
     public Product(int product_nummer, String naam, String beschrijving, int prijs) {
@@ -19,6 +16,7 @@ public class Product {
         this.beschrijving = beschrijving;
         this.prijs = prijs;
     }
+
 
     public boolean voegKaartToeAanLijstKaartenMetProduct(OVChipkaart ovChipkaart) {
         try {

@@ -8,6 +8,7 @@ import domain.productStatusEnum;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDAOPsql implements ProductDAO {
     private static Connection localConn;
@@ -20,12 +21,46 @@ public class ProductDAOPsql implements ProductDAO {
         Statement myStatement = localConn.createStatement();
     }
 
+
+
+
+
+
+
+
+    public List<Product> findByOVChipkaart(OVChipkaart ovChipkaart) {
+        try {
+            String query_prod = "SELECT * FROM ov_chipkaart_product WHERE kaart_nummer = ?";
+
+            List<Product> alleProducten = new ArrayList<Product>();
+            PreparedStatement ps = localConn.prepareStatement(query_prod);
+            ps.setInt(1, ovChipkaart.getKaart_nummer());
+
+            ResultSet myResultSet = ps.executeQuery();
+
+            while (myResultSet.next()) {
+                int product_nummer = myResultSet.getInt("product_nummer");
+                String naam = myResultSet.getString("naam");
+                String beschrijving = myResultSet.getString("beschrijving");
+                int prijs = myResultSet.getInt("prijs");
+                alleProducten.add(new Product(product_nummer, naam, beschrijving, prijs));
+            }
+
+
+            return alleProducten;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    };
+
     /**
      * @param product de product aanmaken, wijzigingen opslaan
      * @return het opslaan gelukt?
      */
     @Override
-    public boolean save(Product product) {
+    public boolean save (Product product) {
         try {
             String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " + "VALUES (?, ?, ?, ?)";
 

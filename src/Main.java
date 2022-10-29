@@ -1,35 +1,38 @@
 import DAO.AdresDAO;
+import DAOPsql.ProductDAOPsql;
+import domain.OVChipkaart;
+import domain.Product;
 import domain.Reiziger;
 import DAO.ReizigerDAO;
 import DAOPsql.ReizigerDAOPsql;
 
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        System.out.println(LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" +  LocalDateTime.now().getDayOfMonth());
-
         try {
+
+
+
+
             // 1. Connect met de database
             Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
-//            // TODO initializeer de ReizigerDAOPsql connectie, ongeveer zo:
-//            ReizigerDAOPsql adao = new ReizigerDAOPsql(mijnConn);
-//            // 2. Creeer een statement
-//            Statement myStatement = mijnConn.createStatement();
-//            // 3. Execute een SQL query
-//            ResultSet myRs = myStatement.executeQuery("select * from reiziger");
-//            // 4. Proces de set aan resultaten
-//            int counter = 0;
-//            while (myRs.next()) {
-//                counter++;
-//                System.out.println("#" + counter + ": " + myRs.getString("achternaam") + ", { " + myRs.getString("geboortedatum") + " }");
-//            }
-            ReizigerDAOPsql daopsql = new ReizigerDAOPsql(mijnConn);
+            ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(mijnConn);
+            System.out.println("findById:");
+            System.out.println(reizigerDAOPsql.findReizigerById(2).toString());
+            System.out.println("findAll:");
+            System.out.println(reizigerDAOPsql.findAll());
+            testReizigerDAO(reizigerDAOPsql);
 
-            System.out.println(daopsql.findAll());
-            testReizigerDAO(daopsql);
+
+            OVChipkaart ovChipkaart = new OVChipkaart(303, java.util.Date.from(Instant.now()), 2000, "121", 234);
+
+            ProductDAOPsql productDAOPsql = new ProductDAOPsql(mijnConn);
+            List<Product> productResultaten = productDAOPsql.findByOVChipkaart(ovChipkaart);
+            productResultaten.forEach(System.out::println);
+
             mijnConn.close();
         } catch (Exception exc) {
             exc.printStackTrace();
