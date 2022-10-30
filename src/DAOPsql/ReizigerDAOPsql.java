@@ -62,6 +62,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setString(3, reiziger.getTussenvoegsel());
             ps.setString(4, reiziger.getAchternaam());
             ps.setDate(5, (Date) reiziger.getGeboortedatum());
+            ps.setInt(6, reiziger.getId());
+
 
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {
