@@ -18,6 +18,7 @@ public class AdresDAOPsql implements AdresDAO {
         Statement myStatement = localConn.createStatement();
     }
 
+
     public boolean save(Adres adres) {
         String query = "INSERT INTO adres (adres_id, postcode, huisnummer, straat, woonplaats, reiziger_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
@@ -86,30 +87,29 @@ public class AdresDAOPsql implements AdresDAO {
 }
 
     /**
-     * @param id
+     * @param adres_id
      * @return
      */
-    public Adres findAdresById(int id) {
+    @Override
+    public Adres getAdresByID(int adres_id) {
         String query = "SELECT * FROM adres WHERE adres_id =  VALUES (?)";
 
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(id));
+            ps.setString(1, String.valueOf(adres_id));
 
             ResultSet myResultSet = ps.executeQuery();
             return (Adres) myResultSet;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     /**
      * @param reiziger
      * @return
      */
-    public Adres findAdresByReiziger(Reiziger reiziger) {
+    public Adres getAdresByReiziger(Reiziger reiziger) {
         String query = "SELECT * FROM adres WHERE reiziger_id =  VALUES (?)";
 
         try {

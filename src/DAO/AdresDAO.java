@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface AdresDAO {
 
+
     boolean save(Adres adres);
+    Adres getAdresByID(int adres_id);
 
     boolean update(Adres adres);
 
     boolean delete(Adres adres);
 
-    Adres findAdresById(int id);
-
-    Adres findAdresByReiziger(Reiziger reiziger);
+    Adres getAdresByReiziger(Reiziger reiziger);
 
     List<Adres> findAll() throws SQLException;
 }
