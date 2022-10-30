@@ -13,16 +13,46 @@ import java.time.Instant;
 import java.util.List;
 
 public class Main {
+    // 1. Connect met de database
+    static Connection mijnConn;
+
+    static {
+        try {
+            mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static ReizigerDAOPsql reizigerDAOPsql;
+
+    static {
+        try {
+            reizigerDAOPsql = new ReizigerDAOPsql(mijnConn);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     // Maak een nieuwe reiziger aan en persisteer deze in de database
-    static String gbdatum = "1981-03-14";
-    static Reiziger sietske = new Reiziger(6, "S", "", "Boers", java.sql.Date.valueOf(gbdatum));
+    static Reiziger sietske;
+
+    static {
+        try {
+            sietske = new Reiziger(reizigerDAOPsql.findAll().size(), "S", "", "Boers", Date.valueOf("1981-03-14"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static OVChipkaart ovChipkaart = new OVChipkaart(303, java.util.Date.from(Instant.now()), 2000, "121", 234);
 
-    public static void main(String[] args) throws SQLException {
+    public Main() throws SQLException {
+    }
+
+    public static void main(String[] args) {
         try {
-            // 1. Connect met de database
-            Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
-            ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(mijnConn);
 
             // TESTS:
             // testreizigerDAO:
@@ -54,57 +84,54 @@ public class Main {
      */
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
         System.out.println("\n---------- Test ReizigerDAO -------------");
+        try {
+            // Haal alle reizigers op uit de database
+            List<Reiziger> reizigers = rdao.findAll();
+            System.out.println("[Test] ReizigerDAO.findAll() geeft de volgende reizigers:");
+            for (Reiziger r : reizigers) {
+                System.out.println(r);
+            }
+            System.out.println();
+
+            // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
+
+            // --- // save:
+            System.out.println("[Test] ReizigerDAO.save()");
+            System.out.print("[Test] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
+            rdao.save(sietske);
+            reizigers = rdao.findAll();
+            System.out.println(reizigers.size() + " reizigers\n");
 
 
+            // --- // update:
+            System.out.println("[Test] ReizigerDAO.update()");
+            String sietskeOudeAchternaam = sietske.getAchternaam();
+            System.out.println("oude achternaam = " + sietskeOudeAchternaam);
+            sietske.setAchternaam("anders");
+            rdao.update(sietske);
+            System.out.println(sietske.getAchternaam());
 
+            // opruimen na de test
+            sietske.setAchternaam(sietskeOudeAchternaam);
+            rdao.update(sietske);
 
+            // --- // delete:
+            System.out.println("[Test] ReizigerDAO.delete()");
+            int preDeleteLijstSize = rdao.findAll().size();
+            System.out.println("voor delete grootte reizigerslijst = " + preDeleteLijstSize);
 
-        // Haal alle reizigers op uit de database
-        List<Reiziger> reizigers = rdao.findAll();
-        System.out.println("[Test] ReizigerDAO.findAll() geeft de volgende reizigers:");
-        for (Reiziger r : reizigers) {
-            System.out.println(r);
-        }
-        System.out.println();
+            int afterDeleteLijstSize = rdao.findAll().size();
+            System.out.println("na delete grootte reizigerslijst = " + afterDeleteLijstSize);
+            int verschilNaVerwijderen = (preDeleteLijstSize - afterDeleteLijstSize);
+            if (verschilNaVerwijderen == -1) {
+                System.out.println("test geslaagd!");
+            }
+            if (verschilNaVerwijderen != -1) {
+                System.out.println("test gefaald!");
 
-        // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
-        Reiziger reiziger = new Reiziger(12,"voorl","tusv","ach", new java.util.Date());
-        System.out.println(reiziger.toString());
-
-        // --- // save:
-        System.out.println("testing save");
-        System.out.print("[Test] Eerst " + ((List<?>) reizigers).size() + " reizigers, na ReizigerDAO.save() ");
-        rdao.save(sietske);
-        reizigers = rdao.findAll();
-        System.out.println(reizigers.size() + " reizigers\n");
-
-
-        // --- // update:
-        System.out.println("testing update");
-        String sietskeOudeAchternaam = sietske.getAchternaam();
-        System.out.println("oude achternaam = " + sietskeOudeAchternaam);
-        sietske.setAchternaam("anders");
-        rdao.update(sietske);
-        System.out.println(sietske.getAchternaam());
-
-        // opruimen na de test
-        sietske.setAchternaam(sietskeOudeAchternaam);
-        rdao.update(sietske);
-
-        // --- // delete:
-        System.out.println("testing delete");
-        int preDeleteLijstSize = rdao.findAll().size();
-        System.out.println("voor delete grootte reizigerslijst = " + preDeleteLijstSize);
-
-        int afterDeleteLijstSize = rdao.findAll().size();
-        System.out.println("na delete grootte reizigerslijst = " + afterDeleteLijstSize);
-        int verschilNaVerwijderen = (preDeleteLijstSize-afterDeleteLijstSize);
-        if (verschilNaVerwijderen == -1) {
-            System.out.println("test geslaagd!");
-        }
-        if (verschilNaVerwijderen != -1) {
-            System.out.println("test gefaald!");
-
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -114,6 +141,7 @@ public class Main {
 //            , ReizigerDAO reizigerDAO
 
     ) {
+        try {
         System.out.println("\n---------- Test AdresDAO -------------");
         // write crud tests
 //        System.out.println(reizigerDAO.findReizigerById(3).getAdres_id());
@@ -130,10 +158,13 @@ public class Main {
         System.out.println(adresDAO.getAdresByID(1));
 //        System.out.println(adresDAO.getAdresByReiziger(reizigerDAO.findReizigerById(2)));
 
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     private static void testProductDAO(ProductDAOPsql productDAO) {
-
+        try {
         List<Product> productResultaten = productDAO.findByOVChipkaart(ovChipkaart);
         productResultaten.forEach(System.out::println);
 
@@ -143,6 +174,9 @@ public class Main {
         productDAO.update(newProduct);
         productDAO.delete(newProduct);
         productDAO.findByID(10);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 }
 
