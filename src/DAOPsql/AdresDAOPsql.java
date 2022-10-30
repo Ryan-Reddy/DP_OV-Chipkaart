@@ -25,12 +25,12 @@ public class AdresDAOPsql implements AdresDAO {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(adres.getId()));
+            ps.setInt(1, adres.getId());
             ps.setString(2, adres.getPostcode());
             ps.setString(3, adres.getHuisnummer());
             ps.setString(4, adres.getStraat());
             ps.setString(5, adres.getWoonplaats());
-            ps.setString(6, adres.getReiziger_id());
+            ps.setInt(6, adres.getReiziger_id());
 
             if (ps.executeUpdate() == 1) {
                 return true;
@@ -89,7 +89,7 @@ public class AdresDAOPsql implements AdresDAO {
      * @param id
      * @return
      */
-    public static Adres findAdresById(int id) {
+    public Adres findAdresById(int id) {
         String query = "SELECT * FROM adres WHERE adres_id =  VALUES (?)";
 
         try {
@@ -109,7 +109,7 @@ public class AdresDAOPsql implements AdresDAO {
      * @param reiziger
      * @return
      */
-    public static Adres findAdresByReiziger(Reiziger reiziger) {
+    public Adres findAdresByReiziger(Reiziger reiziger) {
         String query = "SELECT * FROM adres WHERE reiziger_id =  VALUES (?)";
 
         try {

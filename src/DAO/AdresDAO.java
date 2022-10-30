@@ -14,15 +14,9 @@ public interface AdresDAO {
 
     boolean delete(Adres adres);
 
-    static Adres findAdresById(int id) {
-        return AdresDAO.findAdresById(id);
-    };
+    Adres findAdresById(int id);
 
-
-
-    static Adres findAdresByReiziger(Reiziger reiziger){
-        return AdresDAO.findAdresByReiziger(reiziger);
-    };
+    Adres findAdresByReiziger(Reiziger reiziger);
 
     List<Adres> findAll() throws SQLException;
 }

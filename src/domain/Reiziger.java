@@ -22,8 +22,8 @@ public class Reiziger {
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
     }
-    public String getId() {
-        return String.valueOf(id);
+    public int getId() {
+        return id;
     }
 
     public void setId(int id) {
@@ -74,25 +74,8 @@ public class Reiziger {
 
     @Override
     public String toString() {
-        return "Reiziger{" +
-                "id=" + id +
-                ", voorletters='" + voorletters + '\'' +
-                ", tussenvoegsel='" + tussenvoegsel + '\'' +
-                ", achternaam='" + achternaam + '\'' +
-                ", geboortedatum=" + geboortedatum +
-                ", adres_id=" + adres_id +
-                ", alleKaartenVanReiziger=" + alleKaartenVanReiziger +
-                '}';
+        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum + " {adres id= " + adres_id + "} kaartenvan: " ;
+        if(alleKaartenVanReiziger !=null) return s + alleKaartenVanReiziger.size();
+        return s + "geen kaarten gevonden";
     }
-    //    return "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~" +
-//                "\n     Voorletters=   \t" + voorletters +
-//                "\n     Tussenvoegsel= \t" + tussenvoegsel +
-//                "\n     Achternaam=    \t" + achternaam +
-//                "\n     Geboortedatum= \t" + geboortedatum +
-//                "\n     Get id:        \t" + id +
-//                "\n     Adres_id:      \t" + adres_id +
-//                "\n     Adres:         \t" + adres_id +
-//                "\n     Woonplaats     \t" + adres_id +
-//                "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~";
-//    }
 }
