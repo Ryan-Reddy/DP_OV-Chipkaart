@@ -10,5 +10,5 @@ public interface OVChipkaartDAO {
 
     boolean delete(OVChipkaart ovChipkaart);
 
-    void findByID(OVChipkaart ovChipkaart);
+    OVChipkaart findByOVChipkaartID(int ovChipkaartID);
 }

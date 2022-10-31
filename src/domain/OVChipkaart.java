@@ -27,6 +27,10 @@ public class OVChipkaart {
         return status;
     }
 
+    public int getKlasse() {
+        return klasse;
+    }
+
     public int getKaart_nummer() {
         return kaart_nummer;
     }

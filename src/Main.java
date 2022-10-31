@@ -193,7 +193,7 @@ public class Main {
             sout(ovChipkaartDAO.findAll().toString());
 
             sout("[Test] ovChipkaartDAO.findByOVChipkaartID() geeft de volgende reizigers:");
-            OVChipkaart ovChipkaartResultaten = ovChipkaartDAO.findByOVChipkaartID(ovChipkaart);
+            OVChipkaart ovChipkaartResultaten = ovChipkaartDAO.findByOVChipkaartID(ovChipkaart.getKaart_nummer());
             sout(ovChipkaartResultaten.toString());
 
             sout("[Test] [update] ovChipkaartDAO.update()");

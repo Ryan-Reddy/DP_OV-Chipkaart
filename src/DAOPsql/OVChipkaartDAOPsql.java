@@ -2,12 +2,9 @@ package DAOPsql;
 
 import DAO.OVChipkaartDAO;
 import domain.OVChipkaart;
-import domain.Product;
-import domain.Reiziger;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     private static Connection localConn;
@@ -65,7 +62,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      */
     @Override
     public boolean delete(OVChipkaart ovChipkaart) {
-        String query = "DELETE FROM ov_chipkaart WHERE kaart_nummer = (kaartNummer) VALUES (?)";
+        String query = "DELETE FROM ov_chipkaart WHERE kaart_nummer = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setString(1, String.valueOf(ovChipkaart.getKaart_nummer()));
@@ -102,12 +99,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         }
     
 
-    public OVChipkaart findByOVChipkaartID(OVChipkaart ovChipkaart) {
+    public OVChipkaart findByOVChipkaartID(int ovChipkaartID) {
         String query = "SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?";
 
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, ovChipkaart.getKaart_nummer());
+            ps.setInt(1, ovChipkaartID);
 
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
