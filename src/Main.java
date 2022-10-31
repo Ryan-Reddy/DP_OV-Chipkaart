@@ -1,5 +1,6 @@
 import DAO.AdresDAO;
 import DAO.ReizigerDAO;
+import DAOPsql.OVChipkaartDAOPsql;
 import DAOPsql.ProductDAOPsql;
 import DAOPsql.ReizigerDAOPsql;
 import domain.Adres;
@@ -178,6 +179,35 @@ public class Main {
             e.printStackTrace();
         }
     }
+    private static void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO) {
+        sout("\n---------- Test ovChipkaartDAO -------------");
+
+        try {
+            // TODO schrijf testOVCHIPKAART TEST
+            List<Product> productResultaten = productDAO.findByOVChipkaart(ovChipkaart);
+            productResultaten.forEach(System.out::println);
+
+            sout("[Test] [save] ovChipkaartDAO.save()");
+            ovChipkaartDAO.save(newProduct);
+
+            sout("[Test] ovChipkaartDAO.findAll() geeft de volgende reizigers:");
+            sout(ovChipkaartDAO.findAll().toString());
+
+            sout("[Test] ovChipkaartDAO.findByID() geeft de volgende reizigers:");
+            ovChipkaartDAO.findByID(newProduct);
+
+
+            sout("[Test] [update] ovChipkaartDAO.update()");
+            ovChipkaartDAO.update(newProduct);
+
+            sout("[Test] [delete] ovChipkaartDAO.delete()");
+            ovChipkaartDAO.delete(newProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public static void sout(String inputToPrint) {
         System.out.println(inputToPrint);
