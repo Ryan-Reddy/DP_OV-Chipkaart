@@ -5,6 +5,7 @@ import domain.Adres;
 import domain.Reiziger;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdresDAOPsql implements AdresDAO {
@@ -26,7 +27,7 @@ public class AdresDAOPsql implements AdresDAO {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, adres.getId());
+            ps.setInt(1, adres.getAdres_ID());
             ps.setString(2, adres.getPostcode());
             ps.setString(3, adres.getHuisnummer());
             ps.setString(4, adres.getStraat());
@@ -52,7 +53,7 @@ public class AdresDAOPsql implements AdresDAO {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(adres.getId()));
+            ps.setString(1, String.valueOf(adres.getAdres_ID()));
             ps.setString(2, adres.getPostcode());
             ps.setString(3, adres.getHuisnummer());
             ps.setString(4, adres.getStraat());
@@ -77,7 +78,7 @@ public class AdresDAOPsql implements AdresDAO {
         String query = "DELETE FROM adres WHERE adres_id = (adres_id) VALUES (?)";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(adres.getId()));
+            ps.setString(1, String.valueOf(adres.getAdres_ID()));
             ps.executeQuery();
             return true;
 
@@ -91,18 +92,30 @@ public class AdresDAOPsql implements AdresDAO {
      * @return
      */
     @Override
-    public Adres getAdresByID(int adres_id) {
-        String query = "SELECT * FROM adres WHERE adres_id =  VALUES (?)";
+    public Adres getAdresByID(int adres_id_toFIND) {
+        String query = "SELECT * FROM adres WHERE adres_id = ?";
 
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(adres_id));
+            ps.setInt(1, adres_id_toFIND);
 
             ResultSet myResultSet = ps.executeQuery();
-            return (Adres) myResultSet;
+            while (myResultSet.next()) {
+
+                int adres_id2 = myResultSet.getInt("adres_id");
+                String postcode = myResultSet.getString("postcode");
+                String huisnummer = myResultSet.getString("huisnummer");
+                String straat = myResultSet.getString("straat");
+                String woonplaats = myResultSet.getString("woonplaats");
+                int reiziger_id = myResultSet.getInt("reiziger_id");
+
+
+                return new Adres(adres_id2, postcode, huisnummer, straat, woonplaats, reiziger_id);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     /**
@@ -110,28 +123,40 @@ public class AdresDAOPsql implements AdresDAO {
      * @return
      */
     public Adres getAdresByReiziger(Reiziger reiziger) {
-        String query = "SELECT * FROM adres WHERE reiziger_id =  VALUES (?)";
-
-        try {
-            PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(reiziger.getId()));
-
-            ResultSet myResultSet = ps.executeQuery();
-            return (Adres) myResultSet;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println(reiziger.getId());
+        Adres adres = getAdresByID(reiziger.getAdres_id());
+        return adres;
     }
 
     @Override
     public List<Adres> findAll() throws SQLException {
         String query = "select * from adres";
 
+        ArrayList<Adres> alleAdressen = new ArrayList<Adres>();
+
+
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
 
             ResultSet myResultSet = ps.executeQuery();
-            return (List<Adres>) myResultSet;
+            myResultSet.next();
+            try {
+
+                while (myResultSet.next()) {
+
+                    int adres_id2 = myResultSet.getInt("adres_id");
+                    String postcode = myResultSet.getString("postcode");
+                    String huisnummer = myResultSet.getString("huisnummer");
+                    String straat = myResultSet.getString("straat");
+                    String woonplaats = myResultSet.getString("woonplaats");
+                    int reiziger_id = myResultSet.getInt("reiziger_id");
+
+                    alleAdressen.add(new Adres(adres_id2, postcode, huisnummer, straat, woonplaats, reiziger_id));
+                }
+                return alleAdressen;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

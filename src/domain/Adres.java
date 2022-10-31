@@ -1,7 +1,7 @@
 package domain;
 
 public class Adres {
-    private int id;
+    private int adres_ID;
     private String postcode;
     private String huisnummer;
     private String straat;
@@ -16,8 +16,8 @@ public class Adres {
         this.postcode = postcode;
     }
 
-    public Adres(int id, String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) {
-        this.id = id;
+    public Adres(int adres_ID, String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) {
+        this.adres_ID = adres_ID;
         this.postcode = postcode;
         this.huisnummer = huisnummer;
         this.straat = straat;
@@ -25,12 +25,12 @@ public class Adres {
         this.reiziger_id = reiziger_id;
     }
 
-    public int getId() {
-        return id;
+    public int getAdres_ID() {
+        return adres_ID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAdres_ID(int adres_ID) {
+        this.adres_ID = adres_ID;
     }
 
     public String getHuisnummer() {
@@ -68,7 +68,7 @@ public class Adres {
     @Override
     public String toString() {
         return "\n~;~:~:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:~:~;~" +
-                "\n     Id=   \t" + id +
+                "\n     Id=   \t" + adres_ID +
                 "\n     Postcode= \t" + postcode +
                 "\n     Huisnummer=    \t" + huisnummer +
                 "\n     Straat= \t" + straat +

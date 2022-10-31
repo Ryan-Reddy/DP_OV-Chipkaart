@@ -38,7 +38,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     @Override
     public boolean update(OVChipkaart ovChipkaart) {
-        String query = "UPDATE ov_chipkaart (kaart_nummer, product_nummer, status, last_update) " + "VALUES (?, ?, ?, ?, ?) WHERE kaart_nummer = " + ovChipkaart.getKaart_nummer();
+        String query = "UPDATE ov_chipkaart (kaart_nummer, product_nummer, status, last_update) VALUES (?, ?, ?, ?, ?) WHERE kaart_nummer = " + ovChipkaart.getKaart_nummer();
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
