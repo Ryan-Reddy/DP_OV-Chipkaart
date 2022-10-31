@@ -1,11 +1,12 @@
 package DAOPsql;
 
 import DAO.OVChipkaartDAO;
-import domain.Adres;
 import domain.OVChipkaart;
+import domain.Product;
 import domain.Reiziger;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OVChipkaartDAOPsql implements OVChipkaartDAO {
@@ -28,7 +29,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.setString(1, String.valueOf(ovChipkaart.getKaart_nummer()));
             ps.setString(2, String.valueOf(ovChipkaart.getGeldig_tot()));
             ps.setString(3, String.valueOf(ovChipkaart.getKlasse()));
-            ps.setString(4, ovChipkaart.getSaldo());
+            ps.setDouble(4, ovChipkaart.getSaldo());
             ps.setString(5, String.valueOf(ovChipkaart.getReiziger_id()));
 
             return ps.executeUpdate() == 1;
@@ -71,6 +72,53 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.executeQuery();
             return true;
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Object findAll() throws SQLException {
+        ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
+
+        String query = "select * from ov_chipkaart";
+        PreparedStatement preparedStatement = localConn.prepareStatement(query);
+        ResultSet myResultSet = preparedStatement.executeQuery();
+
+        try {
+            while (myResultSet.next()) {
+                int kaart_nummer = myResultSet.getInt("kaart_nummer");
+                Date geldig_tot = myResultSet.getDate("geldig_tot");
+                int klasse = myResultSet.getInt("klasse");
+                double saldo = myResultSet.getInt("saldo");
+                int reiziger_id = myResultSet.getInt("reiziger_id");
+
+                alleOVChipkaarten.add(new OVChipkaart(kaart_nummer, geldig_tot, klasse, saldo, reiziger_id));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+            return alleOVChipkaarten;
+        }
+    
+
+    public OVChipkaart findByOVChipkaartID(OVChipkaart ovChipkaart) {
+        String query = "SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?";
+
+        try {
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setInt(1, ovChipkaart.getKaart_nummer());
+
+            ResultSet myResultSet = ps.executeQuery();
+            myResultSet.next();
+
+            int kaart_nummer = myResultSet.getInt("kaart_nummer");
+            Date geldig_tot = myResultSet.getDate("geldig_tot");
+            int klasse = myResultSet.getInt("klasse");
+            double saldo = myResultSet.getInt("saldo");
+            int reiziger_id = myResultSet.getInt("reiziger_id");
+
+            return new OVChipkaart(kaart_nummer, geldig_tot, klasse, saldo, reiziger_id);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.List;
 
 public class Main {
@@ -22,7 +21,7 @@ public class Main {
     static ProductDAOPsql productDAOPsql;
     // Maak een nieuwe reiziger aan en persisteer deze in de database
     static Reiziger sietske;
-    static OVChipkaart ovChipkaart = new OVChipkaart(303, java.util.Date.from(Instant.now()), 2000, "121", 234);
+    static OVChipkaart ovChipkaart;
     static Product newProduct;
     static {
         try {
@@ -31,7 +30,6 @@ public class Main {
             productDAOPsql = new ProductDAOPsql(mijnConn);
             sietske = new Reiziger(reizigerDAOPsql.findAll().size(), "S", "", "Boers", Date.valueOf("1981-03-14"));
             newProduct = new Product(7, "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -184,28 +182,25 @@ public class Main {
 
         try {
             // TODO schrijf testOVCHIPKAART TEST
-            List<Product> productResultaten = ovChipkaartDAO.findByOVChipkaart(ovChipkaart);
-            productResultaten.forEach(System.out::println);
 
-            OVChipkaart ovChipkaart = new OVChipkaart(10, new java.util.Date(), 2, 10.00);
+            OVChipkaart ovChipkaart = new OVChipkaart(10, (Date) new java.util.Date(), 1,10.00,5);
 
 
-            int kaart_nummer, int klasse, String saldo, java.util.Date geldig_tot
             sout("[Test] [save] ovChipkaartDAO.save()");
-            ovChipkaartDAO.save();
+            ovChipkaartDAO.save(ovChipkaart);
 
             sout("[Test] ovChipkaartDAO.findAll() geeft de volgende reizigers:");
             sout(ovChipkaartDAO.findAll().toString());
 
-            sout("[Test] ovChipkaartDAO.findByID() geeft de volgende reizigers:");
-            ovChipkaartDAO.findByID(newProduct);
-
+            sout("[Test] ovChipkaartDAO.findByOVChipkaartID() geeft de volgende reizigers:");
+            OVChipkaart ovChipkaartResultaten = ovChipkaartDAO.findByOVChipkaartID(ovChipkaart);
+            sout(ovChipkaartResultaten.toString());
 
             sout("[Test] [update] ovChipkaartDAO.update()");
-            ovChipkaartDAO.update(newProduct);
+            ovChipkaartDAO.update(ovChipkaart);
 
             sout("[Test] [delete] ovChipkaartDAO.delete()");
-            ovChipkaartDAO.delete(newProduct);
+            ovChipkaartDAO.delete(ovChipkaart);
         } catch (Exception e) {
             e.printStackTrace();
         }

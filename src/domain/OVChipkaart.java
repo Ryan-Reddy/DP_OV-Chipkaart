@@ -8,19 +8,12 @@ public class OVChipkaart {
     private Date geldig_tot;
     private int klasse;
     private Double saldo;
+
     private int reiziger_id;
+    private String status;
 
     private List<Product> productOpDezeKaart;
 
-
-
-
-    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, Double saldo) {
-        this.kaart_nummer = kaart_nummer;
-        this.klasse = klasse;
-        this.saldo = saldo;
-        this.geldig_tot = geldig_tot;
-    }
     public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, Double saldo, int reiziger_id) {
         this.kaart_nummer = kaart_nummer;
         this.geldig_tot = geldig_tot;
@@ -28,25 +21,14 @@ public class OVChipkaart {
         this.saldo = saldo;
         this.reiziger_id = reiziger_id;
     }
-    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, Double saldo, int reiziger_id, List<Product> productOpDezeKaart) {
-        this.kaart_nummer = kaart_nummer;
-        this.geldig_tot = geldig_tot;
-        this.klasse = klasse;
-        this.saldo = saldo;
-        this.reiziger_id = reiziger_id;
-        this.productOpDezeKaart = productOpDezeKaart;
-    }
 
-    public OVChipkaart() {
-
+    public String getStatus() {
+        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
+        return status;
     }
 
     public int getKaart_nummer() {
         return kaart_nummer;
-    }
-
-    public int getKlasse() {
-        return klasse;
     }
 
     public Double getSaldo() {

@@ -9,4 +9,6 @@ public interface OVChipkaartDAO {
     boolean update(OVChipkaart ovChipkaart);
 
     boolean delete(OVChipkaart ovChipkaart);
+
+    void findByID(OVChipkaart ovChipkaart);
 }

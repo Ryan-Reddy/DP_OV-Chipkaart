@@ -8,11 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * The type Reiziger dao psql.
+ */
 public class ReizigerDAOPsql implements ReizigerDAO {
+    /**
+     * The Local conn.
+     */
     static Connection localConn;
+    /**
+     * The Query.
+     */
     String query = null;
     private PreparedStatement myStatement;
 
+    /**
+     * Instantiates a new Reiziger dao psql.
+     *
+     * @param conn the conn
+     * @throws SQLException the sql exception
+     */
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
@@ -71,16 +86,20 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         }
     }
 
+
     /**
-     * @param id id waarnaar gezocht moet worden
-     * @return informatie over de reiziger, of null.
+     * Find reiziger by id reiziger.
+     *
+     * @param reiziger the reiziger
+     * @return the reiziger
      */
-    public Reiziger findReizigerById(int id) {
+    @Override
+    public Reiziger findReizigerById(Reiziger reiziger) {
         query = "SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE reiziger_id = ?";
 
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, id);
+            ps.setInt(1, reiziger.getId());
 
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
@@ -173,7 +192,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public boolean delete(Reiziger reiziger) {
         try {
             System.out.println("deleting reiziger: " + reiziger.toString() + "with id " + reiziger.getId());
-            System.out.println(findReizigerById(reiziger.getId()));
+            System.out.println(findReizigerById(reiziger));
             String query = "DELETE FROM reiziger WHERE reiziger_id = ?";
 
 
