@@ -19,6 +19,7 @@ public class Main {
     static Connection mijnConn;
     static ReizigerDAOPsql reizigerDAOPsql;
     static ProductDAOPsql productDAOPsql;
+    static OVChipkaartDAOPsql ovChipkaartDAOPsql;
     // Maak een nieuwe reiziger aan en persisteer deze in de database
     static Reiziger sietske;
     static OVChipkaart ovChipkaart;
@@ -28,6 +29,7 @@ public class Main {
             mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
             reizigerDAOPsql = new ReizigerDAOPsql(mijnConn);
             productDAOPsql = new ProductDAOPsql(mijnConn);
+            ovChipkaartDAOPsql = new OVChipkaartDAOPsql(mijnConn);
             sietske = new Reiziger(reizigerDAOPsql.findAll().size(), "S", "", "Boers", Date.valueOf("1981-03-14"));
             newProduct = new Product(7, "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
         } catch (SQLException e) {
@@ -47,6 +49,10 @@ public class Main {
 
             // testProductDAO:
             testProductDAO(productDAOPsql);
+
+            // testOVChipkaartDAO:
+            testOVChipkaartDAO(ovChipkaartDAOPsql);
+
             mijnConn.close();
         } catch (Exception exc) {
             exc.printStackTrace();
