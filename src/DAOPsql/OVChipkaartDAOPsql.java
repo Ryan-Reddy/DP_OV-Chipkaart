@@ -20,7 +20,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
 
     public boolean save(OVChipkaart ovChipkaart) {
-        String query = "INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) " + "VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO ov_chipkaart (kaart_nummer, product_nummer, status, last_update) " + "VALUES (?, ?, ?, ?, ?)";
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
@@ -40,16 +40,16 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     @Override
     public boolean update(OVChipkaart ovChipkaart) {
-        String query = "UPDATE ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) " + "VALUES (?, ?, ?, ?, ?) WHERE kaart_nummer = " + ovChipkaart.getKaart_nummer();
+        String query = "UPDATE ov_chipkaart (kaart_nummer, product_nummer, status, last_update) " + "VALUES (?, ?, ?, ?, ?) WHERE kaart_nummer = " + ovChipkaart.getKaart_nummer();
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(ovChipkaart.getKaart_nummer()));
-            ps.setString(2, String.valueOf(ovChipkaart.getGeldig_tot()));
+            ps.setInt(1, ovChipkaart.getKaart_nummer());
+            ps.setDate(2, ovChipkaart.getGeldig_tot());
             ps.setString(3, String.valueOf(ovChipkaart.getKlasse()));
-            ps.setString(4, ovChipkaart.getSaldo());
-            ps.setString(5, String.valueOf(ovChipkaart.getReiziger_id()));
+            ps.setDouble(4, ovChipkaart.getSaldo());
+            ps.setInt(5, ovChipkaart.getReiziger_id());
 
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {

@@ -1,18 +1,34 @@
 package domain;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class OVChipkaart {
     private int kaart_nummer;
     private Date geldig_tot;
     private int klasse;
-    private String saldo;
+    private Double saldo;
     private int reiziger_id;
 
     private List<Product> productOpDezeKaart;
 
-    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, String saldo, int reiziger_id, List<Product> productOpDezeKaart) {
+
+
+
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, Double saldo) {
+        this.kaart_nummer = kaart_nummer;
+        this.klasse = klasse;
+        this.saldo = saldo;
+        this.geldig_tot = geldig_tot;
+    }
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, Double saldo, int reiziger_id) {
+        this.kaart_nummer = kaart_nummer;
+        this.geldig_tot = geldig_tot;
+        this.klasse = klasse;
+        this.saldo = saldo;
+        this.reiziger_id = reiziger_id;
+    }
+    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, Double saldo, int reiziger_id, List<Product> productOpDezeKaart) {
         this.kaart_nummer = kaart_nummer;
         this.geldig_tot = geldig_tot;
         this.klasse = klasse;
@@ -21,19 +37,8 @@ public class OVChipkaart {
         this.productOpDezeKaart = productOpDezeKaart;
     }
 
-    public OVChipkaart(int kaart_nummer, Date geldig_tot, int klasse, String saldo, int reiziger_id) {
-        this.kaart_nummer = kaart_nummer;
-        this.geldig_tot = geldig_tot;
-        this.klasse = klasse;
-        this.saldo = saldo;
-        this.reiziger_id = reiziger_id;
-    }
+    public OVChipkaart() {
 
-    public OVChipkaart(int kaart_nummer, int klasse, String saldo, Date geldig_tot) {
-        this.kaart_nummer = kaart_nummer;
-        this.klasse = klasse;
-        this.saldo = saldo;
-        this.geldig_tot = geldig_tot;
     }
 
     public int getKaart_nummer() {
@@ -44,7 +49,7 @@ public class OVChipkaart {
         return klasse;
     }
 
-    public String getSaldo() {
+    public Double getSaldo() {
         return saldo;
     }
 

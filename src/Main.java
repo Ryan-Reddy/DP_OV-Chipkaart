@@ -184,11 +184,15 @@ public class Main {
 
         try {
             // TODO schrijf testOVCHIPKAART TEST
-            List<Product> productResultaten = productDAO.findByOVChipkaart(ovChipkaart);
+            List<Product> productResultaten = ovChipkaartDAO.findByOVChipkaart(ovChipkaart);
             productResultaten.forEach(System.out::println);
 
+            OVChipkaart ovChipkaart = new OVChipkaart(10, new java.util.Date(), 2, 10.00);
+
+
+            int kaart_nummer, int klasse, String saldo, java.util.Date geldig_tot
             sout("[Test] [save] ovChipkaartDAO.save()");
-            ovChipkaartDAO.save(newProduct);
+            ovChipkaartDAO.save();
 
             sout("[Test] ovChipkaartDAO.findAll() geeft de volgende reizigers:");
             sout(ovChipkaartDAO.findAll().toString());
