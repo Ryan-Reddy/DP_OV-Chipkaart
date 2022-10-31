@@ -22,20 +22,15 @@ public class Main {
     // Maak een nieuwe reiziger aan en persisteer deze in de database
     static Reiziger sietske;
     static OVChipkaart ovChipkaart = new OVChipkaart(303, java.util.Date.from(Instant.now()), 2000, "121", 234);
-
+    static Product newProduct;
     static {
         try {
+            mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
             reizigerDAOPsql = new ReizigerDAOPsql(mijnConn);
             productDAOPsql = new ProductDAOPsql(mijnConn);
-            mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static {
-        try {
             sietske = new Reiziger(reizigerDAOPsql.findAll().size(), "S", "", "Boers", Date.valueOf("1981-03-14"));
+            newProduct = new Product(7, "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -67,53 +62,49 @@ public class Main {
      * @throws SQLException
      */
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
-        south("\n---------- Test ReizigerDAO -------------");
+        sout("\n---------- Test ReizigerDAO -------------");
         try {
             // Haal alle reizigers op uit de database
             List<Reiziger> reizigers = rdao.findAll();
-            south("[Test] [ReizigerDAO.findAll()] geeft de volgende reizigers:");
+            sout("[Test] [ReizigerDAO.findAll()] geeft de volgende reizigers:");
             for (Reiziger r : reizigers) {
-                south(r.toString());
+                sout(r.toString());
             }
-            south("[Test] [CRUD]");
+            sout("[Test] [CRUD]");
 
             // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
 
             // --- // save:
-            south("[Test] [save] ReizigerDAO.save()");
+            sout("[Test] [save] ReizigerDAO.save()");
             System.out.print("[Test] [save] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
             rdao.save(sietske);
-            reizigers = rdao.findAll();
-            south(reizigers.size() + " reizigers\n");
+            List<Reiziger> reizigersAfterSave = rdao.findAll();
+            sout(reizigersAfterSave.size() + " reizigers\n");
 
+            if (reizigersAfterSave.size() > reizigers.size()) sout("[Test] [save] [SUCCESS]");
+            else sout("[Test] [save] [FAILURE]");
 
             // --- // update:
-            south("[Test] [update] ReizigerDAO.update()");
+            sout("[Test] [update] ReizigerDAO.update()");
             String sietskeOudeAchternaam = sietske.getAchternaam();
-            south("[Test] [update] oude achternaam = " + sietskeOudeAchternaam + "\n");
+            sout("[Test] [update] oude achternaam = " + sietskeOudeAchternaam + "\n");
             sietske.setAchternaam("anders");
             rdao.update(sietske);
-            south(sietske.getAchternaam());
-
-            // opruimen na de test
-            sietske.setAchternaam(sietskeOudeAchternaam);
-            rdao.update(sietske);
+            sout(sietske.getAchternaam());
 
             // --- // delete:
-            south("[Test] [delete] ReizigerDAO.delete()");
+            sout("[Test] [delete] ReizigerDAO.delete()");
             int preDeleteLijstSize = rdao.findAll().size();
-            south("[Test] [delete] voor delete grootte reizigerslijst = " + preDeleteLijstSize);
+            sout("[Test] [delete] voor delete grootte reizigerslijst = " + preDeleteLijstSize);
+
+            rdao.delete(sietske);
 
             int afterDeleteLijstSize = rdao.findAll().size();
-            south("[Test] [delete] na delete grootte reizigerslijst = " + afterDeleteLijstSize);
-            int verschilNaVerwijderen = (preDeleteLijstSize - afterDeleteLijstSize);
-            if (verschilNaVerwijderen == -1) {
-                south("[Test] [delete] test geslaagd!");
-            }
-            if (verschilNaVerwijderen != -1) {
-                south("[Test] [delete] test gefaald!");
+            sout("[Test] [delete] na delete grootte reizigerslijst = " + afterDeleteLijstSize);
 
-            }
+            if (afterDeleteLijstSize < afterDeleteLijstSize) sout("[Test] [delete] [SUCCESS] test geslaagd!");
+            else sout("[Test] [delete] [GEFAALD] test gefaald!");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,30 +117,31 @@ public class Main {
 
     ) {
         try {
-            south("\n---------- Test AdresDAO -------------");
+            sout("\n---------- Test AdresDAO -------------");
             // write crud tests
-//        south(reizigerDAO.findReizigerById(3).getAdres_id());
+//        sout(reizigerDAO.findReizigerById(3).getAdres_id());
 
             Adres adres = new Adres(1200, "1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
 
+            sout("[Test] [adresDAO.getAdresByID()] adres_id = 1");
+            sout(adresDAO.getAdresByID(1).toString());
+
+            sout("[Test] [ReizigerDAO.findAll()]  geeft de volgende reizigers:");
+            sout(adresDAO.getAdresByReiziger(sietske).toString());
+
+            sout("[Test] [ReizigerDAO.findAll()] geeft de volgende reizigers:");
+            sout(adresDAO.findAll().toString());
+
 //        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findReizigerById(3).getAdres_id()));
             // TODO makle ^this work
-            south("[Test] [save] ReizigerDAO.save()");
+            sout("[Test] [save] ReizigerDAO.save()");
             adresDAO.save(adres);
-            south("[Test] [update] ReizigerDAO.update()");
+            sout("[Test] [update] ReizigerDAO.update()");
             adresDAO.update(adres);
-            south("[Test] [delete] ReizigerDAO.delete()");
+            sout("[Test] [delete] ReizigerDAO.delete()");
             adresDAO.delete(adres);
 
 
-            south("[Test] [adresDAO.getAdresByID()] adres_id = 1");
-            south(adresDAO.getAdresByID(1).toString());
-
-            south("[Test] [ReizigerDAO.findAll()]  geeft de volgende reizigers:");
-            south(adresDAO.getAdresByReiziger(sietske).toString());
-
-            south("[Test] [ReizigerDAO.findAll()] geeft de volgende reizigers:");
-            south(adresDAO.findAll().toString());
 
             // TODO
             //  test find allAdressen()
@@ -160,29 +152,34 @@ public class Main {
     }
 
     private static void testProductDAO(ProductDAOPsql productDAO) {
-        south("\n---------- Test testProductDAO -------------");
+        sout("\n---------- Test testProductDAO -------------");
 
         try {
             List<Product> productResultaten = productDAO.findByOVChipkaart(ovChipkaart);
             productResultaten.forEach(System.out::println);
 
-            Product newProduct = new Product(10, "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
 
-            south("[Test] ReizigerDAO.findAll() geeft de volgende reizigers:");
-            south("[Test] [save] ReizigerDAO.save()");
-            south("[Test] [update] ReizigerDAO.update()");
-            south("[Test] [delete] ReizigerDAO.delete()");
-            // TODO verdeel
+            sout("[Test] [save] productDAO.save()");
             productDAO.save(newProduct);
+
+            sout("[Test] productDAO.findAll() geeft de volgende reizigers:");
+            sout(productDAO.findAll().toString());
+
+            sout("[Test] productDAO.findByID() geeft de volgende reizigers:");
+            productDAO.findByID(newProduct);
+
+
+            sout("[Test] [update] productDAO.update()");
             productDAO.update(newProduct);
+
+            sout("[Test] [delete] productDAO.delete()");
             productDAO.delete(newProduct);
-            productDAO.findByID(10);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void south(String inputToPrint) {
+    public static void sout(String inputToPrint) {
         System.out.println(inputToPrint);
     }
 }

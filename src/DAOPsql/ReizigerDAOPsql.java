@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public class ReizigerDAOPsql implements ReizigerDAO {
-    private static Connection localConn;
+    static Connection localConn;
     String query = null;
     private PreparedStatement myStatement;
 
@@ -172,12 +172,15 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public boolean delete(Reiziger reiziger) {
         try {
+            System.out.println("deleting reiziger: " + reiziger.toString() + "with id " + reiziger.getId());
+            System.out.println(findReizigerById(reiziger.getId()));
             String query = "DELETE FROM reiziger WHERE reiziger_id = ?";
+
 
             PreparedStatement ps = localConn.prepareStatement(query);
 
             ps.setInt(1, reiziger.getId());
-            ps.executeQuery();
+            ps.executeUpdate();
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

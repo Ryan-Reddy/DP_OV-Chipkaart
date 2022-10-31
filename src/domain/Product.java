@@ -59,4 +59,16 @@ public class Product {
     public ArrayList<OVChipkaart> getAlleKaartenMetProduct() {
         return alleKaartenMetProduct;
     }
+
+    @Override
+    public String toString() {
+        return "\n Product #" + product_nummer + " " + naam +
+                "\t\t\t beschrijving='" + beschrijving +
+                ", prijs=" + prijs +
+                ", alleKaartenMetProduct=" + alleKaartenMetProduct;
+    }
+
+    public int getId() {
+        return product_nummer;
+    }
 }
