@@ -83,7 +83,7 @@ public class ProductDAOPsql implements ProductDAO {
                         e.printStackTrace();
                         return false;
                     }
-                    return (ps.executeUpdate()) == 1;
+                    return (ps.executeUpdate() == 1);
                 }
                 return false;
             }

@@ -59,11 +59,11 @@ public class Main {
 
             // TODO reactivate:
             // testreizigerDAO:
-            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
+//            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
 
             // TODO reactivate:
             // testProductDAO:
-//            testProductDAO(productDAOPsql);
+            testProductDAO(productDAOPsql);
 
             // TODO reactivate:
             // testOVChipkaartDAO:
@@ -174,11 +174,8 @@ public class Main {
         sout("\n---------- Test testProductDAO -------------");
 
         try {
-
-
-
             sout("[Test] [save] productDAO.save()");
-            sout(String.valueOf(productDAO.save(newProduct)));
+            sout(String.valueOf(productDAO.save(newProduct) == true));
 
             sout("[Test] productDAO.findAll() geeft de volgende reizigers:");
             sout(productDAO.findAll().toString());
