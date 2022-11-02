@@ -40,7 +40,7 @@ public class Reiziger {
         this.tussenvoegsel = tussenvoegsel;
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
-        reizigerDAOPsql.save(this);
+//        reizigerDAOPsql.save(this);
         Adres newAdres = new Adres();
         this.adres_id = newAdres.getAdres_ID();
     }
@@ -51,6 +51,7 @@ public class Reiziger {
         this.tussenvoegsel = tussenvoegsel;
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
+
         // haalt corresponderende adres_id op bij inladen uit db
         if (adresDAOPsql.getAdresByReiziger(this) != null) this.adres_id = adresDAOPsql.getAdresByReiziger(this).getAdres_ID();
     }
@@ -107,8 +108,8 @@ public class Reiziger {
 
     @Override
     public String toString() {
-        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum + " {adres id= " + adres_id + "} kaartenvan: " ;
+        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum + " {adres id= " + adres_id + "} kaarten: " ;
         if(alleKaartenVanReiziger !=null) return s + alleKaartenVanReiziger.size();
-        return s + "geen kaarten gevonden";
+        return s + "null";
     }
 }

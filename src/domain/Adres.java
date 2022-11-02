@@ -33,7 +33,7 @@ public class Adres {
         this.straat = straat;
         this.woonplaats = woonplaats;
         this.reiziger_id = reiziger_id;
-        adresDAOPsql.save(this);
+//        adresDAOPsql.save(this);
     }
     public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id, int adres_id) throws SQLException {
         this.adres_ID = adres_id; // correspondeert met de nummers in het systeem

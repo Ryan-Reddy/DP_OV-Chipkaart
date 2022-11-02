@@ -55,10 +55,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
 //            myStatement.setInt(6, reiziger.getAdres_id());
 
-            return myStatement.executeUpdate() == 1;
+            if (myStatement.executeUpdate() == 1) return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return false;
     }
 
 
@@ -171,7 +172,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         try {
 
             while (myResultSet.next()) {
-
                 int reizigerId = myResultSet.getInt("reiziger_id");
                 String voorl = myResultSet.getString("voorletters");
                 String tussenv = myResultSet.getString("tussenvoegsel");
@@ -179,9 +179,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                 Date gebDatum = myResultSet.getDate("geboortedatum");
                 LocalDate gebDatumLocal = gebDatum.toLocalDate();
 
-                // TODO adres id ophalen
                 Reiziger opgehaaldeReiziger = new Reiziger(voorl, tussenv, achtern, gebDatumLocal, reizigerId);
                 alleReizigers.add(opgehaaldeReiziger);
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -196,7 +196,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public boolean delete(Reiziger reiziger) {
         try {
-            System.out.println("deleting reiziger: " + reiziger.toString() + "with id " + reiziger.getId());
+            System.out.println("deleting reiziger: {" + reiziger.toString() + "} with id " + reiziger.getId());
             System.out.println(findReizigerById(reiziger));
 
             // delete adres dat hoort bij reiziger:
@@ -204,14 +204,16 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, reiziger.getAdres_id());
 
-            ps.execute();
+            ps.executeQuery();
+            System.out.println("yelllo");
 
 
             // delete reiziger zelf:
             String queryReizigerDelete = "DELETE FROM reiziger WHERE reiziger_id = ? ";
             ps = localConn.prepareStatement(query);
+            System.out.println("deleting reiziger with ID: " + reiziger.getId());
             ps.setInt(1, reiziger.getId());
-            ps.execute();
+            ps.executeQuery();
 
             return true;
         } catch (SQLException e) {

@@ -109,7 +109,8 @@ public class AdresDAOPsql implements AdresDAO {
                 String woonplaats = myResultSet.getString("woonplaats");
                 int reiziger_id = myResultSet.getInt("reiziger_id");
 
-                return new Adres(postcode, huisnummer, straat, woonplaats, reiziger_id);
+                Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reiziger_id, adres_id2);
+                return adres;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -122,7 +123,6 @@ public class AdresDAOPsql implements AdresDAO {
      * @return
      */
     public Adres getAdresByReiziger(Reiziger reiziger) {
-        System.out.println(reiziger.getId());
         Adres adres = getAdresByID(reiziger.getAdres_id());
         return adres;
     }

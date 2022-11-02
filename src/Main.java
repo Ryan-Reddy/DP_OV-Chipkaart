@@ -91,18 +91,15 @@ public class Main {
         try {
             // Haal alle reizigers op uit de database
             List<Reiziger> reizigers = rdao.findAll();
-            sout("[Test] [ReizigerDAO.findAll()] geeft de volgende reizigers:");
-            for (Reiziger r : reizigers) {
-                sout(r.toString());
-            }
-            sout("[Test] [CRUD]");
+            sout("[Test] [ReizigerDAO.findAll()] geeft aantal reizigers:" + reizigers.size());
 
+            sout("[Test] [CRUD]");
             // Voeg aanvullende tests van de ontbrekende CRUD-operaties in.
 
             // --- // save:
             sout("[Test] [save] ReizigerDAO.save()");
             System.out.print("[Test] [save] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
-//            rdao.save(sietske); // gebeurt al in constructor
+            rdao.save(sietske); // gebeurt al in constructor
             List<Reiziger> reizigersAfterSave = rdao.findAll();
             sout(reizigersAfterSave.size() + " reizigers\n");
 
@@ -122,13 +119,12 @@ public class Main {
             int preDeleteLijstSize = rdao.findAll().size();
             sout("[Test] [delete] voor delete grootte reizigerslijst = " + preDeleteLijstSize);
 
-            rdao.delete(sietske);
+            boolean succes = rdao.delete(sietske);
 
-            int afterDeleteLijstSize = rdao.findAll().size();
-            sout("[Test] [delete] na delete grootte reizigerslijst = " + afterDeleteLijstSize);
+            sout("[Test] [delete] verkleind? = " + succes + "lijst is nu: " + rdao.findAll().size());
 
-            if (afterDeleteLijstSize < afterDeleteLijstSize) sout("[Test] [delete] [SUCCESS] test geslaagd!");
-            else sout("[Test] [delete] [GEFAALD] test gefaald!");
+            if(succes = true) { sout("[Test] [delete] [SUCCESS] test geslaagd!");}
+            else { sout("[Test] [delete] [GEFAALD] test gefaald!");}
 
         } catch (Exception e) {
             e.printStackTrace();
