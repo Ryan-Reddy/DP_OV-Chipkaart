@@ -25,4 +25,6 @@ public interface ReizigerDAO {
     List<Reiziger> findByGbDatum(String datum) throws SQLException;
 
     List<Reiziger> findAll() throws SQLException;
+
+    int getAdresId(int reizigerId) throws SQLException;
 }

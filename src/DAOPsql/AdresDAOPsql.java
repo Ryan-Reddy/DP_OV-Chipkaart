@@ -100,7 +100,7 @@ public class AdresDAOPsql implements AdresDAO {
             ps.setInt(1, adres_id_toFIND);
 
             ResultSet myResultSet = ps.executeQuery();
-            while (myResultSet.next()) {
+            if (myResultSet.next()) {
 
                 int adres_id2 = myResultSet.getInt("adres_id");
                 String postcode = myResultSet.getString("postcode");
@@ -109,8 +109,7 @@ public class AdresDAOPsql implements AdresDAO {
                 String woonplaats = myResultSet.getString("woonplaats");
                 int reiziger_id = myResultSet.getInt("reiziger_id");
 
-
-                return new Adres(adres_id2, postcode, huisnummer, straat, woonplaats, reiziger_id);
+                return new Adres(postcode, huisnummer, straat, woonplaats, reiziger_id);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -139,19 +138,19 @@ public class AdresDAOPsql implements AdresDAO {
             PreparedStatement ps = localConn.prepareStatement(query);
 
             ResultSet myResultSet = ps.executeQuery();
-            myResultSet.next();
             try {
 
                 while (myResultSet.next()) {
 
-                    int adres_id2 = myResultSet.getInt("adres_id");
+                    int adres_id = myResultSet.getInt("adres_id");
                     String postcode = myResultSet.getString("postcode");
                     String huisnummer = myResultSet.getString("huisnummer");
                     String straat = myResultSet.getString("straat");
                     String woonplaats = myResultSet.getString("woonplaats");
                     int reiziger_id = myResultSet.getInt("reiziger_id");
-
-                    alleAdressen.add(new Adres(adres_id2, postcode, huisnummer, straat, woonplaats, reiziger_id));
+                    Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reiziger_id, adres_id);
+//                    adres.setAdres_ID(adres_id2);
+                    alleAdressen.add(adres);
                 }
                 return alleAdressen;
             } catch (SQLException e) {

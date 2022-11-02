@@ -36,8 +36,8 @@ public class Main {
             productDAOPsql = new ProductDAOPsql(mijnConn);
             ovChipkaartDAOPsql = new OVChipkaartDAOPsql(mijnConn);
             adresDAOPsql = new AdresDAOPsql(mijnConn);
-            sietske = new Reiziger(reizigerDAOPsql.findAll().size(), "S", "", "Boers", Date.valueOf("1981-03-14"));
-            adresSietske = new Adres(adresDAOPsql.findAll().size()+1, "1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
+            sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981,03,14));
+            adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
 
             sietske.setAdres_id(adresSietske.getAdres_ID());
             newProduct = new Product(7, "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
@@ -57,18 +57,21 @@ public class Main {
 
             // TESTS:
 
-            // testProductDAO:
-            testProductDAO(productDAOPsql);
+            // TODO reactivate:
+            // testreizigerDAO:
+            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
 
+            // TODO reactivate:
+            // testProductDAO:
+//            testProductDAO(productDAOPsql);
+
+            // TODO reactivate:
             // testOVChipkaartDAO:
-            testAdresDAO(adresDAOPsql);
+//            testAdresDAO(adresDAOPsql);
 
             // TODO reactivate:
 //            // testOVChipkaartDAO:
 //            testOVChipkaartDAO(ovChipkaartDAOPsql);
-
-            // testreizigerDAO:
-            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
 
             mijnConn.close();
         } catch (Exception exc) {
@@ -99,7 +102,7 @@ public class Main {
             // --- // save:
             sout("[Test] [save] ReizigerDAO.save()");
             System.out.print("[Test] [save] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
-            rdao.save(sietske);
+//            rdao.save(sietske); // gebeurt al in constructor
             List<Reiziger> reizigersAfterSave = rdao.findAll();
             sout(reizigersAfterSave.size() + " reizigers\n");
 
@@ -145,7 +148,9 @@ public class Main {
             sout(adresDAO.getAdresByID(1).toString());
 
             sout("[Test] [adresDAO.getAdresByReiziger()]  geeft de volgende reizigers:");
-            sout(adresDAO.getAdresByReiziger(sietske).toString());
+            Reiziger test = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991,9,21));
+            sout(adresDAO.getAdresByReiziger(test).toString());
+            reizigerDAOPsql.delete(test);
 
             sout("[Test] [adresDAO.findAll()] geeft de volgende reizigers:");
             sout(adresDAO.findAll().toString());

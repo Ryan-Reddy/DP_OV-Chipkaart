@@ -1,6 +1,23 @@
 package domain;
 
+import DAO.AdresDAO;
+import DAOPsql.AdresDAOPsql;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class Adres {
+            static AdresDAO adresDAOPsql;
+    static {
+        try {
+            Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
+            adresDAOPsql = new AdresDAOPsql(mijnConn);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private int adres_ID;
     private String postcode;
     private String huisnummer;
@@ -8,21 +25,36 @@ public class Adres {
     private String woonplaats;
     private int reiziger_id;
 
+    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) throws SQLException {
+        int sizeOfTable = adresDAOPsql.findAll().size();
+        this.adres_ID = sizeOfTable +1; // correspondeert met de nummers in het systeem
+        this.postcode = postcode;
+        this.huisnummer = huisnummer;
+        this.straat = straat;
+        this.woonplaats = woonplaats;
+        this.reiziger_id = reiziger_id;
+        adresDAOPsql.save(this);
+    }
+    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id, int adres_id) throws SQLException {
+        this.adres_ID = adres_id; // correspondeert met de nummers in het systeem
+        this.postcode = postcode;
+        this.huisnummer = huisnummer;
+        this.straat = straat;
+        this.woonplaats = woonplaats;
+        this.reiziger_id = reiziger_id;
+    }
+
+    public Adres() throws SQLException {
+        this.adres_ID = adresDAOPsql.findAll().size()+1; // correspondeert met de nummers in het systeem
+//        adresDAOPsql.save(this);
+    }
+
     public String getPostcode() {
         return postcode;
     }
 
     public void setPostcode(String postcode) {
         this.postcode = postcode;
-    }
-
-    public Adres(int adres_ID, String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) {
-        this.adres_ID = adres_ID;
-        this.postcode = postcode;
-        this.huisnummer = huisnummer;
-        this.straat = straat;
-        this.woonplaats = woonplaats;
-        this.reiziger_id = reiziger_id;
     }
 
     public int getAdres_ID() {
