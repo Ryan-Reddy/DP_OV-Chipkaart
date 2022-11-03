@@ -27,18 +27,22 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
 
     public boolean save(OVChipkaart ovChipkaart) {
-        String query = "INSERT INTO ov_chipkaart (kaart_nummer, product_nummer, status, last_update) " + "VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) " + "VALUES (?, ?, ?, ?, ?)";
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(ovChipkaart.getKaart_nummer()));
-            ps.setString(2, String.valueOf(ovChipkaart.getGeldig_tot()));
-            ps.setString(3, String.valueOf(ovChipkaart.getKlasse()));
+            ps.setInt(1, ovChipkaart.getKaart_nummer());
+            ps.setDate(2, ovChipkaart.getGeldig_tot());
+            ps.setInt(3, ovChipkaart.getKlasse());
             ps.setDouble(4, ovChipkaart.getSaldo());
-            ps.setString(5, String.valueOf(ovChipkaart.getReiziger_id()));
+            ps.setInt(5, ovChipkaart.getReiziger_id());
 
             return ps.executeUpdate() == 1;
+
+            // TODO schrijf functie product_nummer ???
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -47,16 +51,17 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     @Override
     public boolean update(OVChipkaart ovChipkaart) {
-        String query = "UPDATE ov_chipkaart (kaart_nummer, product_nummer, status, last_update) VALUES (?, ?, ?, ?, ?) WHERE kaart_nummer = " + ovChipkaart.getKaart_nummer();
+        String query = "UPDATE ov_chipkaart SET kaart_nummer = ?, geldig_tot = ?, klasse = ?, saldo = ?, reiziger_id = ? WHERE kaart_nummer = ?";
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, ovChipkaart.getKaart_nummer());
             ps.setDate(2, ovChipkaart.getGeldig_tot());
-            ps.setString(3, String.valueOf(ovChipkaart.getKlasse()));
+            ps.setInt(3, ovChipkaart.getKlasse());
             ps.setDouble(4, ovChipkaart.getSaldo());
             ps.setInt(5, ovChipkaart.getReiziger_id());
+            ps.setInt(6, ovChipkaart.getKaart_nummer());
 
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {
@@ -74,8 +79,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         String query = "DELETE FROM ov_chipkaart WHERE kaart_nummer = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(ovChipkaart.getKaart_nummer()));
-            ps.executeQuery();
+            ps.setInt(1, ovChipkaart.getKaart_nummer());
+            ps.execute();
             return true;
 
         } catch (SQLException e) {

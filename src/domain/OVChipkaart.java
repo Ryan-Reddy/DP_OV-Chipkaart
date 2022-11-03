@@ -1,7 +1,12 @@
 package domain;
 
+import DAO.AdresDAO;
+import DAOPsql.AdresDAOPsql;
+
 import java.sql.Date;
 import java.util.List;
+
+import static domain.Reiziger.reizigerDAOPsql;
 
 /**
  * The type Ov chipkaart.

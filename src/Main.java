@@ -70,8 +70,6 @@ public class Main {
             adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
             sietske.setAdres_id(adresSietske.getAdres_ID());
 
-            Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
-            newOvChipKaart = new OVChipkaart(10, date, 1,10.00,5);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -95,17 +93,17 @@ public class Main {
 
             // TESTS:
 
-            // TODO reactivate:
+            // TODO reactivate (WORKS):
             // testreizigerDAO:
 //            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
 
-            // TODO reactivate:
+            // TODO reactivate (WORKS):
             // testOVChipkaartDAO:
-            testAdresDAO(adresDAOPsql);
+//            testAdresDAO(adresDAOPsql);
 
             // TODO reactivate:
 //            // testOVChipkaartDAO:
-//            testOVChipkaartDAO(ovChipkaartDAOPsql);
+            testOVChipkaartDAO(ovChipkaartDAOPsql);
 
             // TODO reactivate:
             // testProductDAO:
@@ -237,9 +235,10 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private static void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO) {
+    private static void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO) throws SQLException {
         sout("\n---------- Test ovChipkaartDAO -------------");
-
+        Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
+        newOvChipKaart = new OVChipkaart(adresDAOPsql.findAll().size() + 2, date, 1,10.00,5);
 
         try {
             // TODO schrijf testOVCHIPKAART TEST
