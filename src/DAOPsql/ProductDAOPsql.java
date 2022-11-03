@@ -6,14 +6,24 @@ import domain.Product;
 import domain.productStatusEnum;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Product dao psql.
+ */
 public class ProductDAOPsql implements ProductDAO {
     private static Connection localConn;
     private Statement myStatement;
 
+    /**
+     * Instantiates a new Product dao psql.
+     *
+     * @param conn the conn
+     * @throws SQLException the sql exception
+     */
     public ProductDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
@@ -51,21 +61,25 @@ public class ProductDAOPsql implements ProductDAO {
 
     /**
      * @param product de product aanmaken, wijzigingen opslaan
-     * @return het opslaan gelukt?
+     * @return boolean = het opslaan gelukt?
      */
     @Override
     public boolean save(Product product) {
         try {
-            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " + "VALUES (?, ?, ?, ?)";
+            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) VALUES (?, ?, ?, ?)";
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query_prod);
-            ps.setString(1, String.valueOf(product.getProduct_nummer()));
+            ps.setInt(1, product.getProduct_nummer());
             ps.setString(2, product.getNaam());
             ps.setString(3, product.getBeschrijving());
-            ps.setString(4, String.valueOf(product.getPrijs()));
+            ps.setInt(4, product.getPrijs());
 
-            // hieronder volgt het deel relatie
+            int result = ps.executeUpdate();
+            int result2 = 0;
+            System.out.println("result: " + result);
+
+            // hieronder volgt het relatie deel
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
             if (alleKaartenMetProduct != null) {
                 for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
@@ -75,22 +89,22 @@ public class ProductDAOPsql implements ProductDAO {
 
                         ps.setString(1, String.valueOf(ovchipkaart.getKaart_nummer()));
                         ps.setString(2, String.valueOf(product.getProduct_nummer()));
-                        // TODO schrijf ergens status als attribuut
-                        // TODO schrijf ergens last edit als attribuut
-                        //  hiervoor is ook nog een methode nodig
+                        ps.setString(3, String.valueOf(ovchipkaart.getStatus()));
+                        ps.setDate(4, Date.valueOf(LocalDate.now()));
+
+                        result2 = ps.executeUpdate();
+                        System.out.println("result2:" + result);
 
                     } catch (Exception e) {
                         e.printStackTrace();
                         return false;
                     }
-                    return (ps.executeUpdate() == 1);
                 }
-                return false;
             }
+        return (result + result2 == 1);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 
     /**
@@ -110,7 +124,7 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setDouble(4, product.getPrijs());
             ps.setInt(5, product.getProduct_nummer());
 
-            // hieronder volgt het deel relatie
+            // hieronder volgt het relatie deel
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
             if (alleKaartenMetProduct != null) {
 
@@ -133,7 +147,7 @@ public class ProductDAOPsql implements ProductDAO {
                 return false;
             }
 
-            return ps.executeUpdate() == 1;
+            return ps.executeUpdate() != 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -176,7 +190,9 @@ public class ProductDAOPsql implements ProductDAO {
     }
 
     /**
-     * @param id id waarnaar gezocht moet worden
+     * Find by id product.
+     *
+     * @param product the product
      * @return informatie over het product, of null.
      */
     public Product findByID(Product product) {
@@ -194,12 +210,18 @@ public class ProductDAOPsql implements ProductDAO {
             String beschrijving = myResultSet.getString("beschrijving");
             int prijs = myResultSet.getInt("prijs");
 
-            return new Product(product_nummer, naam, beschrijving, prijs);
+            return new Product(naam, beschrijving, prijs, product_nummer);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Find all array list.
+     *
+     * @return the array list
+     * @throws SQLException the sql exception
+     */
     public ArrayList<Product> findAll() throws SQLException {
         String query = "select * from product";
         PreparedStatement preparedStatement = localConn.prepareStatement(query);
@@ -213,7 +235,7 @@ public class ProductDAOPsql implements ProductDAO {
                 String beschrijving = myResultSet.getString("beschrijving");
                 int prijs = myResultSet.getInt("prijs");
 
-                alleProducten.add(new Product(product_nummer, naam, beschrijving, prijs));
+                alleProducten.add(new Product(naam, beschrijving, prijs, product_nummer));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

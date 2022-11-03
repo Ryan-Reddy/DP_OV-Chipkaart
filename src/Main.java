@@ -16,18 +16,48 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type Main.
+ */
 public class Main {
-    // 1. Connect met de database
+    /**
+     * The constant mijnConn.
+     */
+// 1. Connect met de database
     static Connection mijnConn;
+    /**
+     * The Reiziger dao psql.
+     */
     static ReizigerDAOPsql reizigerDAOPsql;
+    /**
+     * The Product dao psql.
+     */
     static ProductDAOPsql productDAOPsql;
+    /**
+     * The Ov chipkaart dao psql.
+     */
     static OVChipkaartDAOPsql ovChipkaartDAOPsql;
+    /**
+     * The Adres dao psql.
+     */
     static AdresDAO adresDAOPsql;
 
-    // Maak een nieuwe reiziger aan en persisteer deze in de database
+    /**
+     * The constant sietske.
+     */
+// Maak een nieuwe reiziger aan en persisteer deze in de database
     static Reiziger sietske;
+    /**
+     * The Adres sietske.
+     */
     static Adres adresSietske;
+    /**
+     * The New ov chip kaart.
+     */
     static OVChipkaart newOvChipKaart;
+    /**
+     * The New product.
+     */
     static Product newProduct;
     static {
         try {
@@ -38,9 +68,7 @@ public class Main {
             adresDAOPsql = new AdresDAOPsql(mijnConn);
             sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981,03,14));
             adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
-
             sietske.setAdres_id(adresSietske.getAdres_ID());
-            newProduct = new Product(7, "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
 
             Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
             newOvChipKaart = new OVChipkaart(10, date, 1,10.00,5);
@@ -49,9 +77,19 @@ public class Main {
         }
     }
 
+    /**
+     * Instantiates a new Main.
+     *
+     * @throws SQLException the sql exception
+     */
     public Main() throws SQLException {
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         try {
 
@@ -62,16 +100,16 @@ public class Main {
 //            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
 
             // TODO reactivate:
-            // testProductDAO:
-            testProductDAO(productDAOPsql);
-
-            // TODO reactivate:
             // testOVChipkaartDAO:
-//            testAdresDAO(adresDAOPsql);
+            testAdresDAO(adresDAOPsql);
 
             // TODO reactivate:
 //            // testOVChipkaartDAO:
 //            testOVChipkaartDAO(ovChipkaartDAOPsql);
+
+            // TODO reactivate:
+            // testProductDAO:
+//            testProductDAO(productDAOPsql);
 
             mijnConn.close();
         } catch (Exception exc) {
@@ -136,34 +174,36 @@ public class Main {
     private static void testAdresDAO(AdresDAO adresDAO) {
         try {
             sout("\n---------- Test AdresDAO -------------");
-            // write crud tests
-//        sout(reizigerDAO.findReizigerById(3).getAdres_id());
-
-
-            sout("[Test] [adresDAO.getAdresByID()] adres_id = 1");
+            sout("[Test] 1 [adresDAO.getAdresByID()] adres_id = 1");
             sout(adresDAO.getAdresByID(1).toString());
 
-            sout("[Test] [adresDAO.getAdresByReiziger()]  geeft de volgende reizigers:");
-            Reiziger test = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991,9,21));
-            sout(adresDAO.getAdresByReiziger(test).toString());
-            reizigerDAOPsql.delete(test);
+            sout("[Test] 2 [adresDAO.getAdresByReiziger()]  geeft de volgende reizigers:");
+            Reiziger testReiziger = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991,9,21));
+            Adres testReizigerAdres = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
+            testReiziger.setAdres_id(testReizigerAdres.getAdres_ID());
+            reizigerDAOPsql.save(testReiziger);
 
-            sout("[Test] [adresDAO.findAll()] geeft de volgende reizigers:");
+            sout("[Test] 4 [save] adresDAO.save()");
+            adresDAOPsql.save(testReizigerAdres);
+
+            sout(adresDAO.getAdresByReiziger(testReiziger).toString());
+            reizigerDAOPsql.delete(testReiziger);
+
+            sout("[Test] 3 [adresDAO.findAll()] geeft de volgende reizigers:");
             sout(adresDAO.findAll().toString());
-
 //        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findReizigerById(3).getAdres_id()));
-            // TODO makle ^this work
-            sout("[Test] [save] adresDAO.save()");
-            sout(String.valueOf(adresDAO.save(adresSietske)));
-            sout("[Test] [update] adresDAO.update()");
-            sout(String.valueOf(adresDAO.update(adresSietske)));
-            sout("[Test] [delete] adresDAO.delete()");
-            sout(String.valueOf(adresDAO.delete(adresSietske)));
 
+            // crud tests
 
+            sout("[Test] 5 [update] adresDAO.update()");
+            sout(String.valueOf(adresDAO.update(testReizigerAdres)));
 
-            // TODO
-            //  test find allAdressen()
+            sout("[Test] 6 [delete] adresDAO.delete()");
+            sout(String.valueOf(adresDAO.delete(testReizigerAdres)));
+
+            sout("[Test] 7 [findAll] adresDAO.findAll()");
+            sout("[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAO.findAll().size());
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,6 +215,7 @@ public class Main {
 
         try {
             sout("[Test] [save] productDAO.save()");
+            newProduct = new Product( "gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
             sout(String.valueOf(productDAO.save(newProduct) == true));
 
             sout("[Test] productDAO.findAll() geeft de volgende reizigers:");
@@ -227,6 +268,11 @@ public class Main {
     }
 
 
+    /**
+     * Sout.
+     *
+     * @param inputToPrint the input to print
+     */
     public static void sout(String inputToPrint) {
         System.out.println(inputToPrint);
     }

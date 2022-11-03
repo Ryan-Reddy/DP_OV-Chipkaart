@@ -11,8 +11,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The type Reiziger.
+ */
 public class Reiziger {
+    /**
+     * The Adres dao psql.
+     */
     static AdresDAO adresDAOPsql;
+    /**
+     * The Reiziger dao psql.
+     */
     static ReizigerDAOPsql reizigerDAOPsql;
 
     static {
@@ -34,6 +43,15 @@ public class Reiziger {
 
     private ArrayList<OVChipkaart> alleKaartenVanReiziger;
 
+    /**
+     * Instantiates a new Reiziger.
+     *
+     * @param voorletters   the voorletters
+     * @param tussenvoegsel the tussenvoegsel
+     * @param achternaam    the achternaam
+     * @param geboortedatum the geboortedatum
+     * @throws SQLException the sql exception
+     */
     public Reiziger(String voorletters, String tussenvoegsel, String achternaam, LocalDate geboortedatum) throws SQLException {
         this.id = reizigerDAOPsql.findAll().size() + 1;
         this.voorletters = voorletters;
@@ -45,6 +63,15 @@ public class Reiziger {
         this.adres_id = newAdres.getAdres_ID();
     }
 
+    /**
+     * Instantiates a new Reiziger.
+     *
+     * @param voorletters   the voorletters
+     * @param tussenvoegsel the tussenvoegsel
+     * @param achternaam    the achternaam
+     * @param geboortedatum the geboortedatum
+     * @param id            the id
+     */
     public Reiziger(String voorletters, String tussenvoegsel, String achternaam, LocalDate geboortedatum, int id) {
         this.id = id;
         this.voorletters = voorletters;
@@ -56,59 +83,122 @@ public class Reiziger {
         if (adresDAOPsql.getAdresByReiziger(this) != null) this.adres_id = adresDAOPsql.getAdresByReiziger(this).getAdres_ID();
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets voorletters.
+     *
+     * @return the voorletters
+     */
     public String getVoorletters() {
         return voorletters;
     }
 
+    /**
+     * Sets voorletters.
+     *
+     * @param voorletters the voorletters
+     */
     public void setVoorletters(String voorletters) {
         this.voorletters = voorletters;
     }
 
+    /**
+     * Gets tussenvoegsel.
+     *
+     * @return the tussenvoegsel
+     */
     public String getTussenvoegsel() {
         return tussenvoegsel;
     }
 
+    /**
+     * Sets tussenvoegsel.
+     *
+     * @param tussenvoegsel the tussenvoegsel
+     */
     public void setTussenvoegsel(String tussenvoegsel) {
         this.tussenvoegsel = tussenvoegsel;
     }
 
+    /**
+     * Gets achternaam.
+     *
+     * @return the achternaam
+     */
     public String getAchternaam() {
         return achternaam;
     }
 
+    /**
+     * Sets achternaam.
+     *
+     * @param achternaam the achternaam
+     */
     public void setAchternaam(String achternaam) {
         this.achternaam = achternaam;
     }
 
+    /**
+     * Gets geboortedatum.
+     *
+     * @return the geboortedatum
+     */
     public Date getGeboortedatum() {
 
 //        TODO: return geboortedatum;
         return java.sql.Date.valueOf("1990-12-23");
     }
 
+    /**
+     * Sets geboortedatum.
+     *
+     * @param geboortedatum the geboortedatum
+     */
     public void setGeboortedatum(LocalDate geboortedatum) {
         this.geboortedatum = geboortedatum;
     }
 
+    /**
+     * Gets adres id.
+     *
+     * @return the adres id
+     */
     public int getAdres_id() {
         return adres_id;
     }
 
+    /**
+     * Sets adres id.
+     *
+     * @param adres_id the adres id
+     */
     public void setAdres_id(int adres_id) {
         this.adres_id = adres_id;
     }
 
     @Override
     public String toString() {
-        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum + " {adres id= " + adres_id + "} kaarten: " ;
+//        Adres adres = adresDAOPsql.getAdresByID(adres_id);
+
+
+        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum + " {adres= " + adresDAOPsql.getAdresByID(adres_id).toString() + "} kaarten: " ;
         if(alleKaartenVanReiziger !=null) return s + alleKaartenVanReiziger.size();
         return s + "null";
     }

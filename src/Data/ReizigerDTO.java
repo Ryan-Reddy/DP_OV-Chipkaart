@@ -5,6 +5,9 @@ import domain.OVChipkaart;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The type Reiziger dto.
+ */
 public class ReizigerDTO {
     private int id;
     private String voorletters;

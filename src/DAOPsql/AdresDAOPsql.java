@@ -8,10 +8,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Adres dao psql.
+ */
 public class AdresDAOPsql implements AdresDAO {
     private static Connection localConn;
     private Statement myStatement;
 
+    /**
+     * Instantiates a new Adres dao psql.
+     *
+     * @param conn the conn
+     * @throws SQLException the sql exception
+     */
     public AdresDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
@@ -47,17 +56,19 @@ public class AdresDAOPsql implements AdresDAO {
 
     @Override
     public boolean update(Adres adres) {
-        String query = "INSERT INTO adres (adres_id, postcode, huisnummer, straat, woonplaats) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String query = "UPDATE adres SET adres_id =?, postcode =?, huisnummer =?, straat =?, woonplaats =?, reiziger_id =? WHERE reiziger_id = ?";
         try {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(adres.getAdres_ID()));
+            ps.setInt(1, adres.getAdres_ID());
             ps.setString(2, adres.getPostcode());
             ps.setString(3, adres.getHuisnummer());
             ps.setString(4, adres.getStraat());
             ps.setString(5, adres.getWoonplaats());
+            ps.setInt(6, adres.getReiziger_id());
+            ps.setInt(7, adres.getReiziger_id());
+
 
             if (ps.executeUpdate() == 1) {
                 return true;
@@ -75,11 +86,11 @@ public class AdresDAOPsql implements AdresDAO {
      */
     @Override
     public boolean delete(Adres adres) {
-        String query = "DELETE FROM adres WHERE adres_id = (adres_id) VALUES (?)";
+        String query = "DELETE FROM adres WHERE adres_id = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setString(1, String.valueOf(adres.getAdres_ID()));
-            ps.executeQuery();
+            ps.setInt(1, adres.getAdres_ID());
+            ps.execute();
             return true;
 
     } catch (SQLException e) {

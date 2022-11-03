@@ -197,14 +197,13 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public boolean delete(Reiziger reiziger) {
         try {
             System.out.println("deleting reiziger: {" + reiziger.toString() + "} with id " + reiziger.getId());
-            System.out.println(findReizigerById(reiziger));
 
             // delete adres dat hoort bij reiziger:
-            String AdresDelete = "DELETE FROM adres WHERE adres_id = ? ";
+            String query = "DELETE FROM adres WHERE adres_id = ? ";
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, reiziger.getAdres_id());
 
-            ps.executeQuery();
+            ps.execute();
             System.out.println("yelllo");
 
 
@@ -213,7 +212,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps = localConn.prepareStatement(query);
             System.out.println("deleting reiziger with ID: " + reiziger.getId());
             ps.setInt(1, reiziger.getId());
-            ps.executeQuery();
+            ps.execute();
 
             return true;
         } catch (SQLException e) {

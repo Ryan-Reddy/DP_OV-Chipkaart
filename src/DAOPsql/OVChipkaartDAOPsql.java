@@ -6,10 +6,19 @@ import domain.OVChipkaart;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * The type Ov chipkaart dao psql.
+ */
 public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     private static Connection localConn;
     private Statement myStatement;
 
+    /**
+     * Instantiates a new Ov chipkaart dao psql.
+     *
+     * @param conn the conn
+     * @throws SQLException the sql exception
+     */
     public OVChipkaartDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
@@ -74,6 +83,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         }
     }
 
+    /**
+     * Find all object.
+     *
+     * @return the object
+     * @throws SQLException the sql exception
+     */
     public Object findAll() throws SQLException {
         ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
 
