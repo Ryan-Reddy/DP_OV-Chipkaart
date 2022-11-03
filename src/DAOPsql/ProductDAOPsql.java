@@ -163,7 +163,7 @@ public class ProductDAOPsql implements ProductDAO {
             String query = "DELETE FROM product WHERE product_nummer = ?";
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, product.getProduct_nummer());
-            ps.executeUpdate();
+            ps.execute();
 
             // hieronder volgt het deel relatie
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
@@ -174,19 +174,18 @@ public class ProductDAOPsql implements ProductDAO {
                         PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
 
                         // Verander status naar gestopt
-                        ps.setString(1, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
+                        ps2.setString(1, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
                         // Wijzig last_update naar vandaag
                     } catch (Exception e) {
                         e.printStackTrace();
                         return false;
                     }
                 }
-                return true;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
+        return true;
     }
 
     /**

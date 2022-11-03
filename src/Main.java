@@ -103,11 +103,11 @@ public class Main {
 
             // TODO reactivate:
 //            // testOVChipkaartDAO:
-            testOVChipkaartDAO(ovChipkaartDAOPsql);
+//            testOVChipkaartDAO(ovChipkaartDAOPsql);
 
             // TODO reactivate:
             // testProductDAO:
-//            testProductDAO(productDAOPsql);
+            testProductDAO(productDAOPsql);
 
             mijnConn.close();
         } catch (Exception exc) {
