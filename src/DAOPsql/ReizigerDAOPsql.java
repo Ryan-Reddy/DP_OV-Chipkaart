@@ -196,7 +196,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public boolean delete(Reiziger reiziger) {
         try {
-            System.out.println("deleting reiziger: {" + reiziger.toString() + "} with id " + reiziger.getId());
+//            System.out.println("deleting reiziger: {" + reiziger.toString() + "} with id " + reiziger.getId());
 
             // delete adres dat hoort bij reiziger:
             String query = "DELETE FROM adres WHERE adres_id = ? ";

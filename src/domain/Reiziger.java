@@ -39,7 +39,7 @@ public class Reiziger {
     private String achternaam;
     private LocalDate geboortedatum;
 
-    private int adres_id;
+    private int adres_id = 0;
 
     private ArrayList<OVChipkaart> alleKaartenVanReiziger;
 
@@ -195,11 +195,15 @@ public class Reiziger {
 
     @Override
     public String toString() {
-//        Adres adres = adresDAOPsql.getAdresByID(adres_id);
+        String adresString = null;
+        if (adresDAOPsql.getAdresByID(adres_id) != null)
+             adresString = adresDAOPsql.getAdresByID(adres_id).toString();
 
+        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum
+                + " {adres= " + adresString + " } kaarten: " ;
 
-        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum + " {adres= " + adresDAOPsql.getAdresByID(adres_id).toString() + "} kaarten: " ;
-        if(alleKaartenVanReiziger !=null) return s + alleKaartenVanReiziger.size();
+        if(alleKaartenVanReiziger !=null)
+            return s + alleKaartenVanReiziger.size();
         return s + "null";
     }
 }
