@@ -150,7 +150,7 @@ public class Main {
 
             boolean succes = rdao.delete(sietske);
 
-            sout("[Test] [delete] [RESULT] = " + succes + "\n lijst is nu: " + rdao.findAll().size());
+            sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + rdao.findAll().size());
 
 //            if (succes = true) {
 //                sout("[Test] [delete] [SUCCESS] test geslaagd!");

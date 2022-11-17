@@ -200,10 +200,10 @@ public class Reiziger {
              adresString = adresDAOPsql.getAdresByID(adres_id).toString();
 
         String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum
-                + " {adres= " + adresString + " } kaarten: " ;
+                + " {adres= " + adresString + " } {kaarten= " ;
 
         if(alleKaartenVanReiziger !=null)
-            return s + alleKaartenVanReiziger.size();
-        return s + "null";
+            return s + alleKaartenVanReiziger.size() + " }";
+        return s + "null }";
     }
 }
