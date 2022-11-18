@@ -199,11 +199,12 @@ public class Reiziger {
         if (adresDAOPsql.getAdresByID(adres_id) != null)
              adresString = adresDAOPsql.getAdresByID(adres_id).toString();
 
-        String s = "#" + id + ": " + voorletters + " " + tussenvoegsel + " " + achternaam + " " + geboortedatum
-                + " {adres= " + adresString + " } {kaarten= " ;
+        String s = "#" + id + ": " + voorletters + " ";
+        if (!tussenvoegsel.isBlank()) {s += tussenvoegsel + " ";}
 
-        if(alleKaartenVanReiziger !=null)
-            return s + alleKaartenVanReiziger.size() + " }";
+        s += achternaam + " " + geboortedatum + " {adres= " + adresString + " } {kaarten= " ;
+
+        if(alleKaartenVanReiziger != null) return s + alleKaartenVanReiziger.size() + " }";
         return s + "null }";
     }
 }

@@ -203,21 +203,21 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, reiziger.getAdres_id());
 
-            ps.execute();
-            System.out.println("yelllo");
-
+            boolean adresVerwijderd = ps.execute();
 
             // delete reiziger zelf:
             String queryReizigerDelete = "DELETE FROM reiziger WHERE reiziger_id = ? ";
             ps = localConn.prepareStatement(query);
             System.out.println("deleting reiziger with ID: " + reiziger.getId());
             ps.setInt(1, reiziger.getId());
-            ps.execute();
+            boolean reizigerVerwijderd = ps.execute();
 
-            return true;
+            if (adresVerwijderd && reizigerVerwijderd) return true;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return false;
     }
 
     @Override

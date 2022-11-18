@@ -111,9 +111,9 @@ public class Main {
      * P2. Reiziger DAO: persistentie van een klasse
      * <p>
      * Deze methode test de CRUD-functionaliteit van de Reiziger DAO
-     *
      */
     private static void testReizigerDAO(ReizigerDAO rdao) {
+        sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test ReizigerDAO -------------");
         try {
             // Haal alle reizigers op uit de database
@@ -140,17 +140,16 @@ public class Main {
             sietske.setAchternaam("anders");
             rdao.update(sietske);
             sout(" [RESULT] nieuwe achternaam = " + sietske.getAchternaam());
-            sout(" [RESULT] nieuwe achternaam = " + sietske.toString());
+            sout(" [RESULT] nieuwe sietske.tostring = " + sietske.toString());
 
 
             // --- // delete:
             sout("[Test] [delete] ReizigerDAO.delete()");
             int preDeleteLijstSize = rdao.findAll().size();
-            sout("[Test] [delete] voor delete grootte reizigerslijst = " + preDeleteLijstSize);
 
             boolean succes = rdao.delete(sietske);
 
-            sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + rdao.findAll().size());
+            sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + rdao.findAll().size() + " en was: " + preDeleteLijstSize);
 
 //            if (succes = true) {
 //                sout("[Test] [delete] [SUCCESS] test geslaagd!");
@@ -205,7 +204,7 @@ public class Main {
     }
 
     private static void testProductDAO(ProductDAOPsql productDAO) {
-            sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test testProductDAO -------------");
 
         try {

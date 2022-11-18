@@ -160,11 +160,6 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public boolean delete(Product product) {
         try {
-            String query = "DELETE FROM product WHERE product_nummer = ?";
-            PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, product.getProduct_nummer());
-            ps.execute();
-
             // hieronder volgt het deel relatie
             ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
             if (alleKaartenMetProduct != null) {
@@ -182,10 +177,15 @@ public class ProductDAOPsql implements ProductDAO {
                     }
                 }
             }
+
+            String query = "DELETE FROM product WHERE product_nummer = ?";
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setInt(1, product.getProduct_nummer());
+            return ps.execute();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return true;
     }
 
     /**
