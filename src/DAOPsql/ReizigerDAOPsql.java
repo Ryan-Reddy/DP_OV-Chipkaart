@@ -196,28 +196,24 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public boolean delete(Reiziger reiziger) {
         try {
-//            System.out.println("deleting reiziger: {" + reiziger.toString() + "} with id " + reiziger.getId());
-
-            // delete adres dat hoort bij reiziger:
-            String query = "DELETE FROM adres WHERE adres_id = ? ";
+                    // delete adres dat hoort bij reiziger:
+            String query = "DELETE FROM adres WHERE adres_id = ?";
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, reiziger.getAdres_id());
-
-            boolean adresVerwijderd = ps.execute();
+            if (reiziger.getAdres_id() != 0 ) { // if coupled with adressID
+                ps.setInt(1, reiziger.getAdres_id());
+                ps.execute();
+            }
 
             // delete reiziger zelf:
-            String queryReizigerDelete = "DELETE FROM reiziger WHERE reiziger_id = ? ";
-            ps = localConn.prepareStatement(query);
+            String queryReizigerDelete = "DELETE FROM reiziger WHERE reiziger_id = ?";
+            ps = localConn.prepareStatement(queryReizigerDelete);
             System.out.println("deleting reiziger with ID: " + reiziger.getId());
             ps.setInt(1, reiziger.getId());
-            boolean reizigerVerwijderd = ps.execute();
-
-            if (adresVerwijderd && reizigerVerwijderd) return true;
+            return ps.execute();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 
     @Override

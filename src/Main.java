@@ -98,8 +98,9 @@ public class Main {
 //            // testOVChipkaartDAO:
 //            testOVChipkaartDAO(ovChipkaartDAOPsql);
 
+            // TODO reactivate:
             // testProductDAO:
-            testProductDAO(productDAOPsql);
+//            testProductDAO(productDAOPsql);
 
             mijnConn.close();
         } catch (Exception exc) {
