@@ -97,7 +97,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      * @throws SQLException the sql exception
      */
     public ArrayList<OVChipkaart> findAll() throws SQLException {
-        ArrayList<OVChipkaart> alleOVChipkaarten = null;
+        ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
 
         String query = "select * from ov_chipkaart";
         PreparedStatement preparedStatement = localConn.prepareStatement(query);
