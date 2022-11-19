@@ -167,7 +167,6 @@ public class ProductDAOPsql implements ProductDAO {
                     try {
                         String query_ovc_prod = "DELETE FROM ov_chipkaart_product WHERE product_nummer = ?";
                         PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
-
                         // Verander status naar gestopt
                         ps2.setString(1, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
                         // Wijzig last_update naar vandaag
@@ -181,7 +180,8 @@ public class ProductDAOPsql implements ProductDAO {
             String query = "DELETE FROM product WHERE product_nummer = ?";
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, product.getProduct_nummer());
-            return ps.execute();
+            ps.execute();
+            return true;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

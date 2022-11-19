@@ -92,15 +92,15 @@ public class Main {
 
             // TODO reactivate (WORKS):
             // testOVChipkaartDAO:
-//            testAdresDAO(adresDAOPsql);
+            testAdresDAO(adresDAOPsql);
 
             // TODO reactivate:
 //            // testOVChipkaartDAO:
-//            testOVChipkaartDAO(ovChipkaartDAOPsql);
+            testOVChipkaartDAO(ovChipkaartDAOPsql);
 
             // TODO reactivate:
             // testProductDAO:
-//            testProductDAO(productDAOPsql);
+            testProductDAO(productDAOPsql);
 
             mijnConn.close();
         } catch (Exception exc) {
@@ -238,11 +238,11 @@ public class Main {
             // TODO schrijf testOVCHIPKAART TEST
 
 
-            sout("[Test] [save] ovChipkaartDAO.save() with kaart nummer: " + newOvChipKaart.getKaart_nummer() + " [RESULT] = \n" + ovChipkaartDAO.save(newOvChipKaart));
+            sout("[Test] [save] ovChipkaartDAO.save() with kaart nummer: " + newOvChipKaart.getKaart_nummer() + " [RESULT] = " + ovChipkaartDAO.save(newOvChipKaart));
 
             sout("[Test] ovChipkaartDAO.findAll() geeft de volgende reizigers:" + " [RESULT] = \n" + ovChipkaartDAO.findAll().toString());
 
-            sout("[Test] ovChipkaartDAO.findByOVChipkaartID() geeft de volgende reizigers: [RESULT] =" + ovChipkaartDAO.findByOVChipkaartID(newOvChipKaart.getKaart_nummer()));
+            sout("[Test] ovChipkaartDAO.findByOVChipkaartID() geeft de volgende reizigers: [RESULT] = " + ovChipkaartDAO.findByOVChipkaartID(newOvChipKaart.getKaart_nummer()) + "\n");
 
             sout("[Test] [update] ovChipkaartDAO.update()" + " [RESULT] = \n" + ovChipkaartDAO.update(newOvChipKaart));
 
