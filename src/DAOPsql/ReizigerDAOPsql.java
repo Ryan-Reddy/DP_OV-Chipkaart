@@ -209,10 +209,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps = localConn.prepareStatement(queryReizigerDelete);
             System.out.println("deleting reiziger with ID: " + reiziger.getId());
             ps.setInt(1, reiziger.getId());
-            return ps.execute();
+            ps.execute();
+            return true;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("DELETE FAILED" + e);
         }
     }
 
