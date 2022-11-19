@@ -106,15 +106,13 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
 
-            int reizigerId = myResultSet.getInt("reiziger_id");
-            String voorl = myResultSet.getString("voorletters");
-            String tussenv = myResultSet.getString("tussenvoegsel");
-            String achtern = myResultSet.getString("achternaam");
-            Date gebDatum = myResultSet.getDate("geboortedatum");
             // TODO moet ik ook adres ophalen?
-            LocalDate gebDatumLocal = gebDatum.toLocalDate();
 
-            return new Reiziger(voorl, tussenv, achtern, gebDatumLocal);
+            return new Reiziger(myResultSet.getString("voorletters"),
+                    myResultSet.getString("tussenvoegsel"),
+                    myResultSet.getString("achternaam"),
+                    myResultSet.getDate("geboortedatum").toLocalDate(),
+                    myResultSet.getInt("reiziger_id"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -134,22 +132,15 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setString(1, datum);
-
             ResultSet myResultSet = ps.executeQuery();
 
-            // TODO schrijf getallcolumns
-
             while (myResultSet.next()) {
-
-                int reizigerId = myResultSet.getInt("reiziger_id");
-                String voorl = myResultSet.getString("voorletters");
-                String tussenv = myResultSet.getString("tussenvoegsel");
-                String achtern = myResultSet.getString("achternaam");
-                Date gebDatum = myResultSet.getDate("geboortedatum");
-                // TODO moet ik ook adres ophalen?
-                LocalDate gebDatumLocal = gebDatum.toLocalDate();
-
-                alleReizigers.add(new Reiziger(voorl, tussenv, achtern, gebDatumLocal));
+                alleReizigers.add(new Reiziger(
+                        myResultSet.getString("voorletters"),
+                        myResultSet.getString("tussenvoegsel"),
+                        myResultSet.getString("achternaam"),
+                        myResultSet.getDate("geboortedatum").toLocalDate(),
+                        myResultSet.getInt("reiziger_id")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -170,18 +161,13 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         ArrayList<Reiziger> alleReizigers = new ArrayList<Reiziger>();
 
         try {
-
             while (myResultSet.next()) {
-                int reizigerId = myResultSet.getInt("reiziger_id");
-                String voorl = myResultSet.getString("voorletters");
-                String tussenv = myResultSet.getString("tussenvoegsel");
-                String achtern = myResultSet.getString("achternaam");
-                Date gebDatum = myResultSet.getDate("geboortedatum");
-                LocalDate gebDatumLocal = gebDatum.toLocalDate();
-
-                Reiziger opgehaaldeReiziger = new Reiziger(voorl, tussenv, achtern, gebDatumLocal, reizigerId);
-                alleReizigers.add(opgehaaldeReiziger);
-
+                alleReizigers.add(new Reiziger(
+                        myResultSet.getString("voorletters"),
+                        myResultSet.getString("tussenvoegsel"),
+                        myResultSet.getString("achternaam"),
+                        myResultSet.getDate("geboortedatum").toLocalDate(),
+                        myResultSet.getInt("reiziger_id")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

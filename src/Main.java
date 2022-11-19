@@ -20,11 +20,16 @@ import java.util.List;
  * The type Main.
  */
 public class Main {
-    /**
-     * The constant mijnConn.
-     */
-// 1. Connect met de database
-    static Connection mijnConn;
+    static Connection conn;
+
+    static {
+        try {
+            conn = getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * The Reiziger dao psql.
      */
@@ -62,11 +67,10 @@ public class Main {
 
     static {
         try {
-            mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
-            reizigerDAOPsql = new ReizigerDAOPsql(mijnConn);
-            productDAOPsql = new ProductDAOPsql(mijnConn);
-            ovChipkaartDAOPsql = new OVChipkaartDAOPsql(mijnConn);
-            adresDAOPsql = new AdresDAOPsql(mijnConn);
+            reizigerDAOPsql = new ReizigerDAOPsql(conn);
+            productDAOPsql = new ProductDAOPsql(conn);
+            ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
+            adresDAOPsql = new AdresDAOPsql(conn);
             sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 03, 14));
             adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
             sietske.setAdres_id(adresSietske.getAdres_ID());
@@ -74,6 +78,9 @@ public class Main {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Main() throws SQLException {
     }
 
     /**
@@ -102,11 +109,36 @@ public class Main {
             // testProductDAO:
             testProductDAO(productDAOPsql);
 
-            mijnConn.close();
+            closeConnection();
         } catch (Exception exc) {
             exc.printStackTrace();
         }
     }
+
+    /**
+     * close connection to DB
+     *
+     * @throws SQLException
+     */
+    private static void closeConnection() throws SQLException {
+        try {
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * get connection to DB
+     *
+     * @return
+     * @throws SQLException
+     */
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
+    }
+
 
     /**
      * P2. Reiziger DAO: persistentie van een klasse
