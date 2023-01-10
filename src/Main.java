@@ -20,132 +20,58 @@ import java.util.List;
  * The type Main.
  */
 public class Main {
-    static Connection conn;
-
-    static {
-        try {
-            conn = getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * The Reiziger dao psql.
-     */
-    static ReizigerDAOPsql reizigerDAOPsql;
-    /**
-     * The Product dao psql.
-     */
-    static ProductDAOPsql productDAOPsql;
-    /**
-     * The Ov chipkaart dao psql.
-     */
-    static OVChipkaartDAOPsql ovChipkaartDAOPsql;
-    /**
-     * The Adres dao psql.
-     */
-    static AdresDAO adresDAOPsql;
-
-    /**
-     * The constant sietske.
-     */
-// Maak een nieuwe reiziger aan en persisteer deze in de database
-    static Reiziger sietske;
-    /**
-     * The Adres sietske.
-     */
-    static Adres adresSietske;
-    /**
-     * The New ov chip kaart.
-     */
-    static OVChipkaart newOvChipKaart;
-    /**
-     * The New product.
-     */
-    static Product newProduct;
-
-    static {
-        try {
-            reizigerDAOPsql = new ReizigerDAOPsql(conn);
-            productDAOPsql = new ProductDAOPsql(conn);
-            ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
-            adresDAOPsql = new AdresDAOPsql(conn);
-            sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 03, 14));
-            adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
-            sietske.setAdres_id(adresSietske.getAdres_ID());
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Main() throws SQLException {
-    }
+    Reiziger sietske;
 
     /**
      * The entry point of application.
-     *
-     * @param args the input arguments
      */
     public static void main(String[] args) {
         try {
+            new Main();
 
-            // TESTS:
-
-            // TODO reactivate (WORKS):
-            // testreizigerDAO:
-            testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
-
-            // TODO reactivate (WORKS):
-            // testOVChipkaartDAO:
-            testAdresDAO(adresDAOPsql);
-
-            // TODO reactivate:
-//            // testOVChipkaartDAO:
-            testOVChipkaartDAO(ovChipkaartDAOPsql);
-
-            // TODO reactivate:
-            // testProductDAO:
-            testProductDAO(productDAOPsql);
-
-            closeConnection();
         } catch (Exception exc) {
             exc.printStackTrace();
         }
     }
+    public Main() throws SQLException {
+        sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 03, 14));
+        Adres adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
+        sietske.setAdres_id(adresSietske.getAdres_ID());
 
-    /**
-     * close connection to DB
-     *
-     * @throws SQLException
-     */
-    private static void closeConnection() throws SQLException {
+        OVChipkaart newOvChipKaart;
+        Connection conn = getConnection();
+        testController(conn);
+        closeConnection(conn);
+    }
+
+
+
+    public void testController(Connection conn) throws SQLException {
+        ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(conn);
+        ProductDAOPsql productDAOPsql = new ProductDAOPsql(conn);
+        OVChipkaartDAOPsql ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
+        AdresDAOPsql adresDAOPsql = new AdresDAOPsql(conn);
+
+        // TESTS:
+        testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
+        testAdresDAO(adresDAOPsql, reizigerDAOPsql, adresDAOPsql);
+        testOVChipkaartDAO(ovChipkaartDAOPsql, adresDAOPsql);
+        testProductDAO(productDAOPsql);
+
+    }
+
+    private void closeConnection(Connection conn) throws SQLException {
         try {
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * get connection to DB
-     *
-     * @return
-     * @throws SQLException
-     */
-
-    public static Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
     }
 
-
-    /**
-     * P2. Reiziger DAO: persistentie van een klasse
-     * <p>
-     * Deze methode test de CRUD-functionaliteit van de Reiziger DAO
-     */
-    private static void testReizigerDAO(ReizigerDAO rdao) {
+    private void testReizigerDAO(ReizigerDAO rdao) {
         sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test ReizigerDAO -------------");
         try {
@@ -193,11 +119,9 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
-    private static void testAdresDAO(AdresDAO adresDAO) {
+    private void testAdresDAO(AdresDAO adresDAO, ReizigerDAOPsql reizigerDAOPsql, AdresDAOPsql adresDAOPsql) {
         try {
             sout("\n---------- Test AdresDAO -------------");
             sout("[Test] 1 [adresDAO.getAdresByID()] adres_id = 1");
@@ -231,14 +155,29 @@ public class Main {
             sout("[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAO.findAll().size());
 
 
+            Reiziger testReizigerLive = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21));
+            Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
+
+//
+//            newOvChipKaart = new OVChipkaart(adresDAOPsql.findAll().size() + 2, date, 1, 10.00, 5);
+//
+//            newProduct = new Product("gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
+//
+//            newOvChipKaart.addProductAanKaart(newProduct);
+//
+//            testReizigerLive.
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void testProductDAO(ProductDAOPsql productDAO) {
+    private void testProductDAO(ProductDAOPsql productDAO) {
         sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test testProductDAO -------------");
+        Product newProduct;
 
         try {
             newProduct = new Product("gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
@@ -254,6 +193,8 @@ public class Main {
 
 //            List<Product> productResultaten = productDAO.findByOVChipkaart(newOvChipKaart);
 //            productResultaten.forEach(System.out::println);
+
+
             sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         } catch (Exception e) {
@@ -261,10 +202,10 @@ public class Main {
         }
     }
 
-    private static void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO) throws SQLException {
+    private void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO, AdresDAOPsql adresDAOPsql) throws SQLException {
         sout("\n---------- Test ovChipkaartDAO -------------");
         Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
-        newOvChipKaart = new OVChipkaart(adresDAOPsql.findAll().size() + 2, date, 1, 10.00, 5);
+        OVChipkaart newOvChipKaart = new OVChipkaart(adresDAOPsql.findAll().size() + 2, date, 1, 10.00, 5);
 
         try {
             // TODO schrijf testOVCHIPKAART TEST
