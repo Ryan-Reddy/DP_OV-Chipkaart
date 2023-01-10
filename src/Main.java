@@ -70,7 +70,6 @@ public class Main {
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
     }
-
     private void testReizigerDAO(ReizigerDAO rdao) {
         sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test ReizigerDAO -------------");
@@ -120,7 +119,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     private void testAdresDAO(AdresDAO adresDAO, ReizigerDAOPsql reizigerDAOPsql, AdresDAOPsql adresDAOPsql) {
         try {
             sout("\n---------- Test AdresDAO -------------");
@@ -173,7 +171,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     private void testProductDAO(ProductDAOPsql productDAO) {
         sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test testProductDAO -------------");
@@ -201,7 +198,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     private void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO, AdresDAOPsql adresDAOPsql) throws SQLException {
         sout("\n---------- Test ovChipkaartDAO -------------");
         Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
@@ -226,7 +222,20 @@ public class Main {
 
     }
 
+    private void testScenario() {
+        // [13:23] Roelant Ossewaarde
+        //      1. Je maakt een reiziger, koppelt daaraan een nieuwe OV-Chipkaart, en koppelt daaraan twee producten.
 
+        //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
+        //      3. Je zoekt per product welke OV-chipkaarten daarbij horen.
+        //      4. Je zoekt per OV-chipkaart welke producten er op staanJe update een attribuut van het product (bijvoorbeeld de prijs).
+        //      5. Daarna laat je zien dat de verandering zowel op database-niveau als op Java-klasse-niveau zichtbaar is bij een willekeurige OV-chipkaart die dat product heeft geregistreerd.
+        //      6. Je hebt een print-statement voor een reiziger (reiziger1.toString() o.i.d.) dat de gekoppelde OV-chipkaarten en gekoppelde producten laat zien.
+        //
+        //          Je laat de tests zowel zien op de code die gebruik maakt van Hibernate als op de code die gebruik maakt van DAIO's
+
+
+    }
     /**
      * Sout.
      *

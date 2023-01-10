@@ -51,7 +51,6 @@ public class AdresDAOPsql implements AdresDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
