@@ -118,7 +118,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
 
 
-    public OVChipkaart findByOVChipkaartID(int ovChipkaartID) {
+    public OVChipkaart findByID(int ovChipkaartID) {
         String query = "SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?";
 
         try {
