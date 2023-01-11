@@ -24,14 +24,12 @@ import java.util.List;
  */
 public class Main {
     Reiziger sietske;
-//    private static ReizigerDAO<Reiziger> reizigerDao;
 
     /**
      * The entry point of application.
      */
     public static void main(String[] args) {
         try {
-//            reizigerDAO = new ReizigerDAO<>();
             new Main();
 
         } catch (Exception exc) {
@@ -51,10 +49,10 @@ public class Main {
     }
 
     public void testController(Connection conn) throws SQLException {
-        ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(conn);
-        ProductDAOPsql productDAOPsql = new ProductDAOPsql(conn);
-        OVChipkaartDAOPsql ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
-        AdresDAOPsql adresDAOPsql = new AdresDAOPsql(conn);
+        ReizigerDAO reizigerDAOPsql = new ReizigerDAOPsql(conn);
+        ProductDAO productDAOPsql = new ProductDAOPsql(conn);
+        OVChipkaartDAO ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
+        AdresDAO adresDAOPsql = new AdresDAOPsql(conn);
 
 
 
@@ -126,7 +124,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testAdresDAO(ReizigerDAOPsql reizigerDAOPsql, AdresDAOPsql adresDAOPsql) {
+    private void testAdresDAO(ReizigerDAO reizigerDAOPsql, AdresDAO adresDAOPsql) {
         try {
             sout("\n---------- Test AdresDAO -------------");
             sout("[Test] 1 [adresDAO.getAdresByID()] adres_id = 1");
@@ -178,7 +176,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testProductDAO(ProductDAOPsql productDAO) {
+    private void testProductDAO(ProductDAO productDAO) {
         sout("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         sout("\n---------- Test testProductDAO -------------");
         Product newProduct;
@@ -187,9 +185,9 @@ public class Main {
             newProduct = new Product("gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
             sout("[Test] [save] productDAO.save() [RESULT] = " + (productDAO.save(newProduct) == true));
 
-            sout("[Test] productDAO.findAll() geeft de volgende reizigers:" + productDAO.findAll().toString());
+            sout("[Test] productDAO.findAll() geeft de volgende producten:" + productDAO.findAll().toString());
 
-            sout("[Test] productDAO.findByID() geeft de volgende reizigers:" + productDAO.findByID(newProduct));
+            sout("[Test] productDAO.findByID() geeft de volgende producten:" + productDAO.findByID(1));
 
             sout("[Test] [update] productDAO.update() [RESULT] = " + productDAO.update(newProduct));
 
@@ -205,7 +203,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAOPsql, AdresDAOPsql adresDAOPsql) throws SQLException {
+    private void testOVChipkaartDAO(OVChipkaartDAO ovChipkaartDAOPsql, AdresDAO adresDAOPsql) throws SQLException {
         sout("\n---------- Test ovChipkaartDAO -------------");
         LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
 
@@ -230,7 +228,7 @@ public class Main {
         }
 
     }
-    private void testScenario(ReizigerDAOPsql reizigerDAOPsql, OVChipkaartDAOPsql ovChipkaartDAOPsql, AdresDAOPsql adresDAOPsql, ProductDAOPsql productDAO)
+    private void testScenario(ReizigerDAO reizigerDAOPsql, OVChipkaartDAO ovChipkaartDAOPsql, AdresDAO adresDAOPsql, ProductDAO productDAO)
             throws SQLException {
         sout("---------- Test testScenario -------------");
 
@@ -247,7 +245,7 @@ public class Main {
         sout("+ saving scenarioOVChipkaart");
         ovChipkaartDAOPsql.save(scenarioOVChipkaart);
 
-        ArrayList<Product> alleProducten = productDAO.findAll();
+        ArrayList<Product> alleProducten = (ArrayList<Product>) productDAO.findAll();
 
         Product Product0 = alleProducten.get(0);
         Product Product1 = alleProducten.get(1);

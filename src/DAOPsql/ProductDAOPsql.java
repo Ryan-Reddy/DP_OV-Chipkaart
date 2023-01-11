@@ -194,11 +194,11 @@ public class ProductDAOPsql implements ProductDAO {
      * @param product the product
      * @return informatie over het product, of null.
      */
-    public Product findByID(Product product) {
+    public Product findByID(int id) {
         String query = "SELECT * FROM product WHERE product_nummer = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, 4);
+            ps.setInt(1, id);
 //            ps.setInt(1, product.getId());
 
             ResultSet myResultSet = ps.executeQuery();

@@ -40,4 +40,5 @@ public interface ProductDAO {
     boolean delete(Product product);
     List<Product> findAll() throws SQLException;
 
+    Product findByID(int id);
 }
