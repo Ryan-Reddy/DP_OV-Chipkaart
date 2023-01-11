@@ -82,6 +82,7 @@ public class Product {
     public int getPrijs() {
         return prijs;
     }
+
     public ArrayList<OVChipkaart> getAlleKaartenMetProduct() {
         return alleKaartenMetProduct;
     }

@@ -220,8 +220,8 @@ public class Main {
         //      1. Je maakt een reiziger, koppelt daaraan een nieuwe OV-Chipkaart, en koppelt daaraan twee producten.
         int newId = reizigerDAOPsql.findAll().size() + 1;
         Reiziger scenarioReiziger = new Reiziger("Scenario", "to", "Win", LocalDate.of(1966, 9, 21), newId);
-        sout("+ saving scenarioReiziger");
-        reizigerDAOPsql.save(scenarioReiziger);
+
+        sout("+ saving scenarioReiziger");  reizigerDAOPsql.save(scenarioReiziger);
 
         int newChipkaartId = ovChipkaartDAOPsql.findAll().size() + 1;
         LocalDate today = java.time.LocalDate.now();
@@ -229,15 +229,20 @@ public class Main {
         sout("+ saving scenarioOVChipkaart");
         ovChipkaartDAOPsql.save(scenarioOVChipkaart);
 
+        sout(scenarioOVChipkaart.toString());
+
         ArrayList<Product> alleProducten = (ArrayList<Product>) productDAO.findAll();
 
-        Product Product0 = alleProducten.get(0);
-        Product Product1 = alleProducten.get(1);
+        Product product0 = alleProducten.get(0);
+        Product product1 = alleProducten.get(1);
 
         System.out.println("voegt product 0 toe aan kaart");
-        scenarioOVChipkaart.addProductAanKaart(Product0);
+        scenarioOVChipkaart.addProductAanKaart(product0);
+        sout(scenarioOVChipkaart.toString());
+        sout(product0.toString());
         System.out.println("voegt product 1 toe aan kaart");
-        scenarioOVChipkaart.addProductAanKaart(Product1);
+        scenarioOVChipkaart.addProductAanKaart(product1);
+        sout(scenarioOVChipkaart.toString());
 
         sout("+ updating scenarioOVChipkaart");
         ovChipkaartDAOPsql.update(scenarioOVChipkaart);

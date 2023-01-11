@@ -15,7 +15,6 @@ public class OVChipkaart {
 
     private int reiziger_id;
     private String status;
-
     private List<Product> productOpDezeKaart;
 
     /**
@@ -35,68 +34,27 @@ public class OVChipkaart {
         this.saldo = saldo;
         this.reiziger_id = reiziger_id;
     }
-
-    /**
-     * Gets status.
-     *
-     * @return the status
-     */
     public String getStatus() {
         // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
         return status;
     }
-
-    /**
-     * Gets klasse.
-     *
-     * @return the klasse
-     */
     public int getKlasse() {
         return klasse;
     }
-
-    /**
-     * Gets kaart nummer.
-     *
-     * @return the kaart nummer
-     */
     public int getKaart_nummer() {
         return kaart_nummer;
     }
-
-    /**
-     * Gets saldo.
-     *
-     * @return the saldo
-     */
     public Double getSaldo() {
         return saldo;
     }
-
-
-    /**
-     * Gets geldig tot.
-     *
-     * @return the geldig tot
-     */
     public Date getGeldig_tot() {
         return geldig_tot;
     }
-
-
-    /**
-     * Gets reiziger id.
-     *
-     * @return the reiziger id
-     */
     public int getReiziger_id() {
         return reiziger_id;
     }
-
-
     /**
-     * Remove product van kaart boolean.
-     *
+     * Remove product van kaart.
      * @param product the product
      * @return the boolean
      */
@@ -110,10 +68,8 @@ public class OVChipkaart {
             return false;
         }
     }
-
     /**
-     * Add product aan kaart boolean.
-     *
+     * Add product aan kaart.
      * @param product the product
      * @return the boolean
      */
@@ -127,15 +83,16 @@ public class OVChipkaart {
             return false;
         }
     }
-
-
     @Override
     public String toString() {
-        return "OVChipkaart{" +
+        String string = "OVChipkaart{" +
                 "kaart_nummer=" + kaart_nummer +
                 ", product_nummer=" + klasse +
                 ", status='" + saldo + '\'' +
-                ", last_update=" + geldig_tot +
-                '}';
+                ", last_update=" + geldig_tot +'}';
+        if (productOpDezeKaart != null) {
+            string += productOpDezeKaart.toString();
+        }
+        return string;
     }
 }
