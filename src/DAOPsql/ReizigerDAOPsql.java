@@ -13,25 +13,12 @@ import java.util.List;
  * The type Reiziger dao psql.
  */
 public class ReizigerDAOPsql implements ReizigerDAO {
-    /**
-     * The Local conn.
-     */
     static Connection localConn;
-    /**
-     * The Query.
-     */
     String query = null;
     private PreparedStatement myStatement;
-
-    /**
-     * Instantiates a new Reiziger dao psql.
-     *
-     * @param conn the conn
-     * @throws SQLException the sql exception
-     */
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
-        localConn = conn;
+        this.localConn = conn;
         // 2. Creeer een statement
         Statement myStatement = localConn.createStatement();
     }
@@ -46,20 +33,19 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         try {
             String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) VALUES (?, ?, ?, ?, ?) ";
 
-            PreparedStatement myStatement = localConn.prepareStatement(query);
-            myStatement.setInt(1, reiziger.getId());
-            myStatement.setString(2, reiziger.getVoorletters());
-            myStatement.setString(3, reiziger.getTussenvoegsel());
-            myStatement.setString(4, reiziger.getAchternaam());
-            myStatement.setDate(5, (Date) reiziger.getGeboortedatum());
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setInt(1, reiziger.getId());
+            ps.setString(2, reiziger.getVoorletters());
+            ps.setString(3, reiziger.getTussenvoegsel());
+            ps.setString(4, reiziger.getAchternaam());
+            ps.setDate(5, (Date) reiziger.getGeboortedatum());
 
 //            myStatement.setInt(6, reiziger.getAdres_id());
 
-            if (myStatement.executeUpdate() == 1) return true;
+            return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 
 
@@ -81,8 +67,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setDate(5, (Date) reiziger.getGeboortedatum());
             ps.setInt(6, reiziger.getId());
 
-            int result = ps.executeUpdate();
-            return result == 1;
+            return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -96,7 +81,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return the reiziger
      */
     @Override
-    public Reiziger findReizigerById(Reiziger reiziger) {
+    public Reiziger findById(Reiziger reiziger) {
         query = "SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE reiziger_id = ?";
 
         try {

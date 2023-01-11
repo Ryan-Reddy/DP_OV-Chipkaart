@@ -106,7 +106,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         try {
             while (myResultSet.next()) {
                 alleOVChipkaarten.add(new OVChipkaart(myResultSet.getInt("kaart_nummer"),
-                        myResultSet.getDate("geldig_tot"),
+                        myResultSet.getDate("geldig_tot").toLocalDate(),
                         myResultSet.getInt("klasse"),
                         myResultSet.getDouble("saldo"),
                         myResultSet.getInt("reiziger_id")));
@@ -128,7 +128,11 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
 
-            return new OVChipkaart(myResultSet.getInt("kaart_nummer"), myResultSet.getDate("geldig_tot"), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), myResultSet.getInt("reiziger_id"));
+            return new OVChipkaart(myResultSet.getInt("kaart_nummer"),
+                    myResultSet.getDate("geldig_tot").toLocalDate(),
+                    myResultSet.getInt("klasse"),
+                    myResultSet.getDouble("saldo"),
+                    myResultSet.getInt("reiziger_id"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -144,7 +148,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ResultSet myResultSet = ps.executeQuery();
 
             while (myResultSet.next()) {
-                alleOVChipkaarten.add(new OVChipkaart(myResultSet.getInt("kaart_nummer"), myResultSet.getDate("geldig_tot"), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), myResultSet.getInt("reiziger_id")));
+                alleOVChipkaarten.add(
+                        new OVChipkaart(myResultSet.getInt("kaart_nummer"),
+                        myResultSet.getDate("geldig_tot").toLocalDate(),
+                        myResultSet.getInt("klasse"),
+                        myResultSet.getDouble("saldo"),
+                        myResultSet.getInt("reiziger_id")));
             }
             return alleOVChipkaarten;
         } catch (SQLException e) {

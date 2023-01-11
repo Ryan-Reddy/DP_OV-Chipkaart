@@ -1,12 +1,8 @@
 package domain;
 
-import DAO.AdresDAO;
-import DAOPsql.AdresDAOPsql;
-
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
-
-import static domain.Reiziger.reizigerDAOPsql;
 
 /**
  * The type Ov chipkaart.
@@ -31,9 +27,10 @@ public class OVChipkaart {
      * @param saldo        the saldo
      * @param reiziger_id  the reiziger id
      */
-    public OVChipkaart(int kaart_nummer, java.util.Date geldig_tot, int klasse, Double saldo, int reiziger_id) {
+    public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, Double saldo, int reiziger_id) {
         this.kaart_nummer = kaart_nummer;
-        this.geldig_tot = (java.sql.Date) geldig_tot;
+        geldig_tot.plusYears(2);
+        this.geldig_tot = Date.valueOf(geldig_tot);
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger_id = reiziger_id;

@@ -3,6 +3,10 @@ package DAO;
 import domain.Adres;
 import domain.OVChipkaart;
 
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * The interface Ov chipkaart dao.
  */
@@ -38,4 +42,6 @@ public interface OVChipkaartDAO {
      * @return the ov chipkaart
      */
     OVChipkaart findByOVChipkaartID(int ovChipkaartID);
+
+    List<OVChipkaart> findAll() throws SQLException;
 }

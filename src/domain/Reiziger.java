@@ -53,12 +53,10 @@ public class Reiziger {
      * @throws SQLException the sql exception
      */
     public Reiziger(String voorletters, String tussenvoegsel, String achternaam, LocalDate geboortedatum) throws SQLException {
-        this.id = reizigerDAOPsql.findAll().size() + 1;
         this.voorletters = voorletters;
         this.tussenvoegsel = tussenvoegsel;
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
-//        reizigerDAOPsql.save(this);
         Adres newAdres = new Adres();
         this.adres_id = newAdres.getAdres_ID();
     }

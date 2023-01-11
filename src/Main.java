@@ -1,4 +1,6 @@
 import DAO.AdresDAO;
+import DAO.OVChipkaartDAO;
+import DAO.ProductDAO;
 import DAO.ReizigerDAO;
 import DAOPsql.AdresDAOPsql;
 import DAOPsql.OVChipkaartDAOPsql;
@@ -14,6 +16,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,12 +24,14 @@ import java.util.List;
  */
 public class Main {
     Reiziger sietske;
+//    private static ReizigerDAO<Reiziger> reizigerDao;
 
     /**
      * The entry point of application.
      */
     public static void main(String[] args) {
         try {
+//            reizigerDAO = new ReizigerDAO<>();
             new Main();
 
         } catch (Exception exc) {
@@ -38,13 +43,12 @@ public class Main {
         Adres adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
         sietske.setAdres_id(adresSietske.getAdres_ID());
 
+
         OVChipkaart newOvChipKaart;
         Connection conn = getConnection();
         testController(conn);
         closeConnection(conn);
     }
-
-
 
     public void testController(Connection conn) throws SQLException {
         ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(conn);
@@ -52,11 +56,14 @@ public class Main {
         OVChipkaartDAOPsql ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
         AdresDAOPsql adresDAOPsql = new AdresDAOPsql(conn);
 
+
+
         // TESTS:
         testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
-        testAdresDAO(adresDAOPsql, reizigerDAOPsql, adresDAOPsql);
+        testAdresDAO(reizigerDAOPsql, adresDAOPsql);
         testOVChipkaartDAO(ovChipkaartDAOPsql, adresDAOPsql);
         testProductDAO(productDAOPsql);
+        testScenario(reizigerDAOPsql, ovChipkaartDAOPsql, adresDAOPsql, productDAOPsql);
 
     }
 
@@ -119,11 +126,11 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testAdresDAO(AdresDAO adresDAO, ReizigerDAOPsql reizigerDAOPsql, AdresDAOPsql adresDAOPsql) {
+    private void testAdresDAO(ReizigerDAOPsql reizigerDAOPsql, AdresDAOPsql adresDAOPsql) {
         try {
             sout("\n---------- Test AdresDAO -------------");
             sout("[Test] 1 [adresDAO.getAdresByID()] adres_id = 1");
-            sout(adresDAO.getAdresByID(1).toString());
+            sout(adresDAOPsql.getAdresByID(1).toString());
 
             sout("[Test] 2 [adresDAO.getAdresByReiziger()]  geeft de volgende reizigers:");
             Reiziger testReiziger = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21));
@@ -134,23 +141,23 @@ public class Main {
             sout("[Test] 4 [save] adresDAO.save()");
             adresDAOPsql.save(testReizigerAdres);
 
-            sout(adresDAO.getAdresByReiziger(testReiziger).toString());
+            sout(adresDAOPsql.getAdresByReiziger(testReiziger).toString());
             reizigerDAOPsql.delete(testReiziger);
 
             sout("[Test] 3 [adresDAO.findAll()] geeft de volgende reizigers:");
-            sout(adresDAO.findAll().toString());
-//        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findReizigerById(3).getAdres_id()));
+            sout(adresDAOPsql.findAll().toString());
+//        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findById(3).getAdres_id()));
 
             // crud tests
 
             sout("[Test] 5 [update] adresDAO.update()");
-            sout(String.valueOf(adresDAO.update(testReizigerAdres)));
+            sout(String.valueOf(adresDAOPsql.update(testReizigerAdres)));
 
             sout("[Test] 6 [delete] adresDAO.delete()");
-            sout(String.valueOf(adresDAO.delete(testReizigerAdres)));
+            sout(String.valueOf(adresDAOPsql.delete(testReizigerAdres)));
 
             sout("[Test] 7 [findAll] adresDAO.findAll()");
-            sout("[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAO.findAll().size());
+            sout("[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAOPsql.findAll().size());
 
 
             Reiziger testReizigerLive = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21));
@@ -198,42 +205,72 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAO, AdresDAOPsql adresDAOPsql) throws SQLException {
+    private void testOVChipkaartDAO(OVChipkaartDAOPsql ovChipkaartDAOPsql, AdresDAOPsql adresDAOPsql) throws SQLException {
         sout("\n---------- Test ovChipkaartDAO -------------");
-        Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
-        OVChipkaart newOvChipKaart = new OVChipkaart(adresDAOPsql.findAll().size() + 2, date, 1, 10.00, 5);
+        LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
+
+        int kaartNum = adresDAOPsql.findAll().size() + 1;
+        OVChipkaart newOvChipKaart = new OVChipkaart(kaartNum, geldig_tot, 1, 10.00, 5);
 
         try {
             // TODO schrijf testOVCHIPKAART TEST
 
 
-            sout("[Test] [save] ovChipkaartDAO.save() with kaart nummer: " + newOvChipKaart.getKaart_nummer() + " [RESULT] = " + ovChipkaartDAO.save(newOvChipKaart));
+            sout("[Test] [save] ovChipkaartDAO.save() with kaart nummer: " + newOvChipKaart.getKaart_nummer() + " [RESULT] = " + ovChipkaartDAOPsql.save(newOvChipKaart));
 
-            sout("[Test] ovChipkaartDAO.findAll() geeft de volgende reizigers:" + " [RESULT] = \n" + ovChipkaartDAO.findAll().toString());
+            sout("[Test] ovChipkaartDAO.findAll() geeft de volgende reizigers:" + " [RESULT] = \n" + ovChipkaartDAOPsql.findAll().toString());
 
-            sout("[Test] ovChipkaartDAO.findByOVChipkaartID() geeft de volgende reizigers: [RESULT] = " + ovChipkaartDAO.findByOVChipkaartID(newOvChipKaart.getKaart_nummer()) + "\n");
+            sout("[Test] ovChipkaartDAO.findByOVChipkaartID() geeft de volgende reizigers: [RESULT] = " + ovChipkaartDAOPsql.findByOVChipkaartID(newOvChipKaart.getKaart_nummer()) + "\n");
 
-            sout("[Test] [update] ovChipkaartDAO.update()" + " [RESULT] = \n" + ovChipkaartDAO.update(newOvChipKaart));
+            sout("[Test] [update] ovChipkaartDAO.update()" + " [RESULT] = \n" + ovChipkaartDAOPsql.update(newOvChipKaart));
 
-            sout("[Test] [delete] ovChipkaartDAO.delete()" + " [RESULT] = \n" + ovChipkaartDAO.delete(newOvChipKaart));
+            sout("[Test] [delete] ovChipkaartDAO.delete()" + " [RESULT] = \n" + ovChipkaartDAOPsql.delete(newOvChipKaart));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+    private void testScenario(ReizigerDAOPsql reizigerDAOPsql, OVChipkaartDAOPsql ovChipkaartDAOPsql, AdresDAOPsql adresDAOPsql, ProductDAOPsql productDAO)
+            throws SQLException {
+        sout("---------- Test testScenario -------------");
 
-    private void testScenario() {
         // [13:23] Roelant Ossewaarde
         //      1. Je maakt een reiziger, koppelt daaraan een nieuwe OV-Chipkaart, en koppelt daaraan twee producten.
+        int newId = reizigerDAOPsql.findAll().size() + 1;
+        Reiziger scenarioReiziger = new Reiziger("Scenario", "to", "Win", LocalDate.of(1966, 9, 21), newId);
+        sout("+ saving scenarioReiziger");
+        reizigerDAOPsql.save(scenarioReiziger);
+
+        int newChipkaartId = ovChipkaartDAOPsql.findAll().size() + 1;
+        LocalDate today = java.time.LocalDate.now();
+        OVChipkaart scenarioOVChipkaart = new OVChipkaart(newChipkaartId, today, 1,20.32, newId);
+        sout("+ saving scenarioOVChipkaart");
+        ovChipkaartDAOPsql.save(scenarioOVChipkaart);
+
+        ArrayList<Product> alleProducten = productDAO.findAll();
+
+        Product Product0 = alleProducten.get(0);
+        Product Product1 = alleProducten.get(1);
+
+        System.out.println("voegt product 0 toe aan kaart");
+        scenarioOVChipkaart.addProductAanKaart(Product0);
+        System.out.println("voegt product 1 toe aan kaart");
+        scenarioOVChipkaart.addProductAanKaart(Product1);
+
+        sout("+ updating scenarioOVChipkaart");
+        ovChipkaartDAOPsql.update(scenarioOVChipkaart);
 
         //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
-        //      3. Je zoekt per product welke OV-chipkaarten daarbij horen.
-        //      4. Je zoekt per OV-chipkaart welke producten er op staanJe update een attribuut van het product (bijvoorbeeld de prijs).
-        //      5. Daarna laat je zien dat de verandering zowel op database-niveau als op Java-klasse-niveau zichtbaar is bij een willekeurige OV-chipkaart die dat product heeft geregistreerd.
-        //      6. Je hebt een print-statement voor een reiziger (reiziger1.toString() o.i.d.) dat de gekoppelde OV-chipkaarten en gekoppelde producten laat zien.
-        //
-        //          Je laat de tests zowel zien op de code die gebruik maakt van Hibernate als op de code die gebruik maakt van DAIO's
+        sout("+ deleting scenarioOVChipkaart");
+        ovChipkaartDAOPsql.delete(scenarioOVChipkaart);
 
+
+            //      3. Je zoekt per product welke OV-chipkaarten daarbij horen.
+            //      4. Je zoekt per OV-chipkaart welke producten er op staanJe update een attribuut van het product (bijvoorbeeld de prijs).
+            //      5. Daarna laat je zien dat de verandering zowel op database-niveau als op Java-klasse-niveau zichtbaar is bij een willekeurige OV-chipkaart die dat product heeft geregistreerd.
+            //      6. Je hebt een print-statement voor een reiziger (reiziger1.toString() o.i.d.) dat de gekoppelde OV-chipkaarten en gekoppelde producten laat zien.
+            //
+            //          Je laat de tests zowel zien op de code die gebruik maakt van Hibernate als op de code die gebruik maakt van DAIO's
 
     }
     /**
