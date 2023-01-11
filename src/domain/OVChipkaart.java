@@ -102,7 +102,7 @@ public class OVChipkaart {
      */
     public boolean removeProductVanKaart(Product product) {
         try {
-            product.removeKaartVanProductKaartenLijst(this);
+            product.verwijderKaart(this);
             this.productOpDezeKaart = null;
             return true;
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class OVChipkaart {
      */
     public boolean addProductAanKaart(Product product) {
         try {
-            product.voegKaartToeAanLijstKaartenMetProduct(this);
+            product.voegKaartToe(this);
             this.productOpDezeKaart.add(product);
             return true;
         } catch (Exception e) {

@@ -41,7 +41,6 @@ public class Main {
         Adres adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
         sietske.setAdres_id(adresSietske.getAdres_ID());
 
-
         OVChipkaart newOvChipKaart;
         Connection conn = getConnection();
         testController(conn);
@@ -55,14 +54,10 @@ public class Main {
         // TESTS:
         // TODO: uncomment -->
 //        testReizigerDAO(reizigerDAOPsql); // dependency injection van de connectie
-        // TODO: uncomment -->
 //        testOVChipkaartDAO(ovChipkaartDAOPsql, adresDAOPsql);
-        // TODO: uncomment -->
 //        testAdresDAO(reizigerDAOPsql, adresDAOPsql);
-        // TODO: uncomment -->
-        testProductDAO(productDAOPsql);
-        // TODO: uncomment -->
-//        testScenario(reizigerDAOPsql, ovChipkaartDAOPsql, adresDAOPsql, productDAOPsql);
+//        testProductDAO(productDAOPsql);
+        testScenario(reizigerDAOPsql, ovChipkaartDAOPsql, adresDAOPsql, productDAOPsql);
     }
     private void closeConnection(Connection conn) throws SQLException {
         try {
@@ -217,7 +212,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
     private void testScenario(ReizigerDAO reizigerDAOPsql, OVChipkaartDAO ovChipkaartDAOPsql, AdresDAO adresDAOPsql, ProductDAO productDAO)
             throws SQLException {
         sout("---------- Test testScenario -------------");

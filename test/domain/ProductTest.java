@@ -25,7 +25,7 @@
 //                0, "saldo", 0, List.of(new Product(0, "naam", "beschrijving", 0)));
 //
 //        // Run the test
-//        final boolean result = productUnderTest.voegKaartToeAanLijstKaartenMetProduct(ovChipkaart);
+//        final boolean result = productUnderTest.voegKaartToe(ovChipkaart);
 //
 //        // Verify the results
 //        assertThat(result).isFalse();
@@ -38,7 +38,7 @@
 //                0, "saldo", 0, List.of(new Product(0, "naam", "beschrijving", 0)));
 //
 //        // Run the test
-//        final boolean result = productUnderTest.verwijderKaartUitLijstKaartenMetProduct(ovChipkaart);
+//        final boolean result = productUnderTest.verwijderKaart(ovChipkaart);
 //
 //        // Verify the results
 //        assertThat(result).isFalse();
@@ -51,7 +51,7 @@
 //                0, "saldo", 0, List.of(new Product(0, "naam", "beschrijving", 0)));
 //
 //        // Run the test
-//        final boolean result = productUnderTest.removeKaartVanProductKaartenLijst(ovChipkaart);
+//        final boolean result = productUnderTest.verwijderKaart(ovChipkaart);
 //
 //        // Verify the results
 //        assertThat(result).isFalse();
