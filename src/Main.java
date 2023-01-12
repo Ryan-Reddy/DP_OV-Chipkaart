@@ -55,8 +55,8 @@ public class Main {
         // TODO: uncomment -->
 
         testReizigerDAO(reizigerDAOPsql, ovChipkaartDAOPsql, adresDAOPsql); // dependency injection van de connectie
-        testOVChipkaartDAO(ovChipkaartDAOPsql, adresDAOPsql);
         testAdresDAO(reizigerDAOPsql, adresDAOPsql);
+        testOVChipkaartDAO(ovChipkaartDAOPsql, adresDAOPsql);
         testProductDAO(productDAOPsql);
         testScenario(reizigerDAOPsql, ovChipkaartDAOPsql, adresDAOPsql, productDAOPsql);
     }
@@ -114,7 +114,7 @@ public class Main {
         LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
 
         int kaartNum = adresDAOPsql.findAll().size() + 1;
-        OVChipkaart newOvChipKaart = new OVChipkaart(kaartNum, geldig_tot, 1, 10.00, 5);
+        OVChipkaart newOvChipKaart = new OVChipkaart(kaartNum, geldig_tot, 1, 10.00, sietske);
 
         try {
             // TODO schrijf testOVCHIPKAART TEST
@@ -169,7 +169,7 @@ public class Main {
             // delete
             sout("[Test] 6 [delete] adresDAO.delete()");
             sout(String.valueOf(adresDAOPsql.delete(testReizigerAdres)));
-            //        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findById(3).getAdres_id()));
+            //        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findByID(3).getAdres_id()));
 
             sout("[Test] 7 [findAll] adresDAO.findAll()");
             sout("[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAOPsql.findAll().size());
@@ -231,7 +231,7 @@ public class Main {
         sout("## nieuwe scenarioOVChipkaart, gelijk gekoppeld aan de newReizigerID");
         int newChipkaartId = ovChipkaartDAOPsql.findAll().size() + 1;
         LocalDate today = java.time.LocalDate.now();
-        OVChipkaart scenarioOVChipkaart = new OVChipkaart(newChipkaartId, today, 1,20.32, newReizigerID);
+        OVChipkaart scenarioOVChipkaart = new OVChipkaart(newChipkaartId, today, 1,20.32, scenarioReiziger);
         sout("+ saving scenarioOVChipkaart");
         ovChipkaartDAOPsql.save(scenarioOVChipkaart);
 

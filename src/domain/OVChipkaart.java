@@ -13,7 +13,7 @@ public class OVChipkaart {
     private int klasse;
     private Double saldo;
 
-    private int reiziger_id;
+    private Reiziger reiziger;
     private String status;
     private List<Product> productOpDezeKaart;
 
@@ -26,7 +26,7 @@ public class OVChipkaart {
      * @param saldo        the saldo
      * @param reiziger_id  the reiziger id
      */
-    public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, Double saldo, int reiziger_id) {
+    public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger) {
         this.kaart_nummer = kaart_nummer;
         geldig_tot.plusYears(2);
         this.geldig_tot = Date.valueOf(geldig_tot);
@@ -49,9 +49,6 @@ public class OVChipkaart {
     }
     public Date getGeldig_tot() {
         return geldig_tot;
-    }
-    public int getReiziger_id() {
-        return reiziger_id;
     }
     /**
      * Remove product van kaart.

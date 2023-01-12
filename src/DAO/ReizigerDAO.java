@@ -20,7 +20,7 @@ public interface ReizigerDAO  {
     boolean save(Reiziger reiziger) throws SQLException;
     boolean update(Reiziger reiziger) throws SQLException;
     boolean delete(Reiziger reiziger) throws SQLException;
-    Reiziger findById(int reizigerID) throws SQLException;
+    Reiziger findByID(int reizigerID) throws SQLException;
     List<Reiziger> findByGbDatum(String datum) throws SQLException;
     List<Reiziger> findAll() throws SQLException;
     int getAdresId(int reizigerId) throws SQLException;

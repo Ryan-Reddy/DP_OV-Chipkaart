@@ -24,10 +24,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         this.localConn = conn;
-        // 2. Creeer een statement
-        Statement myStatement = localConn.createStatement();
-        this.adresDAO = adresDAO;
-
     }
     /**
      * @param reiziger de reiziger aanmaken, wijzigingen opslaan
@@ -94,7 +90,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return the reiziger
      */
     @Override
-    public Reiziger findById(int ID) {
+    public Reiziger findByID(int ID) {
         try {
             PreparedStatement psReiziger =
                     localConn.prepareStatement("SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, " +
@@ -153,7 +149,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         }
         return alleReizigers;
     }
-
     /**
      * @return lijst met alle Reizigers in de db
      */
@@ -184,7 +179,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         }
         return alleReizigers;
     }
-
     @Override
     public int getAdresId(int reizigerId) throws SQLException {
         // Adres_ID ophalen;
@@ -199,7 +193,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public void setAdresDAO(AdresDAO adresDAO) {
         this.adresDAO = adresDAO;
     }
-
     public void setOvChipkaartDAO(OVChipkaartDAO ovChipkaartDAO) {
         this.ovChipkaartDAO = ovChipkaartDAO;
     }

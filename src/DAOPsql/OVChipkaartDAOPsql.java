@@ -1,6 +1,8 @@
 package DAOPsql;
 
 import DAO.OVChipkaartDAO;
+import DAO.ProductDAO;
+import DAO.ReizigerDAO;
 import domain.OVChipkaart;
 import domain.Reiziger;
 
@@ -13,7 +15,9 @@ import java.util.List;
  */
 public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     private static Connection localConn;
-    private Statement myStatement;
+    ReizigerDAO reizigerDAO;
+    ProductDAO productDAO;
+
 
     /**
      * Instantiates a new Ov chipkaart dao psql.
@@ -24,28 +28,28 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     public OVChipkaartDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
-        // 2. Creeer een statement
-        Statement myStatement = localConn.createStatement();
     }
 
     public boolean save(OVChipkaart ovChipkaart) {
-        String query = "INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) " + "VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) "
+                + "VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, ovChipkaart.getKaart_nummer());
+            int ovChipkaart_getID = ovChipkaart.getKaart_nummer();
+            if (ovChipkaart_getID == 0) {
+                ovChipkaart_getID = findAll().size()+1;
+            }
+            ps.setInt(1, ovChipkaart_getID);
             ps.setDate(2, ovChipkaart.getGeldig_tot());
             ps.setInt(3, ovChipkaart.getKlasse());
             ps.setDouble(4, ovChipkaart.getSaldo());
             ps.setInt(5, ovChipkaart.getReiziger_id());
             return ps.executeUpdate() == 1;
-            // TODO schrijf functie product_nummer ???
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
-
     @Override
     public boolean update(OVChipkaart ovChipkaart) {
         String query = "UPDATE ov_chipkaart SET kaart_nummer = ?, geldig_tot = ?, klasse = ?, saldo = ?, reiziger_id = ? WHERE kaart_nummer = ?";
@@ -64,11 +68,6 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         }
 
     }
-
-    /**
-     * @param ovChipkaart
-     * @return
-     */
     @Override
     public boolean delete(OVChipkaart ovChipkaart) {
         String query = "DELETE FROM ov_chipkaart WHERE kaart_nummer = ?";
@@ -83,10 +82,44 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
 
     /**
-     * Find all object.
+     * uses the input int ID to find OVChipkaart, will return just one.
+     * @param ovChipkaartID
+     * @return
+     */
+    public OVChipkaart findByID(int ovChipkaartID) {
+        String query = "SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?";
+
+        try {
+            PreparedStatement ps = localConn.prepareStatement(query);
+            ps.setInt(1, ovChipkaartID);
+
+            ResultSet myResultSet = ps.executeQuery();
+            myResultSet.next();
+
+            OVChipkaart ovChipkaart = new OVChipkaart(myResultSet.getInt("kaart_nummer"),
+                    myResultSet.getDate("geldig_tot").toLocalDate(),
+                    myResultSet.getInt("klasse"),
+                    myResultSet.getDouble("saldo"),
+                    reizigerDAO.findByID(myResultSet.getInt("reiziger_id"))
+            );
+// TODO PRODUCTEN connectie implementeren:
+
+//            productDAO.
+//            ovChipkaart.addProductAanKaart();
+
+
+        return ovChipkaart;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Find all OVChipkaarten.
      *
-     * @return the object
-     * @throws SQLException the sql exception
+     * @return the OVChipkaarten as ArrayList
+     * @throws SQLException
      */
     public ArrayList<OVChipkaart> findAll() throws SQLException {
         ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
@@ -101,7 +134,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                         myResultSet.getDate("geldig_tot").toLocalDate(),
                         myResultSet.getInt("klasse"),
                         myResultSet.getDouble("saldo"),
-                        myResultSet.getInt("reiziger_id")));
+                        reizigerDAO.findByID(myResultSet.getInt("reiziger_id"))
+
+                ));
             }
             return alleOVChipkaarten;
         } catch (SQLException e) {
@@ -109,26 +144,6 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         }
     }
 
-
-    public OVChipkaart findByID(int ovChipkaartID) {
-        String query = "SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?";
-
-        try {
-            PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, ovChipkaartID);
-
-            ResultSet myResultSet = ps.executeQuery();
-            myResultSet.next();
-
-            return new OVChipkaart(myResultSet.getInt("kaart_nummer"),
-                    myResultSet.getDate("geldig_tot").toLocalDate(),
-                    myResultSet.getInt("klasse"),
-                    myResultSet.getDouble("saldo"),
-                    myResultSet.getInt("reiziger_id"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public List<OVChipkaart> findByReiziger(Reiziger reiziger) {
         String query = "SELECT * FROM ov_chipkaart WHERE reiziger_id = ?";
@@ -145,7 +160,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                         myResultSet.getDate("geldig_tot").toLocalDate(),
                         myResultSet.getInt("klasse"),
                         myResultSet.getDouble("saldo"),
-                        myResultSet.getInt("reiziger_id")));
+                        reizigerDAO.findByID(myResultSet.getInt("reiziger_id")
+                        )));
             }
             return alleOVChipkaarten;
         } catch (SQLException e) {
