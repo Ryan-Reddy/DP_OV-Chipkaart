@@ -14,6 +14,6 @@ public interface AdresDAO {
     Adres getAdresByID(int adres_id);
     boolean update(Adres adres);
     boolean delete(Adres adres);
-    Adres getAdresByReiziger(Reiziger reiziger);
+    Adres findByReiziger(Reiziger reiziger);
     List<Adres> findAll() throws SQLException;
 }

@@ -130,10 +130,10 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         }
     }
 
-    public List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException {
-
+    public List<OVChipkaart> findByReiziger(Reiziger reiziger) {
         String query = "SELECT * FROM ov_chipkaart WHERE reiziger_id = ?";
-        List<OVChipkaart> alleOVChipkaarten = null;
+        List<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
+
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, reiziger.getId());

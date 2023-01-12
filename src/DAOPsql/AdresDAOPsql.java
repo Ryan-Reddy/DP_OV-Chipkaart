@@ -132,8 +132,8 @@ public class AdresDAOPsql implements AdresDAO {
      * @param reiziger
      * @return
      */
-    public Adres getAdresByReiziger(Reiziger reiziger) {
-        Adres adres = getAdresByID(reiziger.getAdres_id());
+    public Adres findByReiziger(Reiziger reiziger) {
+        Adres adres = reiziger.getAdres();
         return adres;
     }
 
