@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface ReizigerDAO  {
 
-    boolean save(Reiziger reiziger) throws SQLException;
+    Reiziger save(Reiziger reiziger) throws SQLException;
     boolean update(Reiziger reiziger) throws SQLException;
     boolean delete(Reiziger reiziger) throws SQLException;
     Reiziger findByID(int reizigerID) throws SQLException;
@@ -26,4 +26,5 @@ public interface ReizigerDAO  {
     int getAdresId(int reizigerId) throws SQLException;
     void setAdresDAO(AdresDAO adresDAO);
     void setOvChipkaartDAO(OVChipkaartDAO ovChipkaartDAOPsql);
+    void setProductDAOPsql(ProductDAO productDAOPsql);
 }

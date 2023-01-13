@@ -1,6 +1,9 @@
 package DAOPsql;
 
+import DAO.AdresDAO;
+import DAO.OVChipkaartDAO;
 import DAO.ProductDAO;
+import DAO.ReizigerDAO;
 import domain.OVChipkaart;
 import domain.Product;
 import domain.productStatusEnum;
@@ -17,6 +20,10 @@ import java.util.List;
 public class ProductDAOPsql implements ProductDAO {
     private static Connection localConn;
     private Statement myStatement;
+    private ReizigerDAO reizigerDAO;
+    private ProductDAO productDAO;
+    private AdresDAO adresDAO;
+    private OVChipkaartDAO ovChipkaartDAO;
 
     /**
      * Instantiates a new Product dao psql.
@@ -214,6 +221,12 @@ public class ProductDAOPsql implements ProductDAO {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @param ovChipkaartDAOPsql
+     */
+    @Override
+    public void setOVChipkaartDAO(OVChipkaartDAO ovChipkaartDAOPsql) { this.ovChipkaartDAO = ovChipkaartDAOPsql; }
 
     /**
      * Find all array list.

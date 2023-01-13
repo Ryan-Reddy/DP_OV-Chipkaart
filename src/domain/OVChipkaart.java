@@ -2,6 +2,7 @@ package domain;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,8 @@ public class OVChipkaart {
         this.geldig_tot = Date.valueOf(geldig_tot);
         this.klasse = klasse;
         this.saldo = saldo;
-        this.reiziger_id = reiziger_id;
+        this.reiziger = reiziger;
+        productOpDezeKaart = new ArrayList<>();
     }
     public String getStatus() {
         // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
@@ -91,5 +93,13 @@ public class OVChipkaart {
             string += productOpDezeKaart.toString();
         }
         return string;
+    }
+
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
 }

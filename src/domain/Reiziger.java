@@ -154,11 +154,14 @@ public class Reiziger {
 
     @Override
     public String toString() {
-        String s = "#" + id + ": " + voorletters + " ";
+        String s = "ID#" + id + ": " + voorletters + " ";
         if (!tussenvoegsel.isBlank()) {s += tussenvoegsel + " ";}
-        s += achternaam + " " + geboortedatum + " {adres= " + adres.toString() + " } {kaarten= " ;
-        if(ovChipkaarts != null) return s + ovChipkaarts.size() + " }";
-        return s + "null }";
+        s += achternaam + " " + geboortedatum + " } {kaarten= " ;
+        if(ovChipkaarts != null) s = String.valueOf(+ ovChipkaarts.size());
+        s += "} {adres= ";
+        if(adres != null) {s = adres.toString();};
+
+        return s + " }";
     }
 
 }

@@ -36,7 +36,12 @@ public class AdresDAOPsql implements AdresDAO {
 
             // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, adres.getAdres_ID());
+            int adres_getID = adres.getAdres_ID();
+            if (adres_getID == 0) {
+                adres_getID = findAll().size()+1;
+            }
+
+            ps.setInt(1, adres_getID);
             ps.setString(2, adres.getPostcode());
             ps.setString(3, adres.getHuisnummer());
             ps.setString(4, adres.getStraat());

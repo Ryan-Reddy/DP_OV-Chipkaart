@@ -53,6 +53,8 @@ public class Product {
         this.beschrijving = beschrijving;
         this.prijs = prijs;
         this.product_nummer = product_nummer;
+        alleKaartenMetProduct = new ArrayList<>();
+
     }
     public boolean voegKaartToe(OVChipkaart ovChipkaart) {
         try {

@@ -2,6 +2,7 @@ package DAOPsql;
 
 import DAO.AdresDAO;
 import DAO.OVChipkaartDAO;
+import DAO.ProductDAO;
 import DAO.ReizigerDAO;
 import domain.Adres;
 import domain.OVChipkaart;
@@ -19,18 +20,24 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     static Connection localConn;
     private AdresDAO adresDAO;
     private OVChipkaartDAO ovChipkaartDAO;
+    private ReizigerDAO reizigerDAO;
+    private ProductDAO productDAO;
     String query = null;
     private PreparedStatement myStatement;
+
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         this.localConn = conn;
+//
+//        this.adresDAO = new AdresDAOPsql(localConn);
+//        this.ovChipkaartDAO = new OVChipkaartDAOPsql(localConn);
     }
     /**
      * @param reiziger de reiziger aanmaken, wijzigingen opslaan
      * @return het opslaan gelukt?
      */
     @Override
-    public boolean save(Reiziger reiziger) {
+    public Reiziger save(Reiziger reiziger) {
         try {
             String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) VALUES (?, ?, ?, ?, ?) ";
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -43,7 +50,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setString(3, reiziger.getTussenvoegsel());
             ps.setString(4, reiziger.getAchternaam());
             ps.setDate(5, (Date) reiziger.getGeboortedatum());
-            return ps.executeUpdate() == 1;
+            return reiziger;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -74,8 +81,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public boolean delete(Reiziger reiziger) {
         try {
-            PreparedStatement ps = localConn.prepareStatement(query);
-            ps = localConn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?");
+            PreparedStatement ps = localConn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?");
             ps.setInt(1, reiziger.getId());
             ps.execute();
             return true;
@@ -90,7 +96,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return the reiziger
      */
     @Override
-    public Reiziger findByID(int ID) {
+    public Reiziger findByID(int ID) throws SQLException {
+
         try {
             PreparedStatement psReiziger =
                     localConn.prepareStatement("SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, " +
@@ -190,11 +197,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
         return myResultSet.getInt("adres_id");
     }
-    public void setAdresDAO(AdresDAO adresDAO) {
-        this.adresDAO = adresDAO;
-    }
-    public void setOvChipkaartDAO(OVChipkaartDAO ovChipkaartDAO) {
-        this.ovChipkaartDAO = ovChipkaartDAO;
-    }
+    @Override
+    public void setAdresDAO(AdresDAO adresDAO) { this.adresDAO = adresDAO; }
+    @Override
+    public void setOvChipkaartDAO(OVChipkaartDAO ovChipkaartDAO) { this.ovChipkaartDAO = ovChipkaartDAO; }
+    @Override
+    public void setProductDAOPsql(ProductDAO productDAOPsql) { this.productDAO = productDAOPsql; }
 
 }

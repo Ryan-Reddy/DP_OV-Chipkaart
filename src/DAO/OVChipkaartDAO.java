@@ -15,5 +15,9 @@ public interface OVChipkaartDAO {
     boolean delete(OVChipkaart ovChipkaart);
     OVChipkaart findByID(int ovChipkaartID);
     List<OVChipkaart> findAll() throws SQLException;
-    List<OVChipkaart> findByReiziger(Reiziger reiziger);
+    List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException;
+    void setReizigerDAO(ReizigerDAO reizigerDAO);
+    void setAdresDAO(AdresDAO adresDAO);
+
+    void setProductDAO(ProductDAO productDAO);
 }
