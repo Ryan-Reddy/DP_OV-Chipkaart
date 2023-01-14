@@ -39,18 +39,17 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public Reiziger save(Reiziger reiziger) {
         try {
-            String query = "INSERT INTO reiziger (reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum) VALUES (?, ?, ?, ?, ?) ";
+            String query = "INSERT INTO reiziger (voorletters, tussenvoegsel, achternaam, geboortedatum) " +
+                    "VALUES (?, ?, ?, ?) ";
             PreparedStatement ps = localConn.prepareStatement(query);
-            int reiziger_getID = reiziger.getId();
-            if (reiziger_getID == 0) {
-                reiziger_getID = findAll().size()+1;
-            }
-            ps.setInt(1, reiziger_getID);
-            ps.setString(2, reiziger.getVoorletters());
-            ps.setString(3, reiziger.getTussenvoegsel());
-            ps.setString(4, reiziger.getAchternaam());
-            ps.setDate(5, (Date) reiziger.getGeboortedatum());
-            return reiziger;
+
+            ps.setString(1, reiziger.getVoorletters());
+            ps.setString(2, reiziger.getTussenvoegsel());
+            ps.setString(3, reiziger.getAchternaam());
+            ps.setDate(4, reiziger.getGeboortedatum());
+
+            int newId = ps.executeUpdate();
+            return findByID(newId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

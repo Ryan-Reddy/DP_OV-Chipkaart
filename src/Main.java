@@ -89,6 +89,8 @@ public class Main {
             this.reizigerDAOPsql.setAdresDAO(adresDAOPsql);
             reizigerDAOPsql.setOvChipkaartDAO(ovChipkaartDAOPsql);
 
+            reizigerDAOPsql.save(new Reiziger("he","he","he",LocalDate.now() ));
+
             List<Reiziger> reizigers = reizigerDAOPsql.findAll();
             sout("----------\n[Test] [ReizigerDAO.findAll()] geeft aantal reizigers:" + reizigers.size() + "\n");
 

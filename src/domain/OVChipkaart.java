@@ -16,6 +16,15 @@ public class OVChipkaart {
 
     private Reiziger reiziger;
     private String status;
+
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
+    }
+
     private List<Product> productOpDezeKaart;
 
     /**
@@ -25,7 +34,7 @@ public class OVChipkaart {
      * @param geldig_tot   the geldig tot
      * @param klasse       the klasse
      * @param saldo        the saldo
-     * @param reiziger_id  the reiziger id
+     * @param reiziger  the reiziger
      */
     public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger) {
         this.kaart_nummer = kaart_nummer;
@@ -95,11 +104,4 @@ public class OVChipkaart {
         return string;
     }
 
-    public Reiziger getReiziger() {
-        return reiziger;
-    }
-
-    public void setReiziger(Reiziger reiziger) {
-        this.reiziger = reiziger;
-    }
 }

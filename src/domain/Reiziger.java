@@ -1,9 +1,9 @@
 package domain;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * The type Reiziger.
@@ -129,9 +129,7 @@ public class Reiziger {
      * @return the geboortedatum
      */
     public Date getGeboortedatum() {
-
-//        TODO: return geboortedatum;
-        return java.sql.Date.valueOf("1990-12-23");
+        return java.sql.Date.valueOf(geboortedatum);
     }
     public void setAdres(Adres adres) {
     }
