@@ -53,7 +53,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     }
     @Override
-    public boolean update(OVChipkaart ovChipkaart) {
+    public OVChipkaart update(OVChipkaart ovChipkaart) {
         String query = "UPDATE ov_chipkaart SET kaart_nummer = ?, geldig_tot = ?, klasse = ?, saldo = ?, reiziger_id = ? WHERE kaart_nummer = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -63,8 +63,10 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.setDouble(4, ovChipkaart.getSaldo());
             ps.setInt(5, ovChipkaart.getReiziger().getId());
             ps.setInt(6, ovChipkaart.getKaart_nummer());
+            ps.executeUpdate();
 
-            return ps.executeUpdate() == 1;
+            OVChipkaart ovChip = findByID(ovChipkaart.getKaart_nummer());
+            return ovChip;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -86,7 +88,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     /**
      * uses the input int ID to find OVChipkaart, will return just one.
      * @param ovChipkaartID
-     * @return
+     * @return OVChipkaart object
      */
     public OVChipkaart findByID(int ovChipkaartID) {
         try {
@@ -105,7 +107,6 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
 //            productDAO.
 //            ovChipkaart.addProductAanKaart();
-
 
         return ovChipkaart;
         } catch (SQLException e) {

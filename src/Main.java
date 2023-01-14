@@ -66,11 +66,11 @@ public class Main {
 
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 
-        testReizigerDAO(); // dependency injection van de connectie
-        testAdresDAO();
-        testOVChipkaartDAO();
-        testProductDAO();
-//        testScenario();
+//        testReizigerDAO(); // dependency injection van de connectie
+//        testAdresDAO();
+//        testOVChipkaartDAO();
+//        testProductDAO();
+        testScenario();
     }
     private void closeConnection(Connection conn) throws SQLException {
         try {
@@ -89,14 +89,13 @@ public class Main {
             this.reizigerDAOPsql.setAdresDAO(adresDAOPsql);
             reizigerDAOPsql.setOvChipkaartDAO(ovChipkaartDAOPsql);
 
-            reizigerDAOPsql.save(new Reiziger("he","he","he",LocalDate.now() ));
-
             List<Reiziger> reizigers = reizigerDAOPsql.findAll();
             sout("----------\n[Test] [ReizigerDAO.findAll()] geeft aantal reizigers:" + reizigers.size() + "\n");
 
             sout("----------\n[Test] [save] ReizigerDAO.save()");
             System.out.print("[Test] [save] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
-            reizigerDAOPsql.save(sietske);
+            Reiziger newSietske = reizigerDAOPsql.save(sietske);
+
             List<Reiziger> reizigersAfterSave = reizigerDAOPsql.findAll();
             sout(reizigersAfterSave.size() + " reizigers");
             if (reizigersAfterSave.size() > reizigers.size()) sout("----------\n[Test] [save] [SUCCESS]\n");
@@ -106,13 +105,13 @@ public class Main {
             String sietskeOudeAchternaam = sietske.getAchternaam();
             sout("[Test] [update] oude achternaam = " + sietskeOudeAchternaam);
             sietske.setAchternaam("anders");
-            reizigerDAOPsql.update(sietske);
-            sout("[Test] [update] [RESULT] nieuwe achternaam = " + sietske.getAchternaam());
-            sout("[Test] [update] [RESULT] nieuwe sietske.toString() = " + sietske.toString());
+            Reiziger updatedSietske = reizigerDAOPsql.update(newSietske);
+            sout("[Test] [update] [RESULT] nieuwe achternaam = " + newSietske.getAchternaam());
+            sout("[Test] [update] [RESULT] nieuwe sietske.toString() = " + newSietske);
 
             sout("\n----------\n[Test] [delete] ReizigerDAO.delete()");
             int preDeleteLijstSize = reizigerDAOPsql.findAll().size();
-            boolean succes = reizigerDAOPsql.delete(sietske);
+            boolean succes = reizigerDAOPsql.delete(newSietske);
             sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + reizigerDAOPsql.findAll().size() + " en was: " + preDeleteLijstSize);
             if (succes = true) {
                 sout("[Test] [delete] [SUCCESS] test geslaagd!");
@@ -238,17 +237,16 @@ public class Main {
         sout("---------- Test testScenario -------------");
 
         //      Je maakt een reiziger,
-        sout("## nieuwe scenarioReiziger, incl newReizigerID");
-        int newReizigerID = reizigerDAOPsql.findAll().size();
-        Reiziger scenarioReiziger = new Reiziger("Scenario", "to", "Win", LocalDate.of(1966, 9, 21), newReizigerID);
+        sout("----------\n## nieuwe scenarioReiziger, incl newReizigerID");
+        Reiziger scenarioReiziger = new Reiziger("Scenario", "to", "Win", LocalDate.of(1966, 9, 21));
         sout("+ saving scenarioReiziger: " + scenarioReiziger);
-        reizigerDAOPsql.save(scenarioReiziger);
+        Reiziger opgeslagenScenarioReiziger = reizigerDAOPsql.save(scenarioReiziger);
 
         //koppelt daaraan een nieuwe OV-Chipkaart,
-        sout("## nieuwe scenarioOVChipkaart, gelijk gekoppeld aan de newReizigerID");
+        sout("----------\n## nieuwe scenarioOVChipkaart, gelijk gekoppeld aan de newReizigerID");
         int newChipkaartId = ovChipkaartDAOPsql.findAll().size();
         LocalDate today = java.time.LocalDate.now();
-        OVChipkaart scenarioOVChipkaart = new OVChipkaart(newChipkaartId, today, 1,20.32, scenarioReiziger);
+        OVChipkaart scenarioOVChipkaart = new OVChipkaart(newChipkaartId, today, 1,20.32, opgeslagenScenarioReiziger);
         sout("+ saving scenarioOVChipkaart");
         ovChipkaartDAOPsql.save(scenarioOVChipkaart);
 
@@ -259,16 +257,16 @@ public class Main {
         Product product0 = alleProducten.get(0);
         Product product1 = alleProducten.get(1);
 
-        System.out.println("voegt product 0 toe aan kaart" + product0);
+        System.out.println("voegt product 0 toe aan kaart" + product0 + "\n----------");
         scenarioOVChipkaart.addProductAanKaart(product0);
         sout(scenarioOVChipkaart.toString());
         sout(product0.toString());
-        System.out.println("voegt product 1 toe aan kaart");
+        System.out.println("voegt product 1 toe aan kaart" + "\n----------");
         scenarioOVChipkaart.addProductAanKaart(product1);
         sout(scenarioOVChipkaart.toString());
 
         sout("+ updating scenarioOVChipkaart");
-        ovChipkaartDAOPsql.update(scenarioOVChipkaart);
+        OVChipkaart updatedOvChipkaart = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
 
         //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
         sout("----------\n[Test] [update] deleting scenarioOVChipkaart");

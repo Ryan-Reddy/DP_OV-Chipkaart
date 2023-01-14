@@ -59,7 +59,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return het updaten gelukt?
      */
     @Override
-    public boolean update(Reiziger reiziger) {
+    public Reiziger update(Reiziger reiziger) {
         try {
             String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? WHERE reiziger_id = ?";
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -68,7 +68,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setString(3, reiziger.getAchternaam());
             ps.setDate(4, (Date) reiziger.getGeboortedatum());
             ps.setInt(5, reiziger.getId());
-            return ps.executeUpdate() == 1;
+            ps.executeUpdate();
+
+            return findByID(reiziger.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -98,9 +98,9 @@ public class OVChipkaart {
                 ", product_nummer=" + klasse +
                 ", status='" + saldo + '\'' +
                 ", last_update=" + geldig_tot +'}';
-        if (productOpDezeKaart != null) {
-            string += productOpDezeKaart.toString();
-        }
+//        if (productOpDezeKaart != null) {
+//            string += productOpDezeKaart.toString();
+//        }
         return string;
     }
 

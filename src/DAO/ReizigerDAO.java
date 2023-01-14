@@ -18,7 +18,7 @@ import java.util.List;
 public interface ReizigerDAO  {
 
     Reiziger save(Reiziger reiziger) throws SQLException;
-    boolean update(Reiziger reiziger) throws SQLException;
+    Reiziger update(Reiziger reiziger) throws SQLException;
     boolean delete(Reiziger reiziger) throws SQLException;
     Reiziger findByID(int reizigerID) throws SQLException;
     List<Reiziger> findByGbDatum(String datum) throws SQLException;
