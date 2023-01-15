@@ -88,7 +88,7 @@ public class ProductDAOPsql implements ProductDAO {
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    product.setProduct_nummer(generatedKeys.getInt("kaart_nummer"));
+                    product.setProduct_nummer(generatedKeys.getInt("product_nummer"));
                 }
                 else {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
@@ -140,7 +140,7 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public boolean delete(Product product) {
         try {
-            PreparedStatement ps = localConn.prepareStatement("DELETE FROM product WHERE product_id = ?");
+            PreparedStatement ps = localConn.prepareStatement("DELETE FROM product WHERE product_nummer = ?");
             ps.setInt(1, product.getId());
 
             int response = ps.executeUpdate();

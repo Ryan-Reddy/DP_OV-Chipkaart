@@ -67,9 +67,9 @@ public class Main {
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 
         testReizigerDAO(); // dependency injection van de connectie
-//        testAdresDAO();
-//        testOVChipkaartDAO();
-//        testProductDAO();
+        testAdresDAO();
+        testOVChipkaartDAO();
+        testProductDAO();
         testScenario();
     }
     private void closeConnection(Connection conn) throws SQLException {
@@ -111,13 +111,8 @@ public class Main {
 
             sout("\n----------\n[Test] [delete] ReizigerDAO.delete()");
             int preDeleteLijstSize = reizigerDAOPsql.findAll().size();
-//            boolean succes = reizigerDAOPsql.delete(newSietske);
-//            sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + reizigerDAOPsql.findAll().size() + " en was: " + preDeleteLijstSize);
-//            if (succes = true) {
-//                sout("[Test] [delete] [SUCCESS] test geslaagd!");
-//            } else {
-//                sout("[Test] [delete] [GEFAALD] test gefaald!");
-//            }
+            boolean succes = reizigerDAOPsql.delete(newSietske);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

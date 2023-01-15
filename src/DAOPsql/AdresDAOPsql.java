@@ -49,7 +49,7 @@ public class AdresDAOPsql implements AdresDAO {
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    adres.setAdres_ID(generatedKeys.getInt("kaart_nummer"));
+                    adres.setAdres_ID(generatedKeys.getInt("adres_id"));
                 }
                 else {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
