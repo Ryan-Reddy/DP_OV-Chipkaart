@@ -55,6 +55,8 @@ public class AdresDAOPsql implements AdresDAO {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
+            ps.close();
+
             return adres;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -62,11 +64,9 @@ public class AdresDAOPsql implements AdresDAO {
     }
 
     @Override
-    public boolean update(Adres adres) {
+    public Adres update(Adres adres) {
         String query = "UPDATE adres SET adres_id =?, postcode =?, huisnummer =?, straat =?, woonplaats =?, reiziger_id =? WHERE reiziger_id = ?";
         try {
-
-            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, adres.getAdres_ID());
             ps.setString(2, adres.getPostcode());
@@ -76,12 +76,12 @@ public class AdresDAOPsql implements AdresDAO {
             ps.setInt(6, adres.getReiziger_id());
             ps.setInt(7, adres.getReiziger_id());
 
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
+            else System.out.println("Update successful: " + response + " rijen gewijzigd.");
+            ps.close();
 
-            if (ps.executeUpdate() == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            return findByID(adres.getAdres_ID());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,9 +97,12 @@ public class AdresDAOPsql implements AdresDAO {
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, adres.getAdres_ID());
-            ps.execute();
-            return true;
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
+            else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
+            ps.close();
 
+            return true;
     } catch (SQLException e) {
         throw new RuntimeException(e);
     }
@@ -110,7 +113,7 @@ public class AdresDAOPsql implements AdresDAO {
      * @return
      */
     @Override
-    public Adres getAdresByID(int adres_id_toFIND) {
+    public Adres findByID(int adres_id_toFIND) {
         String query = "SELECT * FROM adres WHERE adres_id = ?";
 
         try {

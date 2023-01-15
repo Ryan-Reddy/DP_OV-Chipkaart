@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ProductDAO {
     Product save(Product product);
-    boolean update(Product product);
+    Product update(Product product);
     boolean delete(Product product);
     List<Product> findAll() throws SQLException;
     Product findByID(int id);

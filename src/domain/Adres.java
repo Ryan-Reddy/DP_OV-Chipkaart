@@ -192,7 +192,7 @@ public class Adres {
 
     @Override
     public String toString() {
-        Adres adres = adresDAOPsql.getAdresByID(adres_ID);
+        Adres adres = adresDAOPsql.findByID(adres_ID);
 
         return "Adres{ # " + adres_ID +
                 " " + postcode + '\'' +

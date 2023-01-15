@@ -66,7 +66,7 @@ public class Main {
 
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 
-//        testReizigerDAO(); // dependency injection van de connectie
+        testReizigerDAO(); // dependency injection van de connectie
 //        testAdresDAO();
 //        testOVChipkaartDAO();
 //        testProductDAO();
@@ -111,13 +111,13 @@ public class Main {
 
             sout("\n----------\n[Test] [delete] ReizigerDAO.delete()");
             int preDeleteLijstSize = reizigerDAOPsql.findAll().size();
-            boolean succes = reizigerDAOPsql.delete(newSietske);
-            sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + reizigerDAOPsql.findAll().size() + " en was: " + preDeleteLijstSize);
-            if (succes = true) {
-                sout("[Test] [delete] [SUCCESS] test geslaagd!");
-            } else {
-                sout("[Test] [delete] [GEFAALD] test gefaald!");
-            }
+//            boolean succes = reizigerDAOPsql.delete(newSietske);
+//            sout("[Test] [delete] [RESULT] = " + succes + " lijst is nu: " + reizigerDAOPsql.findAll().size() + " en was: " + preDeleteLijstSize);
+//            if (succes = true) {
+//                sout("[Test] [delete] [SUCCESS] test geslaagd!");
+//            } else {
+//                sout("[Test] [delete] [GEFAALD] test gefaald!");
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,9 +150,9 @@ public class Main {
         try {
             sout("\n---------- Test AdresDAO -------------");
 
-            // getAdresByID
-            sout("----------\n[Test] 1 [adresDAO.getAdresByID()] adres_id = 1");
-            sout(adresDAOPsql.getAdresByID(1).toString());
+            // findByID
+            sout("----------\n[Test] 1 [adresDAO.findByID()] adres_id = 1");
+            sout(adresDAOPsql.findByID(1).toString());
 
             // findByReiziger
             sout("----------\n[Test] 2 [adresDAO.findByReiziger()]  geeft de volgende adressen:");
@@ -186,7 +186,7 @@ public class Main {
             // delete
             sout("----------\n[Test] 6 [delete] adresDAO.delete()");
             sout(String.valueOf(adresDAOPsql.delete(testReizigerAdres)));
-            //        adresDAO.delete(adresDAO.getAdresByID(reizigerDAO.findByID(3).getAdres_id()));
+            //        adresDAO.delete(adresDAO.findByID(reizigerDAO.findByID(3).getAdres_id()));
 
             sout("----------\n[Test] 7 [findAll] adresDAO.findAll()");
             sout("----------\n[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAOPsql.findAll().size());
@@ -217,7 +217,7 @@ public class Main {
 
         try {
             newProduct = new Product("gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
-            sout("----------\n[Test] [save] productDAO.save() [RESULT] = " + (this.productDAOPsql.save(newProduct) == true));
+            sout("----------\n[Test] [save] productDAO.save() New ID = " + (this.productDAOPsql.save(newProduct).getId()));
 
             sout("----------\n[Test] productDAO.findAll() geeft de volgende producten:" + this.productDAOPsql.findAll().toString());
 

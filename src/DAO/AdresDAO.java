@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface AdresDAO {
     Adres save(Adres adres);
-    Adres getAdresByID(int adres_id);
-    boolean update(Adres adres);
+    Adres findByID(int adres_id);
+    Adres update(Adres adres);
     boolean delete(Adres adres);
     Adres findByReiziger(Reiziger reiziger);
     List<Adres> findAll() throws SQLException;

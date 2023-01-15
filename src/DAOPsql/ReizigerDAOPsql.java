@@ -28,9 +28,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         this.localConn = conn;
-//
-//        this.adresDAO = new AdresDAOPsql(localConn);
-//        this.ovChipkaartDAO = new OVChipkaartDAOPsql(localConn);
     }
     /**
      * @param reiziger de reiziger aanmaken, wijzigingen opslaan
@@ -62,6 +59,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
+            ps.close();
+
             return reiziger;
 
         } catch (SQLException e) {
@@ -75,14 +74,19 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public Reiziger update(Reiziger reiziger) {
         try {
-            String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? WHERE reiziger_id = ?";
+            String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ? " +
+                    "WHERE reiziger_id = ?";
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setString(1, reiziger.getVoorletters());
             ps.setString(2, reiziger.getTussenvoegsel());
             ps.setString(3, reiziger.getAchternaam());
             ps.setDate(4, (Date) reiziger.getGeboortedatum());
             ps.setInt(5, reiziger.getId());
-            ps.executeUpdate();
+
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
+            else System.out.println("Update successful: " + response + " rijen gewijzigd.");
+            ps.close();
 
             return findByID(reiziger.getId());
         } catch (SQLException e) {
@@ -98,7 +102,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         try {
             PreparedStatement ps = localConn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?");
             ps.setInt(1, reiziger.getId());
-            ps.execute();
+
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
+            else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
+            ps.close();
+
             return true;
         } catch (SQLException e) {
             throw new RuntimeException("DELETE FAILED" + e);

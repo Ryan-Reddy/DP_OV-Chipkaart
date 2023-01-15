@@ -9,8 +9,6 @@ import domain.Product;
 import domain.productStatusEnum;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -96,6 +94,8 @@ public class ProductDAOPsql implements ProductDAO {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
+            ps.close();
+
             return product;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -107,7 +107,7 @@ public class ProductDAOPsql implements ProductDAO {
      * @return het updaten gelukt?
      */
     @Override
-    public boolean update(Product product) {
+    public Product update(Product product) {
         try {
             String query = "UPDATE product SET product_nummer = ?, naam= ?, beschrijving= ?, prijs= ? WHERE product_nummer = ?";
 
@@ -119,30 +119,15 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setDouble(4, product.getPrijs());
             ps.setInt(5, product.getProduct_nummer());
 
-            // hieronder volgt het relatie deel
-            ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
-            if (alleKaartenMetProduct != null) {
+//            TODO: update chipkaart!!!
 
-                for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
-                    try {
-                        String query_ovc_prod = "INSERT INTO ov_chipkaart_product (product_nummer, kaart_nummer, status, last_update) VALUES (?, ?) WHERE product_nummer = (product_nummer) ";
-                        PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
+            int response = ps.executeUpdate();
 
-                        ps.setString(1, String.valueOf(product.getProduct_nummer()));
-                        ps.setString(2, String.valueOf(ovchipkaart.getKaart_nummer()));
-                        // Verander status naar gestopt
-                        ps.setString(3, String.valueOf(productStatusEnum.GEUPDATE));
-                        // Wijzig last_update naar vandaag
-                        ps.setString(4, LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getDayOfMonth());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                }
-                return false;
-            }
+            if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
+            else System.out.println("Update successful: " + response + " rijen gewijzigd.");
+            ps.close();
 
-            return ps.executeUpdate() != 0;
+            return findByID(product.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -155,29 +140,15 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public boolean delete(Product product) {
         try {
-            // hieronder volgt het deel relatie
-            ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
-            if (alleKaartenMetProduct != null) {
-                for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
-                    try {
-                        String query_ovc_prod = "DELETE FROM ov_chipkaart_product WHERE product_nummer = ?";
-                        PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
-                        // Verander status naar gestopt
-                        ps2.setString(1, String.valueOf(productStatusEnum.PRODUCT_GESTOPT));
-                        // Wijzig last_update naar vandaag
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                }
-            }
+            PreparedStatement ps = localConn.prepareStatement("DELETE FROM product WHERE product_id = ?");
+            ps.setInt(1, product.getId());
 
-            String query = "DELETE FROM product WHERE product_nummer = ?";
-            PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, product.getProduct_nummer());
-            ps.execute();
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
+            else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
+            ps.close();
+
             return true;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

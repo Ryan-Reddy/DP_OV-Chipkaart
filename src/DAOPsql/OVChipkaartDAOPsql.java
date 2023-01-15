@@ -57,6 +57,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
+            ps.close();
+
             return ovChipkaart;
 
 
@@ -78,8 +80,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.setInt(6, ovChipkaart.getKaart_nummer());
             ps.executeUpdate();
 
-            OVChipkaart ovChip = findByID(ovChipkaart.getKaart_nummer());
-            return ovChip;
+
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
+            else System.out.println("Update successful: " + response + " rijen gewijzigd.");
+            ps.close();
+
+            return findByID(ovChipkaart.getKaart_nummer());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -87,11 +94,15 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
     @Override
     public boolean delete(OVChipkaart ovChipkaart) {
-        String query = "DELETE FROM ov_chipkaart WHERE kaart_nummer = ?";
         try {
-            PreparedStatement ps = localConn.prepareStatement(query);
+            PreparedStatement ps = localConn.prepareStatement("DELETE FROM ov_chipkaart WHERE kaart_nummer = ?");
             ps.setInt(1, ovChipkaart.getKaart_nummer());
-            ps.execute();
+
+            int response = ps.executeUpdate();
+            if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
+            else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
+            ps.close();
+
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
