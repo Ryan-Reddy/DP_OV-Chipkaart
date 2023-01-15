@@ -29,30 +29,33 @@ public class AdresDAOPsql implements AdresDAO {
     }
 
 
-    public boolean save(Adres adres) {
-        String query = "INSERT INTO adres (adres_id, postcode, huisnummer, straat, woonplaats, reiziger_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+    public Adres save(Adres adres) {
+        String query = "INSERT INTO adres (postcode, huisnummer, straat, woonplaats, reiziger_id) " +
+                "VALUES (?, ?, ?, ?, ?)";
         try {
+            PreparedStatement ps = localConn.prepareStatement(query,
+                    Statement.RETURN_GENERATED_KEYS);
 
-            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
-            PreparedStatement ps = localConn.prepareStatement(query);
-            int adres_getID = adres.getAdres_ID();
-            if (adres_getID == 0) {
-                adres_getID = findAll().size()+1;
+            ps.setString(1, adres.getPostcode());
+            ps.setString(2, adres.getHuisnummer());
+            ps.setString(3, adres.getStraat());
+            ps.setString(4, adres.getWoonplaats());
+            ps.setInt(5, adres.getReiziger_id());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
             }
 
-            ps.setInt(1, adres_getID);
-            ps.setString(2, adres.getPostcode());
-            ps.setString(3, adres.getHuisnummer());
-            ps.setString(4, adres.getStraat());
-            ps.setString(5, adres.getWoonplaats());
-            ps.setInt(6, adres.getReiziger_id());
-
-            if (ps.executeUpdate() == 1) {
-                return true;
-            } else {
-                return false;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    adres.setAdres_ID(generatedKeys.getInt("kaart_nummer"));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
             }
+            return adres;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
