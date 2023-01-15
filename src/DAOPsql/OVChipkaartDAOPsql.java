@@ -44,9 +44,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.setDouble(3, ovChipkaart.getSaldo());
             ps.setInt(4, ovChipkaart.getReiziger().getId());
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Creating user failed, no rows affected.");
+            int gewijzigdeRijen = ps.executeUpdate();
+            if (gewijzigdeRijen == 0) {
+                throw new SQLException("Creeren van user gefaald, niks veranderd in DB.");
             }
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -54,7 +54,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     ovChipkaart.setKaartNummer(generatedKeys.getInt("kaart_nummer"));
                 }
                 else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+                    throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
             return ovChipkaart;

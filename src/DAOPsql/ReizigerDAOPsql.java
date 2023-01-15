@@ -49,9 +49,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setString(3, reiziger.getAchternaam());
             ps.setDate(4, reiziger.getGeboortedatum());
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Creating user failed, no rows affected.");
+            int gewijzigdeRijen = ps.executeUpdate();
+            if (gewijzigdeRijen == 0) {
+                throw new SQLException("Creeren van user gefaald, niks veranderd in DB.");
             }
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -59,10 +59,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     reiziger.setId(generatedKeys.getInt("reiziger_id"));
                 }
                 else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+                    throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
-
             return reiziger;
 
         } catch (SQLException e) {

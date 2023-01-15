@@ -83,9 +83,9 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setString(3, product.getBeschrijving());
             ps.setInt(4, product.getPrijs());
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Creating user failed, no rows affected.");
+            int gewijzigdeRijen = ps.executeUpdate();
+            if (gewijzigdeRijen == 0) {
+                throw new SQLException("Creeren van user gefaald, niks veranderd in DB.");
             }
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -93,7 +93,7 @@ public class ProductDAOPsql implements ProductDAO {
                     product.setProduct_nummer(generatedKeys.getInt("kaart_nummer"));
                 }
                 else {
-                    throw new SQLException("Creating user failed, no ID obtained.");
+                    throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
             return product;
