@@ -120,4 +120,7 @@ public class OVChipkaart {
         return string;
     }
 
+    public void setKaartNummer(int kaart_nummer) {
+        this.kaart_nummer = kaart_nummer;
+    }
 }

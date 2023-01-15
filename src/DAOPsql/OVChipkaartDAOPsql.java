@@ -33,22 +33,32 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
 
     public OVChipkaart save(OVChipkaart ovChipkaart) {
-        String query = "INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) "
-                + "VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO ov_chipkaart (geldig_tot, klasse, saldo, reiziger_id) "
+                + "VALUES (?, ?, ?, ?)";
         try {
-            PreparedStatement ps = localConn.prepareStatement(query);
-            int ovChipkaart_getID = ovChipkaart.getKaart_nummer();
-            if (ovChipkaart_getID == 0) {
-                ovChipkaart_getID = findAll().size()+1;
-            }
-            ps.setInt(1, ovChipkaart_getID);
-            ps.setDate(2, ovChipkaart.getGeldig_tot());
-            ps.setInt(3, ovChipkaart.getKlasse());
-            ps.setDouble(4, ovChipkaart.getSaldo());
-            ps.setInt(5, ovChipkaart.getReiziger().getId());
+            PreparedStatement ps = localConn.prepareStatement(query,
+                    Statement.RETURN_GENERATED_KEYS);
 
-            int newId = ps.executeQuery().getInt("kaart_nummer");
-            return findByID(newId);
+            ps.setDate(1, ovChipkaart.getGeldig_tot());
+            ps.setInt(2, ovChipkaart.getKlasse());
+            ps.setDouble(3, ovChipkaart.getSaldo());
+            ps.setInt(4, ovChipkaart.getReiziger().getId());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    ovChipkaart.setKaartNummer(generatedKeys.getInt("kaart_nummer"));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+            return ovChipkaart;
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
