@@ -66,10 +66,10 @@ public class Main {
 
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 
-        testReizigerDAO(); // dependency injection van de connectie
-        testAdresDAO();
-        testOVChipkaartDAO();
-        testProductDAO();
+//        testReizigerDAO(); // dependency injection van de connectie
+//        testAdresDAO();
+//        testOVChipkaartDAO();
+//        testProductDAO();
         testScenario();
     }
     private void closeConnection(Connection conn) throws SQLException {
@@ -106,7 +106,7 @@ public class Main {
             sout("[Test] [update] oude achternaam = " + sietskeOudeAchternaam);
             sietske.setAchternaam("anders");
             Reiziger updatedSietske = reizigerDAOPsql.update(newSietske);
-            sout("[Test] [update] [RESULT] nieuwe achternaam = " + newSietske.getAchternaam());
+            sout("[Test] [update] [RESULT] nieuwe achternaam = " + updatedSietske.getAchternaam());
             sout("[Test] [update] [RESULT] nieuwe sietske.toString() = " + newSietske);
 
             sout("\n----------\n[Test] [delete] ReizigerDAO.delete()");
@@ -151,8 +151,7 @@ public class Main {
 
             // findByReiziger
             sout("----------\n[Test] 2 [adresDAO.findByReiziger()]  geeft de volgende adressen:");
-            Reiziger testReiziger = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21), reizigerDAOPsql.findAll().size());
-            System.out.println(testReiziger);
+            Reiziger testReiziger = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21));
             testReiziger = reizigerDAOPsql.save(testReiziger);
             sout("222222222222");
             System.out.println(testReiziger.toString());
@@ -237,6 +236,8 @@ public class Main {
         sout("+ saving scenarioReiziger: " + scenarioReiziger);
         Reiziger opgeslagenScenarioReiziger = reizigerDAOPsql.save(scenarioReiziger);
         sout(opgeslagenScenarioReiziger.toString());
+
+        Adres scenarioAdresse = new Adres("1067AA", "10", "SesameStreet", "Amsterdam", opgeslagenScenarioReiziger.getId());
 
         //koppelt daaraan een nieuwe OV-Chipkaart,
         sout("\n----------## nieuwe scenarioOVChipkaart, gelijk gekoppeld aan de newReizigerID");

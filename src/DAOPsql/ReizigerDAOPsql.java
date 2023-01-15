@@ -187,7 +187,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public ArrayList<Reiziger> findAll() throws SQLException {
         PreparedStatement preparedStatement = localConn.prepareStatement("select * from reiziger");
         ResultSet myResultSet = preparedStatement.executeQuery();
+
         ArrayList<Reiziger> alleReizigers = new ArrayList<Reiziger>();
+
         try {
             while (myResultSet.next()) {
                 Reiziger reiziger = new Reiziger(
