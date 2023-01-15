@@ -12,7 +12,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The type Product dao psql.
@@ -71,44 +70,33 @@ public class ProductDAOPsql implements ProductDAO {
      * @return boolean = het opslaan gelukt?
      */
     @Override
-    public boolean save(Product product) {
+    public Product save(Product product) {
         try {
-            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) VALUES (?, ?, ?, ?)";
+            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
+                    "VALUES (?, ?, ?, ?)";
 
-            // PreparedStatement BRON: https://stackoverflow.com/questions/35554749/creating-a-prepared-statement-to-save-values-to-a-database
-            PreparedStatement ps = localConn.prepareStatement(query_prod);
+            PreparedStatement ps = localConn.prepareStatement(query_prod,
+                    Statement.RETURN_GENERATED_KEYS);
+
             ps.setInt(1, product.getProduct_nummer());
             ps.setString(2, product.getNaam());
             ps.setString(3, product.getBeschrijving());
             ps.setInt(4, product.getPrijs());
 
-            int result = ps.executeUpdate();
-            int result2 = 0;
-            System.out.println("result: " + result);
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
 
-            // hieronder volgt het relatie deel
-            ArrayList<OVChipkaart> alleKaartenMetProduct = product.getAlleKaartenMetProduct();
-            if (alleKaartenMetProduct != null) {
-                for (OVChipkaart ovchipkaart : alleKaartenMetProduct) {
-                    try {
-                        String query_ovc_prod = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update) " + "VALUES (?, ?, ?, ?)";
-                        PreparedStatement ps2 = localConn.prepareStatement(query_ovc_prod);
-
-                        ps.setString(1, String.valueOf(ovchipkaart.getKaart_nummer()));
-                        ps.setString(2, String.valueOf(product.getProduct_nummer()));
-                        ps.setString(3, String.valueOf(ovchipkaart.getStatus()));
-                        ps.setDate(4, Date.valueOf(LocalDate.now()));
-
-                        result2 = ps.executeUpdate();
-                        System.out.println("result2:" + result);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    product.setProduct_nummer(generatedKeys.getInt("kaart_nummer"));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
-        return (result + result2 == 1);
+            return product;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

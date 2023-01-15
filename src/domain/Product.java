@@ -72,6 +72,9 @@ public class Product {
             return false;
         }
     }
+    public void setProduct_nummer(int product_nummer) {
+        this.product_nummer = product_nummer;
+    }
     public int getProduct_nummer() {
         return product_nummer;
     }
@@ -105,4 +108,5 @@ public class Product {
     public int getId() {
         return product_nummer;
     }
+
 }
