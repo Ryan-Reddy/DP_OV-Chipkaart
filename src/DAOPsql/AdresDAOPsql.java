@@ -144,8 +144,29 @@ public class AdresDAOPsql implements AdresDAO {
      * @return
      */
     public Adres findByReiziger(Reiziger reiziger) {
-        Adres adres = reiziger.getAdres();
-        return adres;
+        try {
+            PreparedStatement ps = localConn.prepareStatement("SELECT * FROM adres WHERE reiziger_id = ?");
+            ps.setInt(1, reiziger.getId());
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+//
+//            ArrayList<Adres> adressen = new ArrayList<Adres>();
+//            while (rs.next()) {
+
+                Adres adres = new Adres(rs.getString("postcode"),
+                        rs.getString("huisnummer"),
+                        rs.getString("straat"),
+                        rs.getString("woonplaats"),
+                        rs.getInt("reiziger_id"),
+                        rs.getInt("adres_id"));
+//                adressen.add(adres);
+//            }
+            return adres;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
