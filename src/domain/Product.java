@@ -93,8 +93,8 @@ public class Product {
     public String toString() {
         return "\n Product #" + product_nummer + " " + naam +
                 "\t\t\t beschrijving='" + beschrijving +
-                ", prijs=" + prijs +
-                ", alleKaartenMetProduct=" + alleKaartenMetProduct;
+                ", prijs=" + prijs;
+//                + ", alleKaartenMetProduct=" + alleKaartenMetProduct;
     }
 
     /**

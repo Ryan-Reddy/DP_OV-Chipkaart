@@ -36,10 +36,16 @@ public class OVChipkaart {
      * @param saldo        the saldo
      * @param reiziger  the reiziger
      */
-    public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger) {
+    public OVChipkaart(LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger, int kaart_nummer) {
         this.kaart_nummer = kaart_nummer;
-        geldig_tot.plusYears(2);
         this.geldig_tot = Date.valueOf(geldig_tot);
+        this.klasse = klasse;
+        this.saldo = saldo;
+        this.reiziger = reiziger;
+        productOpDezeKaart = new ArrayList<>();
+    }
+    public OVChipkaart(LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger) {
+        this.geldig_tot = Date.valueOf(geldig_tot.plusYears(2)); // twee jaar geldig, alleen nieuwe.
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
@@ -91,16 +97,26 @@ public class OVChipkaart {
             return false;
         }
     }
+
+    public ArrayList<Product> getProductOpDezeKaart() {
+        return (ArrayList<Product>) productOpDezeKaart;
+    }
+
+    public void setProductOpDezeKaart(ArrayList<Product> productOpDezeKaart) {
+        this.productOpDezeKaart = productOpDezeKaart;
+    }
+
     @Override
     public String toString() {
         String string = "OVChipkaart{" +
                 "kaart_nummer=" + kaart_nummer +
-                ", product_nummer=" + klasse +
+                ", klasse=" + klasse +
                 ", status='" + saldo + '\'' +
-                ", last_update=" + geldig_tot +'}';
-//        if (productOpDezeKaart != null) {
-//            string += productOpDezeKaart.toString();
-//        }
+                ", last_update=" + geldig_tot +
+                "\n alleproductenopkaart: "
+                + getProductOpDezeKaart().toString()
+                +'}'
+                ;
         return string;
     }
 

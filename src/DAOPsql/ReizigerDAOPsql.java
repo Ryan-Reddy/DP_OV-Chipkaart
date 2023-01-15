@@ -41,15 +41,30 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         try {
             String query = "INSERT INTO reiziger (voorletters, tussenvoegsel, achternaam, geboortedatum) " +
                     "VALUES (?, ?, ?, ?) ";
-            PreparedStatement ps = localConn.prepareStatement(query);
+            PreparedStatement ps = localConn.prepareStatement(query,
+                    Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, reiziger.getVoorletters());
             ps.setString(2, reiziger.getTussenvoegsel());
             ps.setString(3, reiziger.getAchternaam());
             ps.setDate(4, reiziger.getGeboortedatum());
 
-            int newId = ps.executeUpdate();
-            return findByID(newId);
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    reiziger.setId(generatedKeys.getInt("reiziger_id"));
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+
+            return reiziger;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

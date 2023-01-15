@@ -10,7 +10,7 @@ import java.util.List;
  * The interface Ov chipkaart dao.
  */
 public interface OVChipkaartDAO {
-    boolean save(OVChipkaart ovChipkaart);
+    OVChipkaart save(OVChipkaart ovChipkaart);
     OVChipkaart update(OVChipkaart ovChipkaart);
     boolean delete(OVChipkaart ovChipkaart);
     OVChipkaart findByID(int ovChipkaartID);
@@ -18,6 +18,5 @@ public interface OVChipkaartDAO {
     List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException;
     void setReizigerDAO(ReizigerDAO reizigerDAO);
     void setAdresDAO(AdresDAO adresDAO);
-
     void setProductDAO(ProductDAO productDAO);
 }

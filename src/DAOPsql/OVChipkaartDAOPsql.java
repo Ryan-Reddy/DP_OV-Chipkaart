@@ -32,7 +32,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         localConn = conn;
     }
 
-    public boolean save(OVChipkaart ovChipkaart) {
+    public OVChipkaart save(OVChipkaart ovChipkaart) {
         String query = "INSERT INTO ov_chipkaart (kaart_nummer, geldig_tot, klasse, saldo, reiziger_id) "
                 + "VALUES (?, ?, ?, ?, ?)";
         try {
@@ -46,7 +46,10 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.setInt(3, ovChipkaart.getKlasse());
             ps.setDouble(4, ovChipkaart.getSaldo());
             ps.setInt(5, ovChipkaart.getReiziger().getId());
-            return ps.executeUpdate() == 1;
+
+            int newId = ps.executeQuery().getInt("kaart_nummer");
+            return findByID(newId);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -97,12 +100,14 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
 
-            OVChipkaart ovChipkaart = new OVChipkaart(myResultSet.getInt("kaart_nummer"),
+            OVChipkaart ovChipkaart = new OVChipkaart(
                     myResultSet.getDate("geldig_tot").toLocalDate(),
                     myResultSet.getInt("klasse"),
                     myResultSet.getDouble("saldo"),
-                    reizigerDAO.findByID(myResultSet.getInt("reiziger_id"))
+                    reizigerDAO.findByID(myResultSet.getInt("reiziger_id")),
+                    myResultSet.getInt("kaart_nummer")
             );
+
 // TODO PRODUCTEN connectie implementeren:
 
 //            productDAO.
@@ -127,11 +132,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
             while (myResultSet.next()) {
                 alleOVChipkaarten.add(
-                        new OVChipkaart(myResultSet.getInt("kaart_nummer"),
+                        new OVChipkaart(
                         myResultSet.getDate("geldig_tot").toLocalDate(),
                         myResultSet.getInt("klasse"),
                         myResultSet.getDouble("saldo"),
-                                reiziger
+                                reiziger,
+                                myResultSet.getInt("kaart_nummer")
                         ));
             }
             return alleOVChipkaarten;
@@ -154,12 +160,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
         try {
             while (myResultSet.next()) {
-                alleOVChipkaarten.add(new OVChipkaart(myResultSet.getInt("kaart_nummer"),
+                alleOVChipkaarten.add(new OVChipkaart(
                         myResultSet.getDate("geldig_tot").toLocalDate(),
                         myResultSet.getInt("klasse"),
                         myResultSet.getDouble("saldo"),
-                        reizigerDAO.findByID(myResultSet.getInt("reiziger_id"))
-
+                        reizigerDAO.findByID(myResultSet.getInt("reiziger_id")),
+                        myResultSet.getInt("kaart_nummer")
                 ));
             }
             return alleOVChipkaarten;
