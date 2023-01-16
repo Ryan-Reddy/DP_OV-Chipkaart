@@ -160,7 +160,7 @@ public class Reiziger {
         if(ovChipkaarts != null) s = String.valueOf(+ ovChipkaarts.size());
         s += "} ";
 
-        if(adres != null) {s += adres.toString();};
+        if(adres != null) {s += "{Adres= " + adres.toString();};
 
         return s + " }";
     }

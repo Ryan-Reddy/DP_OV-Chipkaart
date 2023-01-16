@@ -192,7 +192,7 @@ public class Adres {
 
     @Override
     public String toString() {
-        String s = "{Adres= adres_ID# " + adres_ID +
+        String s = "ID# " + adres_ID +
                 " " + postcode + '\'' +
                 " " + huisnummer + '\'' +
                 " " + straat + '\'' +
