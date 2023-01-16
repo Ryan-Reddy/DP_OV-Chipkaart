@@ -23,7 +23,7 @@ public interface ReizigerDAO  {
     Reiziger findByID(int reizigerID) throws SQLException;
     List<Reiziger> findByGbDatum(String datum) throws SQLException;
     List<Reiziger> findAll() throws SQLException;
-    int getAdresId(int reizigerId) throws SQLException;
+//    int getAdresId(int reizigerId) throws SQLException;
     void setAdresDAO(AdresDAO adresDAO);
     void setOvChipkaartDAO(OVChipkaartDAO ovChipkaartDAOPsql);
     void setProductDAOPsql(ProductDAO productDAOPsql);

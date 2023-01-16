@@ -237,7 +237,16 @@ public class Main {
         Reiziger opgeslagenScenarioReiziger = reizigerDAOPsql.save(scenarioReiziger);
         sout(opgeslagenScenarioReiziger.toString());
 
+        //      Je maakt een adres, koppel adres aan reiziger
+        sout("\n----------## nieuwe scenarioAdresse");
         Adres scenarioAdresse = new Adres("1067AA", "10", "SesameStreet", "Amsterdam", opgeslagenScenarioReiziger.getId());
+        scenarioAdresse= adresDAOPsql.save(scenarioAdresse);
+        System.out.println("scenarioAdresse incl new ID" + scenarioAdresse + "with reizigerID: " + scenarioAdresse.getReiziger_id());
+
+        opgeslagenScenarioReiziger.setAdres(scenarioAdresse);
+        System.out.println(opgeslagenScenarioReiziger.getAdres().toString());
+        opgeslagenScenarioReiziger = reizigerDAOPsql.update(scenarioReiziger);
+        System.out.println(opgeslagenScenarioReiziger.toString());
 
         //koppelt daaraan een nieuwe OV-Chipkaart,
         sout("\n----------## nieuwe scenarioOVChipkaart, gelijk gekoppeld aan de newReizigerID");
@@ -255,6 +264,7 @@ public class Main {
         Product productB = alleProducten.get(1);
 
         System.out.println("voegt product ID#:" + productA.getId() + " toe aan kaart");
+        System.out.println(productA);
         scenarioOVChipkaart.addProductAanKaart(productA);
         sout(scenarioOVChipkaart.toString());
         scenarioOVChipkaart = ovChipkaartDAOPsql.update(scenarioOVChipkaart);

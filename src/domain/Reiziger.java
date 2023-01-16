@@ -131,11 +131,13 @@ public class Reiziger {
     public Date getGeboortedatum() {
         return java.sql.Date.valueOf(geboortedatum);
     }
-    public void setAdres(Adres adres) {
-    }
 
     public Adres getAdres() {
         return adres;
+    }
+
+    public void setAdres(Adres adres) {
+        this.adres = adres;
     }
 
     public void setGeboortedatum(LocalDate geboortedatum) {
@@ -156,8 +158,9 @@ public class Reiziger {
         if (!tussenvoegsel.isBlank()) {s += tussenvoegsel + " ";}
         s += achternaam + " " + geboortedatum + " } {kaarten= " ;
         if(ovChipkaarts != null) s = String.valueOf(+ ovChipkaarts.size());
-        s += "} {adres= ";
-        if(adres != null) {s = adres.toString();};
+        s += "} ";
+
+        if(adres != null) {s += adres.toString();};
 
         return s + " }";
     }

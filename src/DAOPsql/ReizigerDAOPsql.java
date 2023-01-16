@@ -88,10 +88,10 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             else System.out.println("Update successful: " + response + " rijen gewijzigd.");
             ps.close();
 
-            return findByID(reiziger.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return reiziger;
     }
     /**
      * @param reiziger de te verwijderen reiziger
@@ -124,19 +124,19 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
         try {
             PreparedStatement psReiziger =
-                    localConn.prepareStatement("SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, " +
-                            "geboortedatum FROM reiziger WHERE reiziger_id = ?");
+                    localConn.prepareStatement("SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE reiziger_id = ?");
             psReiziger.setInt(1, ID);
-            ResultSet ReizigerResultSet = psReiziger.executeQuery();
-            if(!ReizigerResultSet.next()) {
-                throw new RuntimeException("No Reiziger found with this Reiziger ID");
-            }
-            ReizigerResultSet.next();
-            Reiziger reiziger = new Reiziger(ReizigerResultSet.getString("voorletters"),
-                    ReizigerResultSet.getString("tussenvoegsel"),
-                    ReizigerResultSet.getString("achternaam"),
-                    ReizigerResultSet.getDate("geboortedatum").toLocalDate(),
-                    ReizigerResultSet.getInt("reiziger_id"));
+            ResultSet rs = psReiziger.executeQuery();
+
+            if(!rs.next()) throw new RuntimeException("No Reiziger found with this Reiziger ID");
+
+            System.out.println("Reiziger.findByID found with this ID" + rs.getInt("reiziger_id"));
+
+            Reiziger reiziger = new Reiziger(rs.getString("voorletters"),
+                    rs.getString("tussenvoegsel"),
+                    rs.getString("achternaam"),
+                    rs.getDate("geboortedatum").toLocalDate(),
+                    rs.getInt("reiziger_id"));
 
             // haal adres van deze reiziger op
             Adres adres = adresDAO.findByReiziger(reiziger);
@@ -145,6 +145,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             // haal ovchipkaarten van deze reiziger op
             List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
             reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);
+
+            System.out.println(reiziger);
 
             return reiziger;
         } catch (SQLException e) {
@@ -215,17 +217,17 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         }
         return alleReizigers;
     }
-    @Override
-    public int getAdresId(int reizigerId) throws SQLException {
-        // Adres_ID ophalen;
-        String query = "SELECT * FROM adres WHERE reiziger_id = ?";
-        PreparedStatement preparedStatement = localConn.prepareStatement(query);
-        preparedStatement.setInt(1, reizigerId);
-        ResultSet myResultSet = preparedStatement.executeQuery();
-        myResultSet.next();
-
-        return myResultSet.getInt("adres_id");
-    }
+//    @Override
+//    public int getAdresId(int reizigerId) throws SQLException {
+//        // Adres_ID ophalen;
+//        String query = "SELECT * FROM adres WHERE reiziger_id = ?";
+//        PreparedStatement preparedStatement = localConn.prepareStatement(query);
+//        preparedStatement.setInt(1, reizigerId);
+//        ResultSet myResultSet = preparedStatement.executeQuery();
+//        myResultSet.next();
+//
+//        return myResultSet.getInt("adres_id");
+//    }
     @Override
     public void setAdresDAO(AdresDAO adresDAO) { this.adresDAO = adresDAO; }
     @Override

@@ -158,7 +158,7 @@ public class AdresDAOPsql implements AdresDAO {
                         if(!rs.next()) {
                             throw new RuntimeException("No Adres found with this reiziger ID");
                         }
-            rs.next();
+//            rs.next();
 //
 //            ArrayList<Adres> adressen = new ArrayList<Adres>();
 
