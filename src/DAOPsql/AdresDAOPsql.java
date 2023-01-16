@@ -120,15 +120,18 @@ public class AdresDAOPsql implements AdresDAO {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, adres_id_toFIND);
 
-            ResultSet myResultSet = ps.executeQuery();
-            if (myResultSet.next()) {
+            ResultSet rs = ps.executeQuery();
+            if(!rs.next()) {
+                throw new RuntimeException("No Adres found with this adres ID");
+            }
+            if (rs.next()) {
 
-                int adres_id2 = myResultSet.getInt("adres_id");
-                String postcode = myResultSet.getString("postcode");
-                String huisnummer = myResultSet.getString("huisnummer");
-                String straat = myResultSet.getString("straat");
-                String woonplaats = myResultSet.getString("woonplaats");
-                int reiziger_id = myResultSet.getInt("reiziger_id");
+                int adres_id2 = rs.getInt("adres_id");
+                String postcode = rs.getString("postcode");
+                String huisnummer = rs.getString("huisnummer");
+                String straat = rs.getString("straat");
+                String woonplaats = rs.getString("woonplaats");
+                int reiziger_id = rs.getInt("reiziger_id");
 
                 Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reiziger_id, adres_id2);
                 return adres;
@@ -148,11 +151,16 @@ public class AdresDAOPsql implements AdresDAO {
             PreparedStatement ps = localConn.prepareStatement("SELECT * FROM adres WHERE reiziger_id = ?");
             ps.setInt(1, reiziger.getId());
 
+            System.out.println("reached AdresDAOPsql.findByReiziger using r ID: " + reiziger.getId());
+
             ResultSet rs = ps.executeQuery();
+
+                        if(!rs.next()) {
+                            throw new RuntimeException("No Adres found with this reiziger ID");
+                        }
             rs.next();
 //
 //            ArrayList<Adres> adressen = new ArrayList<Adres>();
-//            while (rs.next()) {
 
                 Adres adres = new Adres(rs.getString("postcode"),
                         rs.getString("huisnummer"),

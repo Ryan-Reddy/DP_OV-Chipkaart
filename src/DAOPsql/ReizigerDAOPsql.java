@@ -128,6 +128,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                             "geboortedatum FROM reiziger WHERE reiziger_id = ?");
             psReiziger.setInt(1, ID);
             ResultSet ReizigerResultSet = psReiziger.executeQuery();
+            if(!ReizigerResultSet.next()) {
+                throw new RuntimeException("No Reiziger found with this Reiziger ID");
+            }
             ReizigerResultSet.next();
             Reiziger reiziger = new Reiziger(ReizigerResultSet.getString("voorletters"),
                     ReizigerResultSet.getString("tussenvoegsel"),
