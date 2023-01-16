@@ -33,7 +33,7 @@ public class Adres {
 
     /**
      * Instantiates a new Adres.
-     *
+     * AdresID gemaakt bij opslaan in db.
      * @param postcode    the postcode
      * @param huisnummer  the huisnummer
      * @param straat      the straat
@@ -49,12 +49,11 @@ public class Adres {
         this.straat = straat;
         this.woonplaats = woonplaats;
         this.reiziger_id = reiziger_id;
-//        adresDAOPsql.save(this);
     }
 
     /**
      * Instantiates a new Adres.
-     *
+     * Gebruikt bij ophalen van adres incl ID uit de db.
      * @param postcode    the postcode
      * @param huisnummer  the huisnummer
      * @param straat      the straat
@@ -81,102 +80,24 @@ public class Adres {
         this.adres_ID = adresDAOPsql.findAll().size()+1; // correspondeert met de nummers in het systeem
 //        adresDAOPsql.save(this);
     }
-
-    /**
-     * Gets postcode.
-     *
-     * @return the postcode
-     */
     public String getPostcode() {
         return postcode;
     }
-
-    /**
-     * Sets postcode.
-     *
-     * @param postcode the postcode
-     */
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
-    }
-
-    /**
-     * Gets adres id.
-     *
-     * @return the adres id
-     */
     public int getAdres_ID() {
         return adres_ID;
     }
-
-    /**
-     * Sets adres id.
-     *
-     * @param adres_ID the adres id
-     */
     public void setAdres_ID(int adres_ID) {
         this.adres_ID = adres_ID;
     }
-
-    /**
-     * Gets huisnummer.
-     *
-     * @return the huisnummer
-     */
     public String getHuisnummer() {
         return huisnummer;
     }
-
-    /**
-     * Sets huisnummer.
-     *
-     * @param huisnummer the huisnummer
-     */
-    public void setHuisnummer(String huisnummer) {
-        this.huisnummer = huisnummer;
-    }
-
-    /**
-     * Gets straat.
-     *
-     * @return the straat
-     */
     public String getStraat() {
         return straat;
     }
-
-    /**
-     * Sets straat.
-     *
-     * @param straat the straat
-     */
-    public void setStraat(String straat) {
-        this.straat = straat;
-    }
-
-    /**
-     * Gets woonplaats.
-     *
-     * @return the woonplaats
-     */
     public String getWoonplaats() {
         return woonplaats;
     }
-
-    /**
-     * Sets woonplaats.
-     *
-     * @param woonplaats the woonplaats
-     */
-    public void setWoonplaats(String woonplaats) {
-        this.woonplaats = woonplaats;
-    }
-
-    /**
-     * Gets reiziger id.
-     *
-     * @return the reiziger id
-     */
     public int getReiziger_id() {
         return reiziger_id;
     }

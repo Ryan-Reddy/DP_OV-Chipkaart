@@ -50,66 +50,24 @@ public class Reiziger {
         this.achternaam = achternaam;
         this.geboortedatum = geboortedatum;
     }
-
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
     public int getId() {
         return id;
     }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
     public void setId(int id) {
         this.id = id;
     }
-
-    /**
-     * Gets voorletters.
-     *
-     * @return the voorletters
-     */
     public String getVoorletters() {
         return voorletters;
     }
-
-    /**
-     * Sets voorletters.
-     *
-     * @param voorletters the voorletters
-     */
     public void setVoorletters(String voorletters) {
         this.voorletters = voorletters;
     }
-
-    /**
-     * Gets tussenvoegsel.
-     *
-     * @return the tussenvoegsel
-     */
     public String getTussenvoegsel() {
         return tussenvoegsel;
     }
-
-    /**
-     * Sets tussenvoegsel.
-     *
-     * @param tussenvoegsel the tussenvoegsel
-     */
     public void setTussenvoegsel(String tussenvoegsel) {
         this.tussenvoegsel = tussenvoegsel;
     }
-
-    /**
-     * Gets achternaam.
-     *
-     * @return the achternaam
-     */
     public String getAchternaam() {
         return achternaam;
     }
@@ -131,23 +89,14 @@ public class Reiziger {
     public Date getGeboortedatum() {
         return java.sql.Date.valueOf(geboortedatum);
     }
-
-    public Adres getAdres() {
-        return adres;
-    }
-
-    public void setAdres(Adres adres) {
-        this.adres = adres;
-    }
-
+    public Adres getAdres() { return adres; }
+    public void setAdres(Adres adres) { this.adres = adres; }
     public void setGeboortedatum(LocalDate geboortedatum) {
         this.geboortedatum = geboortedatum;
     }
-
     public ArrayList<OVChipkaart> getOvChipkaarts() {
         return ovChipkaarts;
     }
-
     public void setOvChipkaarts(ArrayList<OVChipkaart> ovChipkaarts) {
         this.ovChipkaarts = ovChipkaarts;
     }

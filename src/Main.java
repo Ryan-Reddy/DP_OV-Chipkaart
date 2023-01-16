@@ -244,16 +244,16 @@ public class Main {
         System.out.println("scenarioAdresse incl new ID" + scenarioAdresse + "with reizigerID: " + scenarioAdresse.getReiziger_id());
 
         opgeslagenScenarioReiziger.setAdres(scenarioAdresse);
-        System.out.println(opgeslagenScenarioReiziger.getAdres().toString());
+        System.out.println("update reiziger adres: "+ opgeslagenScenarioReiziger.getAdres().toString());
         opgeslagenScenarioReiziger = reizigerDAOPsql.update(scenarioReiziger);
-        System.out.println(opgeslagenScenarioReiziger.toString());
+        System.out.println("updated reiziger: " + opgeslagenScenarioReiziger.toString());
 
         //koppelt daaraan een nieuwe OV-Chipkaart,
         sout("\n----------## nieuwe scenarioOVChipkaart, gelijk gekoppeld aan de newReizigerID");
         LocalDate today = java.time.LocalDate.now();
         OVChipkaart scenarioOVChipkaart = new OVChipkaart(today, 1,20.32, opgeslagenScenarioReiziger);
 
-        sout("\n+ saving scenarioOVChipkaart");
+        sout("+ saving scenarioOVChipkaart");
         scenarioOVChipkaart = ovChipkaartDAOPsql.save(scenarioOVChipkaart);
         sout(scenarioOVChipkaart.toString());
 
@@ -268,6 +268,8 @@ public class Main {
         scenarioOVChipkaart.addProductAanKaart(productA);
         sout(scenarioOVChipkaart.toString());
         scenarioOVChipkaart = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
+        System.out.println("updated kaart incl productA: " + scenarioOVChipkaart);
+        //TODO write connection between card-product-card_product
 
         System.out.println("voegt product ID#:"+ productA.getId() + " toe aan kaart");
         scenarioOVChipkaart.addProductAanKaart(productB);

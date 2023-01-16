@@ -61,6 +61,9 @@ public class OVChipkaart {
     public int getKaart_nummer() {
         return kaart_nummer;
     }
+    public void setKaartNummer(int kaart_nummer) {
+        this.kaart_nummer = kaart_nummer;
+    }
     public Double getSaldo() {
         return saldo;
     }
@@ -102,7 +105,7 @@ public class OVChipkaart {
         return (ArrayList<Product>) productOpDezeKaart;
     }
 
-    public void setProductOpDezeKaart(ArrayList<Product> productOpDezeKaart) {
+    public void setProductenOpDezeKaart(ArrayList<Product> productOpDezeKaart) {
         this.productOpDezeKaart = productOpDezeKaart;
     }
 
@@ -113,14 +116,11 @@ public class OVChipkaart {
                 ", klasse=" + klasse +
                 ", status='" + saldo + '\'' +
                 ", last_update=" + geldig_tot +
-                "\n alleproductenopkaart: "
+                ", reizigerID= " + reiziger.getId() +
+                "\n alleproductenopkaart: {"
                 + getProductOpDezeKaart().toString()
-                +'}'
-                ;
+                + "} }";
         return string;
     }
 
-    public void setKaartNummer(int kaart_nummer) {
-        this.kaart_nummer = kaart_nummer;
-    }
 }
