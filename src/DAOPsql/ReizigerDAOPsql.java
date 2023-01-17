@@ -22,9 +22,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     private OVChipkaartDAO ovChipkaartDAO;
     private ReizigerDAO reizigerDAO;
     private ProductDAO productDAO;
-    String query = null;
-    private PreparedStatement myStatement;
-
     public ReizigerDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         this.localConn = conn;

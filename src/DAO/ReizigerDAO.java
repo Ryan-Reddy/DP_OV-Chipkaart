@@ -16,7 +16,6 @@ import java.util.List;
  * The interface Reiziger dao.
  */
 public interface ReizigerDAO  {
-
     Reiziger save(Reiziger reiziger) throws SQLException;
     Reiziger update(Reiziger reiziger) throws SQLException;
     boolean delete(Reiziger reiziger) throws SQLException;

@@ -95,6 +95,7 @@ public class ProductDAOPsql implements ProductDAO {
                 }
             }
             ps.close();
+            // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
 
             return product;
         } catch (SQLException e) {
@@ -119,13 +120,13 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setDouble(4, product.getPrijs());
             ps.setInt(5, product.getProduct_nummer());
 
-//            TODO: update chipkaart!!!
 
             int response = ps.executeUpdate();
 
             if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
             else System.out.println("Update successful: " + response + " rijen gewijzigd.");
             ps.close();
+            // TODO implementeer een save naar de ovchipkaart_product combi table
 
             return findByID(product.getId());
         } catch (SQLException e) {

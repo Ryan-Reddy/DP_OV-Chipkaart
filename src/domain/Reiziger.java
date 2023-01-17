@@ -59,14 +59,8 @@ public class Reiziger {
     public String getVoorletters() {
         return voorletters;
     }
-    public void setVoorletters(String voorletters) {
-        this.voorletters = voorletters;
-    }
     public String getTussenvoegsel() {
         return tussenvoegsel;
-    }
-    public void setTussenvoegsel(String tussenvoegsel) {
-        this.tussenvoegsel = tussenvoegsel;
     }
     public String getAchternaam() {
         return achternaam;
@@ -91,9 +85,6 @@ public class Reiziger {
     }
     public Adres getAdres() { return adres; }
     public void setAdres(Adres adres) { this.adres = adres; }
-    public void setGeboortedatum(LocalDate geboortedatum) {
-        this.geboortedatum = geboortedatum;
-    }
     public ArrayList<OVChipkaart> getOvChipkaarts() {
         return ovChipkaarts;
     }

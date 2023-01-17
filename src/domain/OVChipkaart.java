@@ -37,6 +37,8 @@ public class OVChipkaart {
      * @param reiziger  the reiziger
      */
     public OVChipkaart(LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger, int kaart_nummer) {
+        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
+
         this.kaart_nummer = kaart_nummer;
         this.geldig_tot = Date.valueOf(geldig_tot);
         this.klasse = klasse;
@@ -52,7 +54,6 @@ public class OVChipkaart {
         productOpDezeKaart = new ArrayList<>();
     }
     public String getStatus() {
-        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
         return status;
     }
     public int getKlasse() {
@@ -100,15 +101,9 @@ public class OVChipkaart {
             return false;
         }
     }
-
     public ArrayList<Product> getProductOpDezeKaart() {
         return (ArrayList<Product>) productOpDezeKaart;
     }
-
-    public void setProductenOpDezeKaart(ArrayList<Product> productOpDezeKaart) {
-        this.productOpDezeKaart = productOpDezeKaart;
-    }
-
     @Override
     public String toString() {
         String string = "OVChipkaart{" +

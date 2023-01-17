@@ -37,7 +37,6 @@ public class Product {
         this.naam = naam;
         this.beschrijving = beschrijving;
         this.prijs = prijs;
-        this.product_nummer = productDAOPsql.findAll().size() + 1;
         alleKaartenMetProduct = new ArrayList<>();
     }
     /**
@@ -53,8 +52,7 @@ public class Product {
         this.beschrijving = beschrijving;
         this.prijs = prijs;
         this.product_nummer = product_nummer;
-        alleKaartenMetProduct = new ArrayList<>();
-
+        alleKaartenMetProduct = new ArrayList<>();        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
     }
     public boolean voegKaartToe(OVChipkaart ovChipkaart) {
         try {
@@ -87,22 +85,14 @@ public class Product {
     public int getPrijs() {
         return prijs;
     }
-
-    public ArrayList<OVChipkaart> getAlleKaartenMetProduct() {
-        return alleKaartenMetProduct;
-    }
-
     @Override
     public String toString() {
         return "\n Product #" + product_nummer + " " + naam +
                 "\t\t\t beschrijving='" + beschrijving +
                 ", prijs=" + prijs;
-//                + ", alleKaartenMetProduct=" + alleKaartenMetProduct;
     }
-
     /**
      * Gets id.
-     *
      * @return the id
      */
     public int getId() {

@@ -70,16 +70,6 @@ public class Adres {
         this.woonplaats = woonplaats;
         this.reiziger_id = reiziger_id;
     }
-
-    /**
-     * Instantiates a new Adres.
-     *
-     * @throws SQLException the sql exception
-     */
-    public Adres() throws SQLException {
-        this.adres_ID = adresDAOPsql.findAll().size()+1; // correspondeert met de nummers in het systeem
-//        adresDAOPsql.save(this);
-    }
     public String getPostcode() {
         return postcode;
     }

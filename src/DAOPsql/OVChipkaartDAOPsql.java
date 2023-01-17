@@ -5,9 +5,11 @@ import DAO.OVChipkaartDAO;
 import DAO.ProductDAO;
 import DAO.ReizigerDAO;
 import domain.OVChipkaart;
+import domain.Product;
 import domain.Reiziger;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +30,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      * @throws SQLException the sql exception
      */
     public OVChipkaartDAOPsql(Connection conn) throws SQLException {
-        // 1. Connect met de database
         localConn = conn;
     }
 
     public OVChipkaart save(OVChipkaart ovChipkaart) {
-        String query = "INSERT INTO ov_chipkaart (geldig_tot, klasse, saldo, reiziger_id) "
-                + "VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO ov_chipkaart (geldig_tot, klasse, saldo, reiziger_id) " + "VALUES (?, ?, ?, ?)";
         try {
-            PreparedStatement ps = localConn.prepareStatement(query,
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = localConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             ps.setDate(1, ovChipkaart.getGeldig_tot());
             ps.setInt(2, ovChipkaart.getKlasse());
@@ -52,21 +51,49 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     ovChipkaart.setKaartNummer(generatedKeys.getInt("kaart_nummer"));
-                }
-                else {
+                } else {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
             ps.close();
 
-            return ovChipkaart;
-
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        // save koppeling kaart-product
+        ArrayList<Product> productenList = ovChipkaart.getProductOpDezeKaart();
+        if (!productenList.isEmpty()) {
+            // TODO implementeer een save naar de ovchipkaart_product combi table
+            System.out.println("saving link card-products: ");
+
+            productenList.stream().forEach(product -> { // product list iterator
+                System.out.println(product.toString());
+                ///////////////////////////////////////
+                String query2 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update) VALUES (?, ?, ?, ?)";
+                try {
+                    PreparedStatement ps = localConn.prepareStatement(query2);
+                    ps.setInt(1, ovChipkaart.getKaart_nummer());
+                    ps.setInt(2, product.getProduct_nummer());
+                    ps.setString(3, product.getStatus()); // TODO make a map of the list with products (product and status)
+                    ps.setDate(4, Date.valueOf(LocalDate.now()));
+
+                    int gewijzigdeRijen = ps.executeUpdate();
+                    if (gewijzigdeRijen == 0) throw new SQLException("Creeren van user gefaald, niks veranderd in DB.");
+                    ps.close();
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+        }
+
+
+        return ovChipkaart;
+
 
     }
+
     @Override
     public OVChipkaart update(OVChipkaart ovChipkaart) {
         String query = "UPDATE ov_chipkaart SET kaart_nummer = ?, geldig_tot = ?, klasse = ?, saldo = ?, reiziger_id = ? WHERE kaart_nummer = ?";
@@ -80,18 +107,19 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.setInt(6, ovChipkaart.getKaart_nummer());
             ps.executeUpdate();
 
-
             int response = ps.executeUpdate();
             if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
             else System.out.println("Update successful: " + response + " rijen gewijzigd.");
             ps.close();
+            // TODO implementeer een save naar de ovchipkaart_product combi table
 
-            return findByID(ovChipkaart.getKaart_nummer());
+            return ovChipkaart;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
+
     @Override
     public boolean delete(OVChipkaart ovChipkaart) {
         try {
@@ -111,6 +139,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     /**
      * uses the input int ID to find OVChipkaart, will return just one.
+     *
      * @param ovChipkaartID
      * @return OVChipkaart object
      */
@@ -121,20 +150,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
 
-            OVChipkaart ovChipkaart = new OVChipkaart(
-                    myResultSet.getDate("geldig_tot").toLocalDate(),
-                    myResultSet.getInt("klasse"),
-                    myResultSet.getDouble("saldo"),
-                    reizigerDAO.findByID(myResultSet.getInt("reiziger_id")),
-                    myResultSet.getInt("kaart_nummer")
-            );
+            OVChipkaart ovChipkaart = new OVChipkaart(myResultSet.getDate("geldig_tot").toLocalDate(), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), reizigerDAO.findByID(myResultSet.getInt("reiziger_id")), myResultSet.getInt("kaart_nummer"));
 
 // TODO PRODUCTEN connectie implementeren:
-
 //            productDAO.
 //            ovChipkaart.addProductAanKaart();
 
-        return ovChipkaart;
+            return ovChipkaart;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -152,20 +174,14 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ResultSet myResultSet = ps.executeQuery();
 
             while (myResultSet.next()) {
-                alleOVChipkaarten.add(
-                        new OVChipkaart(
-                        myResultSet.getDate("geldig_tot").toLocalDate(),
-                        myResultSet.getInt("klasse"),
-                        myResultSet.getDouble("saldo"),
-                                reiziger,
-                                myResultSet.getInt("kaart_nummer")
-                        ));
+                alleOVChipkaarten.add(new OVChipkaart(myResultSet.getDate("geldig_tot").toLocalDate(), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), reiziger, myResultSet.getInt("kaart_nummer")));
             }
             return alleOVChipkaarten;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * Find all OVChipkaarten.
      *
@@ -181,23 +197,26 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
         try {
             while (myResultSet.next()) {
-                alleOVChipkaarten.add(new OVChipkaart(
-                        myResultSet.getDate("geldig_tot").toLocalDate(),
-                        myResultSet.getInt("klasse"),
-                        myResultSet.getDouble("saldo"),
-                        reizigerDAO.findByID(myResultSet.getInt("reiziger_id")),
-                        myResultSet.getInt("kaart_nummer")
-                ));
+                alleOVChipkaarten.add(new OVChipkaart(myResultSet.getDate("geldig_tot").toLocalDate(), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), reizigerDAO.findByID(myResultSet.getInt("reiziger_id")), myResultSet.getInt("kaart_nummer")));
             }
             return alleOVChipkaarten;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
-    public void setReizigerDAO(ReizigerDAO reizigerDAO) { this.reizigerDAO = reizigerDAO; }
+    public void setReizigerDAO(ReizigerDAO reizigerDAO) {
+        this.reizigerDAO = reizigerDAO;
+    }
+
     @Override
-    public void setAdresDAO(AdresDAO adresDAO) { this.adresDAO = adresDAO; }
+    public void setAdresDAO(AdresDAO adresDAO) {
+        this.adresDAO = adresDAO;
+    }
+
     @Override
-    public void setProductDAO(ProductDAO productDAO) { this.productDAO = productDAO; }
+    public void setProductDAO(ProductDAO productDAO) {
+        this.productDAO = productDAO;
+    }
 }
