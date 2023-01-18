@@ -10,6 +10,7 @@ import domain.Adres;
 import domain.OVChipkaart;
 import domain.Product;
 import domain.Reiziger;
+import org.w3c.dom.ls.LSOutput;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -229,13 +230,12 @@ public class Main {
         pprint("\n----------## nieuwe scenarioReiziger, incl newReizigerID");
         Reiziger scenarioReiziger = new Reiziger("Scenario", "to", "Win", LocalDate.of(1966, 9, 21));
         pprint("+ saving scenarioReiziger: " + scenarioReiziger);
-        Reiziger opgeslagenScenarioReiziger = reizigerDAOPsql.save(scenarioReiziger);
-        pprint(opgeslagenScenarioReiziger.toString());
+        Reiziger opgeslagenScenarioReiziger =  reizigerDAOPsql.save(scenarioReiziger);
+        pprint(opgeslagenScenarioReiziger.toString()); // nu incl. ID#
 
         //      Je maakt een adres, koppel adres aan reiziger
         pprint("\n----------## nieuwe scenarioAdresse");
-        Adres scenarioAdresse = new Adres("1067AA", "10", "SesameStreet", "Amsterdam", opgeslagenScenarioReiziger.getId());
-        scenarioAdresse= adresDAOPsql.save(scenarioAdresse);
+        Adres scenarioAdresse= adresDAOPsql.save(new Adres("1067AA", "10", "SesameStreet", "Amsterdam", opgeslagenScenarioReiziger.getId()));
         System.out.println("scenarioAdresse incl new ID" + scenarioAdresse + "with reizigerID: " + scenarioAdresse.getReiziger_id());
 
         opgeslagenScenarioReiziger.setAdres(scenarioAdresse);
@@ -254,28 +254,15 @@ public class Main {
 
         // en koppelt daaraan twee producten.
         System.out.println("\n----------## Koppel daar aan twee producten");
-        ArrayList<Product> alleProducten = (ArrayList<Product>) this.productDAOPsql.findAll();
-        Product productA = alleProducten.get(0);
-        Product productB = alleProducten.get(1);
-
-        System.out.println("voegt product ID#:" + productA.getId() + " toe aan kaart");
-        System.out.println(productA);
+        Product productA = productDAOPsql.save( // productA
+                new Product("A", "A", 10));
         scenarioOVChipkaart.addProductAanKaart(productA);
-        pprint(scenarioOVChipkaart.toString());
-        scenarioOVChipkaart = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
-        System.out.println("updated kaart incl productA: " + scenarioOVChipkaart);
-        //TODO write connection between card-product-card_product
+        System.out.println("+ updated kaart incl productA: " + ovChipkaartDAOPsql.update(scenarioOVChipkaart));
 
-        System.out.println("voegt product ID#:"+ productA.getId() + " toe aan kaart");
+        Product productB = productDAOPsql.save( // productB
+                new Product("B", "B", 10));
         scenarioOVChipkaart.addProductAanKaart(productB);
-        pprint("scenarioOVChipkaart with 2 products" + scenarioOVChipkaart.toString());
-
-        // update kaart in db met de nieuwe producten gekoppeld!
-        scenarioOVChipkaart = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
-
-        pprint("----------\n##  updating scenarioOVChipkaart");
-        OVChipkaart updatedOvChipkaart = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
-        pprint("updatedOvChipkaart" + updatedOvChipkaart);
+        System.out.println("+ updated kaart incl productA + productB: " + ovChipkaartDAOPsql.update(scenarioOVChipkaart));
 
         //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
         pprint("----------\n[Test] [update] deleting scenarioOVChipkaart");

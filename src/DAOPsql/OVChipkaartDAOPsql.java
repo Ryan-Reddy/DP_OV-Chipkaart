@@ -7,6 +7,7 @@ import DAO.ReizigerDAO;
 import domain.OVChipkaart;
 import domain.Product;
 import domain.Reiziger;
+import domain.productStatusEnum;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     /**
      * Instantiates a new Ov chipkaart dao psql.
      *
-     * @param conn the conn
+     * @param conn the connection
      * @throws SQLException the sql exception
      */
     public OVChipkaartDAOPsql(Connection conn) throws SQLException {
@@ -69,31 +70,24 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             productenList.stream().forEach(product -> { // product list iterator
                 System.out.println(product.toString());
                 ///////////////////////////////////////
-                String query2 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status, last_update) VALUES (?, ?, ?, ?)";
+                String query2 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?)";
                 try {
-                    PreparedStatement ps = localConn.prepareStatement(query2);
-                    ps.setInt(1, ovChipkaart.getKaart_nummer());
-                    ps.setInt(2, product.getProduct_nummer());
-                    ps.setString(3, product.getStatus()); // TODO make a map of the list with products (product and status)
-                    ps.setDate(4, Date.valueOf(LocalDate.now()));
+                    PreparedStatement ps2 = localConn.prepareStatement(query2);
+                    ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                    ps2.setInt(2, product.getProduct_nummer());
+                    ps2.setString(3, "actief"); // TODO make a map of the list with products (product and status)
 
-                    int gewijzigdeRijen = ps.executeUpdate();
-                    if (gewijzigdeRijen == 0) throw new SQLException("Creeren van user gefaald, niks veranderd in DB.");
-                    ps.close();
+                    int gewijzigdeRijen = ps2.executeUpdate();
+                    if (gewijzigdeRijen == 0) throw new SQLException("Save ovchip-product koppel gefaald, niks veranderd in DB.");
+                    ps2.close();
 
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             });
-
         }
-
-
         return ovChipkaart;
-
-
     }
-
     @Override
     public OVChipkaart update(OVChipkaart ovChipkaart) {
         String query = "UPDATE ov_chipkaart SET kaart_nummer = ?, geldig_tot = ?, klasse = ?, saldo = ?, reiziger_id = ? WHERE kaart_nummer = ?";
@@ -108,21 +102,95 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ps.executeUpdate();
 
             int response = ps.executeUpdate();
-            if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
+            if (response == 0) throw new SQLException("Update failed, geen rijen gewijzigd.");
             else System.out.println("Update successful: " + response + " rijen gewijzigd.");
             ps.close();
-            // TODO implementeer een save naar de ovchipkaart_product combi table
 
+
+            // update koppeling kaart-product
+            ArrayList<Product> productenList = ovChipkaart.getProductOpDezeKaart();
+            if (!productenList.isEmpty()) {
+                System.out.println("updating link card-products: ");
+
+                productenList.stream().forEach(product -> { // product list iterator
+                    System.out.println(product.toString());
+                    String query2 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?)" +
+                            "ON CONFLICT (kaart_nummer, product_nummer) DO NOTHING"; // als deze al bestaat skip
+
+                    try {
+                        PreparedStatement ps2 = localConn.prepareStatement(query2);
+                        ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                        ps2.setInt(2, product.getProduct_nummer());
+                        ps2.setString(3, "actief");
+
+                        int gewijzigdeRijen = ps2.executeUpdate();
+                        if (gewijzigdeRijen == 0) System.out.println("Update ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
+                                + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
+                        ps2.close();
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
             return ovChipkaart;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void updateOv_Chipkaart_ProductStatus(OVChipkaart ovChipkaart, Product product, productStatusEnum status) throws SQLException {
+        // update status kaart-product
+            System.out.println("updating link card-products: ");
+
+                System.out.println(product.toString());
+                String query2 = "UPDATE ov_chipkaart_product SET " +
+                        "status = ? " +
+                        "WHERE kaart_nummer = ? AND product_nummer= ?;";
+                try {
+                    PreparedStatement ps2 = localConn.prepareStatement(query2);
+                    ps2.setString(1, product.toString().toLowerCase());
+                    ps2.setInt(2, ovChipkaart.getKaart_nummer());
+                    ps2.setInt(3, product.getProduct_nummer());
+
+                    int gewijzigdeRijen = ps2.executeUpdate();
+                    if (gewijzigdeRijen == 0) throw new SQLException("Update ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
+                            + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
+                    ps2.close();
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
 
     }
 
     @Override
     public boolean delete(OVChipkaart ovChipkaart) {
         try {
+            // delete koppeling kaart-product
+            ArrayList<Product> productenList = ovChipkaart.getProductOpDezeKaart();
+            if (!productenList.isEmpty()) {
+                System.out.println("deleting link card-products: ");
+
+                productenList.stream().forEach(product -> { // product list iterator
+                    System.out.println(product.toString());
+                    String query2 = "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ? AND product_nummer = ?";
+
+                    try {
+                        PreparedStatement ps2 = localConn.prepareStatement(query2);
+                        ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                        ps2.setInt(2, product.getProduct_nummer());
+
+                        int gewijzigdeRijen = ps2.executeUpdate();
+                        if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
+                                + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
+                        ps2.close();
+
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
             PreparedStatement ps = localConn.prepareStatement("DELETE FROM ov_chipkaart WHERE kaart_nummer = ?");
             ps.setInt(1, ovChipkaart.getKaart_nummer());
 
@@ -130,7 +198,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
             else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
             ps.close();
-
+            }
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

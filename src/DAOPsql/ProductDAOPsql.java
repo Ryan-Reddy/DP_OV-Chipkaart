@@ -70,16 +70,20 @@ public class ProductDAOPsql implements ProductDAO {
     @Override
     public Product save(Product product) {
         try {
-            String query_prod = "INSERT INTO product (product_nummer, naam, beschrijving, prijs) " +
-                    "VALUES (?, ?, ?, ?)";
+            String query_prod = "INSERT INTO product (" +
+//                    "product_nummer, " +
+                    "naam, beschrijving, prijs) " +
+                    "VALUES (" +
+//                    "?, " +
+                    "?, ?, ?)";
 
             PreparedStatement ps = localConn.prepareStatement(query_prod,
                     Statement.RETURN_GENERATED_KEYS);
 
-            ps.setInt(1, product.getProduct_nummer());
-            ps.setString(2, product.getNaam());
-            ps.setString(3, product.getBeschrijving());
-            ps.setInt(4, product.getPrijs());
+//            ps.setInt(1, product.getProduct_nummer());
+            ps.setString(1, product.getNaam());
+            ps.setString(2, product.getBeschrijving());
+            ps.setInt(3, product.getPrijs());
 
             int gewijzigdeRijen = ps.executeUpdate();
             if (gewijzigdeRijen == 0) {
