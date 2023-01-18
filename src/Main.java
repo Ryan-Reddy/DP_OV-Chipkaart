@@ -264,6 +264,8 @@ public class Main {
         scenarioOVChipkaart.addProductAanKaart(productB);
         System.out.println("+ updated kaart incl productA + productB: " + ovChipkaartDAOPsql.update(scenarioOVChipkaart));
 
+        //TODO implementeer updateOv_Chipkaart_ProductStatus
+
         //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
         pprint("----------\n[Test] [update] deleting scenarioOVChipkaart");
         ovChipkaartDAOPsql.delete(scenarioOVChipkaart);
