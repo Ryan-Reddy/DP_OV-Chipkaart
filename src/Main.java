@@ -69,7 +69,7 @@ public class Main {
 
 //        testReizigerDAO(); // dependency injection van de connectie
 //        testAdresDAO();
-//        testOVChipkaartDAO();
+        testOVChipkaartDAO();
 //        testProductDAO();
         testScenario();
     }
@@ -109,12 +109,11 @@ public class Main {
                     + sietske.getAchternaam());
             sietske.setAchternaam("anders");
             Reiziger updatedSietske = reizigerDAOPsql.update(newSietske);
-            pprint("[Test] [update] [RESULT] nieuwe achternaam = " + updatedSietske.getAchternaam());
-            pprint("[Test] [update] [RESULT] nieuwe sietske.toString() = " + newSietske);
+            pprint("[Test] [update] [RESULT] nieuwe achternaam = " + updatedSietske.getAchternaam()
+                + "[Test] [update] [RESULT] nieuwe sietske.toString() = " + newSietske);
 
             pprint("\n----------\n[Test] [delete] ReizigerDAO.delete()");
-            int preDeleteLijstSize = reizigerDAOPsql.findAll().size();
-            boolean succes = reizigerDAOPsql.delete(newSietske);
+            reizigerDAOPsql.delete(newSietske);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,9 +122,10 @@ public class Main {
     private void testOVChipkaartDAO() throws SQLException {
         pprint("\n---------- Test ovChipkaartDAO -------------");
         LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
+        Reiziger reiziger = reizigerDAOPsql.save(new Reiziger("ovCHIP","test","reiziger", LocalDate.of(1995, 03, 21)));
 
         int kaartNum = adresDAOPsql.findAll().size();
-        OVChipkaart newOvChipKaart = new OVChipkaart(geldig_tot, 1, 10.00, sietske);
+        OVChipkaart newOvChipKaart = new OVChipkaart(geldig_tot, 1, 10.00, reiziger);
 
         try {
             // TODO schrijf testOVCHIPKAART TEST

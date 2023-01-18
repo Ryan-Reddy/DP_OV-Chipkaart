@@ -133,7 +133,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 productenList.stream().forEach(product -> { // product list iterator
                     System.out.println(product.toString());
                     String query3 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?)" +
-                            "ON CONFLICT (kaart_nummer, product_nummer) DO NOTHING"; // als deze al bestaat skip
+                            "ON CONFLICT (kaart_nummer, product_nummer) DO NOTHING"; // als deze al bestaat skip zou nu niet meer moeten zie boven ^
 
                     try {
                         PreparedStatement ps3 = localConn.prepareStatement(query3);
@@ -230,18 +230,60 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      * @return OVChipkaart object
      */
     public OVChipkaart findByID(int ovChipkaartID) {
+        // TODO schrijf functie
+        //          nu wel is dat de Ovchipkaart nu wel een lijst producten heeft met elk ook een lijst gekoppelde ovchipkaarten
+        //          1. de ovChipkaart zelf ophalen,
+        //          2. de producten opzoeken die erbij horen
+        //          3. alle ovchipkaarten in lijsten zetten die bij de producten horen
+        //          4. alle producten die bij die ovchipkaarten horen in een lijst zetten
+        //          5. alles combineren?
+
         try {
             PreparedStatement ps = localConn.prepareStatement("SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?");
             ps.setInt(1, ovChipkaartID);
             ResultSet myResultSet = ps.executeQuery();
             myResultSet.next();
 
-            OVChipkaart ovChipkaart = new OVChipkaart(myResultSet.getDate("geldig_tot").toLocalDate(), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), reizigerDAO.findByID(myResultSet.getInt("reiziger_id")), myResultSet.getInt("kaart_nummer"));
+            OVChipkaart ovChipkaart = new OVChipkaart(
+                    myResultSet.getDate("geldig_tot").toLocalDate(),
+                    myResultSet.getInt("klasse"),
+                    myResultSet.getDouble("saldo"),
+                    reizigerDAO.findByID(myResultSet.getInt("reiziger_id")),
+                    myResultSet.getInt("kaart_nummer"));
 
-
-// TODO PRODUCTEN connectie implementeren:
-//            productDAO.
-//            ovChipkaart.addProductAanKaart();
+            // haal alle producten op die bij kaart horen, alle ov chips die bij de producten horen en go
+            PreparedStatement ps2 = localConn.prepareStatement("SELECT prod FROM product prod" +
+                    "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer" +
+                    "INNER JOIN ov_chipkaart ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
+                    "WHERE ovcp.kaart_nummer = ?;");
+            ps2.setInt(1, ovChipkaartID);
+            ResultSet rs2 = ps2.executeQuery();
+            while (myResultSet.next()){
+                Product opgehaaldProduct = new Product(
+                        rs2.getString("naam"),
+                        rs2.getString("beschrijving"),
+                        rs2.getInt("prijs"),
+                        rs2.getInt("product_nummer")
+                                );
+                // haal alle ovchipkaarten op per product:
+                PreparedStatement ps3 = localConn.prepareStatement("SELECT ovc " +
+                                "FROM product prod " +
+                                "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer " +
+                                "INNER JOIN ov_chipkaart ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
+                                "WHERE ovcp.kaart_nummer = ?;");
+                ps3.setInt(1, ovChipkaartID);
+                ResultSet rs3 = ps3.executeQuery();
+                while (myResultSet.next()){
+                    OVChipkaart opgehaaldOVChip = new OVChipkaart(
+                            myResultSet.getDate("geldig_tot").toLocalDate(),
+                            myResultSet.getInt("klasse"),
+                            myResultSet.getDouble("saldo"),
+                            reizigerDAO.findByID(myResultSet.getInt("reiziger_id")),
+                            myResultSet.getInt("kaart_nummer")
+                            );
+                }
+                ovChipkaart.addProductAanKaart(opgehaaldProduct);
+            };
 
             return ovChipkaart;
         } catch (SQLException e) {
@@ -276,6 +318,15 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      * @throws SQLException
      */
     public ArrayList<OVChipkaart> findAll() throws SQLException {
+        // TODO:
+        //      1. ov.findAll
+        //      2. product.findAll
+        //      3. loop door ov:
+        //           ovchipkaart.addProduct
+        //      4. loop door producten:
+        //           product.addKaart
+        //      5. return de gewilde ov
+
         ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
 
         String query = "select * from ov_chipkaart";
