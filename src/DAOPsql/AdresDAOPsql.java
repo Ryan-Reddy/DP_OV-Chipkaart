@@ -45,8 +45,7 @@ public class AdresDAOPsql implements AdresDAO {
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     adres.setAdres_ID(generatedKeys.getInt("adres_id"));
-                }
-                else {
+                } else {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
@@ -98,10 +97,10 @@ public class AdresDAOPsql implements AdresDAO {
             ps.close();
 
             return true;
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
-}
 
     /**
      * @param adres_id_toFIND
@@ -116,7 +115,7 @@ public class AdresDAOPsql implements AdresDAO {
             ps.setInt(1, adres_id_toFIND);
 
             ResultSet rs = ps.executeQuery();
-            if(!rs.next()) {
+            if (!rs.next()) {
                 throw new RuntimeException("No Adres found with this adres ID");
             }
             if (rs.next()) {
@@ -150,24 +149,21 @@ public class AdresDAOPsql implements AdresDAO {
 
             ResultSet rs = ps.executeQuery();
 
-                        if(!rs.next()) {
-                            throw new RuntimeException("No Adres found with this reiziger ID");
-                        }
-//            rs.next();
-//            ArrayList<Adres> adressen = new ArrayList<Adres>();
-                Adres adres = new Adres(rs.getString("postcode"),
+            if (!rs.next()) {
+                System.out.println("No Adres found with this reiziger ID");
+            }
+            if (rs.next()) {
+                return new Adres(rs.getString("postcode"),
                         rs.getString("huisnummer"),
                         rs.getString("straat"),
                         rs.getString("woonplaats"),
                         rs.getInt("reiziger_id"),
                         rs.getInt("adres_id"));
-//                adressen.add(adres);
-//            }
-            return adres;
-
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     @Override

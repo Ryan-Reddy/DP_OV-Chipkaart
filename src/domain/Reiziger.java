@@ -95,7 +95,7 @@ public class Reiziger {
     @Override
     public String toString() {
         String s = "ID#" + id + ": " + voorletters + " ";
-        if (!tussenvoegsel.isBlank()) {s += tussenvoegsel + " ";}
+        if (tussenvoegsel != null) {s += tussenvoegsel + " ";}
         s += achternaam + " " + geboortedatum + " } {kaarten= " ;
         if(ovChipkaarts != null) s = String.valueOf(+ ovChipkaarts.size());
         s += "} ";

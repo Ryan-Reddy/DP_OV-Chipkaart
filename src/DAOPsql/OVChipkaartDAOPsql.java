@@ -241,8 +241,11 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         try {
             PreparedStatement ps = localConn.prepareStatement("SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?");
             ps.setInt(1, ovChipkaartID);
+
             ResultSet myResultSet = ps.executeQuery();
-            myResultSet.next();
+            if (!myResultSet.next()) {
+                return null;
+            }
 
             OVChipkaart ovChipkaart = new OVChipkaart(
                     myResultSet.getDate("geldig_tot").toLocalDate(),
@@ -252,8 +255,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     myResultSet.getInt("kaart_nummer"));
 
             // haal alle producten op die bij kaart horen, alle ov chips die bij de producten horen en go
-            PreparedStatement ps2 = localConn.prepareStatement("SELECT prod FROM product prod" +
-                    "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer" +
+            PreparedStatement ps2 = localConn.prepareStatement("SELECT prod FROM product prod " +
+                    "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer " +
                     "INNER JOIN ov_chipkaart ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
                     "WHERE ovcp.kaart_nummer = ?;");
             ps2.setInt(1, ovChipkaartID);
@@ -266,10 +269,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                         rs2.getInt("product_nummer")
                                 );
                 // haal alle ovchipkaarten op per product:
-                PreparedStatement ps3 = localConn.prepareStatement("SELECT ovc " +
-                                "FROM product prod " +
-                                "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer " +
-                                "INNER JOIN ov_chipkaart ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
+                PreparedStatement ps3 = localConn.prepareStatement("SELECT ovc FROM product AS prod " +
+                                "INNER JOIN ov_chipkaart_product AS ovcp ON prod.product_nummer = ovcp.product_nummer " +
+                                "INNER JOIN ov_chipkaart AS ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
                                 "WHERE ovcp.kaart_nummer = ?;");
                 ps3.setInt(1, ovChipkaartID);
                 ResultSet rs3 = ps3.executeQuery();

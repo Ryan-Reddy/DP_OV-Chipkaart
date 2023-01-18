@@ -123,19 +123,13 @@ public class Main {
         pprint("\n---------- Test ovChipkaartDAO -------------");
         LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
         Reiziger reiziger = reizigerDAOPsql.save(new Reiziger("ovCHIP","test","reiziger", LocalDate.of(1995, 03, 21)));
-
-        int kaartNum = adresDAOPsql.findAll().size();
-        OVChipkaart newOvChipKaart = new OVChipkaart(geldig_tot, 1, 10.00, reiziger);
+        OVChipkaart newOvChipKaart = ovChipkaartDAOPsql.save(new OVChipkaart(geldig_tot, 1, 10.00, reiziger));
 
         try {
-            // TODO schrijf testOVCHIPKAART TEST
-
             pprint("----------\n[Test] [save] ovChipkaartDAO.save() with kaart nummer: "
                     + newOvChipKaart.getKaart_nummer() + " [RESULT] = " + ovChipkaartDAOPsql.save(newOvChipKaart));
-            pprint("\n----------\n[Test] [findall] ovChipkaartDAO.findAll() geeft de volgende reizigers:" + " [RESULT] = \n"
+            pprint("\n----------\n[Test] [findall] ovChipkaartDAO.findAll() geeft de volgende ovchips:" + " [RESULT] = \n"
                     + ovChipkaartDAOPsql.findAll().toString());
-            pprint("\n----------\n[Test] [findbyid] ovChipkaartDAO.findbyid() geeft de volgende reiziger:" + " [RESULT] = \n"
-                    + ovChipkaartDAOPsql.findByID(19).toString());
             pprint("\n----------\n[Test] [findByID] ovChipkaartDAO.findByID() geeft de volgende OV-chipkaart: [RESULT] = "
                     + ovChipkaartDAOPsql.findByID(newOvChipKaart.getKaart_nummer()));
             pprint("\n----------\n[Test] [update] ovChipkaartDAO.update()" + " [RESULT] = "

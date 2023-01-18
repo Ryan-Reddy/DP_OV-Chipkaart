@@ -129,8 +129,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
             System.out.println("Reiziger.findByID found with this ID" + rs.getInt("reiziger_id"));
 
+            String tussenvoegsel = rs.getString("tussenvoegsel");
             Reiziger reiziger = new Reiziger(rs.getString("voorletters"),
-                    rs.getString("tussenvoegsel"),
+                    tussenvoegsel,
                     rs.getString("achternaam"),
                     rs.getDate("geboortedatum").toLocalDate(),
                     rs.getInt("reiziger_id"));
