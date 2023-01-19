@@ -1,19 +1,17 @@
-import DAO.AdresDAO;
-import DAO.OVChipkaartDAO;
-import DAO.ProductDAO;
-import DAO.ReizigerDAO;
-import DAOPsql.AdresDAOPsql;
-import DAOPsql.OVChipkaartDAOPsql;
-import DAOPsql.ProductDAOPsql;
-import DAOPsql.ReizigerDAOPsql;
+import dao.AdresDAO;
+import dao.OVChipkaartDAO;
+import dao.ProductDAO;
+import dao.ReizigerDAO;
+import daoPsql.AdresDAOPsql;
+import daoPsql.OVChipkaartDAOPsql;
+import daoPsql.ProductDAOPsql;
+import daoPsql.ReizigerDAOPsql;
 import domain.Adres;
 import domain.OVChipkaart;
 import domain.Product;
 import domain.Reiziger;
-import org.w3c.dom.ls.LSOutput;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -29,7 +27,7 @@ public class Main {
     OVChipkaartDAO ovChipkaartDAOPsql;
     ProductDAO productDAOPsql;
     AdresDAO adresDAOPsql;
-    String wideDash = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+    final String wideDash = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 
     /**
      * The entry point of application.
@@ -43,7 +41,7 @@ public class Main {
         }
     }
     public Main() throws SQLException {
-        sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 03, 14));
+        sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 3, 14));
         Adres adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
         sietske.setAdres(adresSietske);
 
@@ -59,7 +57,6 @@ public class Main {
     }
     public void testController() throws SQLException {
         reizigerDAOPsql.setAdresDAO(adresDAOPsql);
-        reizigerDAOPsql.setProductDAOPsql(productDAOPsql);
         reizigerDAOPsql.setOvChipkaartDAO(ovChipkaartDAOPsql);
 
         ovChipkaartDAOPsql.setAdresDAO(adresDAOPsql);
@@ -74,7 +71,7 @@ public class Main {
         testProductDAO();
         testScenario();
     }
-    private void closeConnection(Connection conn) throws SQLException {
+    private void closeConnection(Connection conn) {
         try {
             conn.close();
         } catch (Exception e) {
@@ -123,16 +120,16 @@ public class Main {
     private void testOVChipkaartDAO() throws SQLException {
         pprint("\n---------- Test ovChipkaartDAO -------------");
         LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
-        Reiziger reiziger = reizigerDAOPsql.save(new Reiziger("ovCHIP","test","reiziger", LocalDate.of(1995, 03, 21)));
+        Reiziger reiziger = reizigerDAOPsql.save(new Reiziger("ovCHIP","test","reiziger", LocalDate.of(1995, 3, 21)));
         OVChipkaart newOvChipKaart = ovChipkaartDAOPsql.save(new OVChipkaart(geldig_tot, 1, 10.00, reiziger));
 
         try {
             pprint("----------\n[Test] [save] ovChipkaartDAO.save() with kaart nummer: "
-                    + newOvChipKaart.getKaart_nummer() + " [RESULT] = " + ovChipkaartDAOPsql.save(newOvChipKaart));
+                    + newOvChipKaart.getKaartNummer() + " [RESULT] = " + ovChipkaartDAOPsql.save(newOvChipKaart));
             pprint("\n----------\n[Test] [findall] ovChipkaartDAO.findAll() geeft de volgende ovchips:" + " [RESULT] = \n"
                     + ovChipkaartDAOPsql.findAll().size());
             pprint("\n----------\n[Test] [findByID] ovChipkaartDAO.findByID() geeft de volgende OV-chipkaart: [RESULT] = "
-                    + ovChipkaartDAOPsql.findByID(newOvChipKaart.getKaart_nummer()));
+                    + ovChipkaartDAOPsql.findByID(newOvChipKaart.getKaartNummer()));
             pprint("\n----------\n[Test] [update] ovChipkaartDAO.update()" + " [RESULT] = "
                     + ovChipkaartDAOPsql.update(newOvChipKaart));
             pprint("\n----------\n[Test] [delete] ovChipkaartDAO.delete()" + " [RESULT] = "
@@ -153,7 +150,7 @@ public class Main {
             testReiziger = reizigerDAOPsql.save(new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21)));
             testReizigerAdres = adresDAOPsql.save(new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", testReiziger.getId()));
             testReiziger.setAdres(testReizigerAdres);
-            System.out.println(testReiziger.toString());
+            System.out.println(testReiziger);
         } catch (Exception e) { e.printStackTrace(); } try {
 
 
@@ -164,8 +161,9 @@ public class Main {
         } catch (Exception e) { e.printStackTrace(); } try {
 
             // findByID
-            pprint("----------\n[Test] [adresDAO.findByID()] adres_id = " +testReizigerAdres.getAdres_ID());
-            String s = adresDAOPsql.findByID(testReizigerAdres.getAdres_ID()).toString();
+            int adresIdToGet = testReizigerAdres.getAdresId();
+            pprint("----------\n[Test] [adresDAO.findByID()] adres_id = " + adresIdToGet);
+            String s = adresDAOPsql.findByID(testReizigerAdres.getAdresId()).toString();
             pprint(s);
         } catch (Exception e) { e.printStackTrace(); } try {
 
@@ -233,7 +231,7 @@ public class Main {
         //      Je maakt een adres, koppel adres aan reiziger
         pprint("\n----------## nieuwe scenarioAdresse");
         Adres scenarioAdresse= adresDAOPsql.save(new Adres("1067AA", "10", "SesameStreet", "Amsterdam", opgeslagenScenarioReiziger.getId()));
-        System.out.println("scenarioAdresse incl new ID" + scenarioAdresse + "with reizigerID: " + scenarioAdresse.getReiziger_id());
+        System.out.println("scenarioAdresse incl new ID" + scenarioAdresse + "with reizigerID: " + scenarioAdresse.getReizigerId());
 
         opgeslagenScenarioReiziger.setAdres(scenarioAdresse);
         System.out.println("update reiziger adres: "+ opgeslagenScenarioReiziger.getAdres().toString());
@@ -255,33 +253,29 @@ public class Main {
         Product productA = productDAOPsql.save( // productA
                 new Product("A", "A", 10));
         scenarioOVChipkaart.addProductAanKaart(productA);
-        System.out.println("+ updated kaart incl productA: " + ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaart_nummer()));
+        System.out.println("+ updated kaart incl productA: " + ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaartNummer()));
 
         Product productB = productDAOPsql.save( // productB
                 new Product("B", "B", 10));
         scenarioOVChipkaart.addProductAanKaart(productB);
         OVChipkaart scenarioOVChipkaart2 = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
-        System.out.println("+ updated kaart incl productA + productB: " + ovChipkaartDAOPsql.findByID(scenarioOVChipkaart2.getKaart_nummer()));
-
-        // updateOv_Chipkaart
-//        ovChipkaartDAOPsql.update(scenarioOVChipkaart)
-
+        System.out.println("+ updated kaart incl productA + productB: " + ovChipkaartDAOPsql.findByID(scenarioOVChipkaart2.getKaartNummer()));
 
             //      3. Je zoekt per product welke OV-chipkaarten daarbij horen.
         System.out.println("\n----------## zoek per product welke OV-chipkaarten daarbij horen");
 
         Product p = productDAOPsql.findByID(2);
         ArrayList<OVChipkaart> list = p.getOvChipkaartenMetProduct();
-        for(OVChipkaart oc:list) System.out.println(oc.getKaart_nummer());
+        for(OVChipkaart oc:list) System.out.println(oc.getKaartNummer());
 
             //      4. Je zoekt per OV-chipkaart welke producten er op staan,
         pprint("\n----------## Je zoekt per OV-chipkaart welke producten er op staan");
-        ArrayList<Product> Productenlist = ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaart_nummer()).getProductOpDezeKaart();
-        for(Product product:Productenlist) pprint(product.toString());
+        ArrayList<Product> productenLijst = ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaartNummer()).getProductOpDezeKaart();
+        for(Product product:productenLijst) pprint(product.toString());
 
             //      4.b je update een attribuut van het product (bijvoorbeeld de prijs).
         pprint("----------\nvoor update van prijs van product:");
-        Product productWijzigen = Productenlist.get(0);
+        Product productWijzigen = productenLijst.get(0);
         pprint(productWijzigen.toString());
 
         productDAOPsql.update(productWijzigen.setPrijs(19191));
@@ -304,12 +298,22 @@ public class Main {
         //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
         pprint("\n----------## deleting scenarioOVChipkaart - producten bestaan nog wel");
         ovChipkaartDAOPsql.delete(scenarioOVChipkaart2);
-        pprint("scenarioOVChipkaart uit db bestaat niet meer: " + (ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaart_nummer()) == null));
+        pprint("scenarioOVChipkaart uit db bestaat niet meer: " + (ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaartNummer()) == null));
         pprint("PRODUCT A uit db bestaat nog wel: " + (productDAOPsql.findByID(productA.getId()) != null));
         pprint("PRODUCT B uit db bestaat nog wel: " + (productDAOPsql.findByID(productB.getId()) != null));
 
 
-        //TODO toon dat de producten nog bestaan
+        //// EXTRA:
+
+        //      Haal reiziger op naar gb datum:
+        List<Reiziger> geborenOp = reizigerDAOPsql.findByGbDatum(LocalDate.of(1991,9,21));
+        for(Reiziger reiziger:geborenOp) {
+            System.out.println(reiziger.getAchternaam());
+        }
+
+
+        //      Wijzig de status van een koppelproduct
+
     }
     /**
      * pprint.

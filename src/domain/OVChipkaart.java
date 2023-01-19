@@ -9,10 +9,10 @@ import java.util.List;
  * The type Ov chipkaart.
  */
 public class OVChipkaart {
-    private int kaart_nummer;
-    private Date geldig_tot;
-    private int klasse;
-    private Double saldo;
+    private int kaartNummer;
+    private final Date geldigTot;
+    private final int klasse;
+    private final Double saldo;
 
     private Reiziger reiziger;
     private String status;
@@ -23,24 +23,22 @@ public class OVChipkaart {
     /**
      * Instantiates a new Ov chipkaart.
      *
-     * @param kaart_nummer the kaart nummer
-     * @param geldig_tot   the geldig tot
+     * @param kaartNummer the kaart nummer
+     * @param geldigTot   the geldig tot
      * @param klasse       the klasse
      * @param saldo        the saldo
      * @param reiziger  the reiziger
      */
-    public OVChipkaart(LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger, int kaart_nummer) {
-        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
-
-        this.kaart_nummer = kaart_nummer;
-        this.geldig_tot = Date.valueOf(geldig_tot);
+    public OVChipkaart(LocalDate geldigTot, int klasse, Double saldo, Reiziger reiziger, int kaartNummer) {
+        this.kaartNummer = kaartNummer;
+        this.geldigTot = Date.valueOf(geldigTot);
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
         productOpDezeKaart = new ArrayList<>();
     }
     public OVChipkaart(LocalDate vandaag, int klasse, Double saldo, Reiziger reiziger) {
-        this.geldig_tot = Date.valueOf(vandaag.plusYears(2)); // twee jaar geldig, alleen nieuwe.
+        this.geldigTot = Date.valueOf(vandaag.plusYears(2)); // twee jaar geldig, alleen nieuwe.
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
@@ -48,7 +46,7 @@ public class OVChipkaart {
     }
 
     public OVChipkaart(LocalDate vandaag, int klasse, double saldo) {
-        this.geldig_tot = Date.valueOf(vandaag);
+        this.geldigTot = Date.valueOf(vandaag);
         this.klasse = klasse;
         this.saldo = saldo;
         productOpDezeKaart = new ArrayList<>();
@@ -67,18 +65,19 @@ public class OVChipkaart {
     public int getKlasse() {
         return klasse;
     }
-    public int getKaart_nummer() {
-        return kaart_nummer;
+    public int getKaartNummer() {
+        return kaartNummer;
     }
     public void setKaartNummer(int kaart_nummer) {
-        this.kaart_nummer = kaart_nummer;
+        this.kaartNummer = kaart_nummer;
     }
     public Double getSaldo() {
         return saldo;
     }
-    public Date getGeldig_tot() {
-        return geldig_tot;
+    public Date getGeldigTot() {
+        return geldigTot;
     }
+
     /**
      * Remove product van kaart.
      * @param product the product
@@ -94,19 +93,18 @@ public class OVChipkaart {
             return false;
         }
     }
+
     /**
      * Add product aan kaart.
+     *
      * @param product the product
-     * @return the boolean
      */
-    public boolean addProductAanKaart(Product product) {
+    public void addProductAanKaart(Product product) {
         try {
             product.voegKaartToe(this);
             this.productOpDezeKaart.add(product);
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
     }
     public ArrayList<Product> getProductOpDezeKaart() {
@@ -114,16 +112,14 @@ public class OVChipkaart {
     }
     @Override
     public String toString() {
-        String string = "OVChipkaart{" +
-                "kaart_nummer=" + kaart_nummer +
+        return "OVChipkaart{" +
+                "kaart_nummer=" + kaartNummer +
                 ", klasse=" + klasse +
                 ", status='" + saldo + '\'' +
-                ", last_update=" + geldig_tot +
+                ", last_update=" + geldigTot +
                 ", reizigerID= " + reiziger.getId() +
                 "\n alleproductenopkaart: {"
                 + getProductOpDezeKaart().toString()
                 + "} }";
-        return string;
     }
-
 }

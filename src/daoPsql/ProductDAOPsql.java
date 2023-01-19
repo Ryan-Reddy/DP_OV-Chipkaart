@@ -1,9 +1,9 @@
-package DAOPsql;
+package daoPsql;
 
-import DAO.AdresDAO;
-import DAO.OVChipkaartDAO;
-import DAO.ProductDAO;
-import DAO.ReizigerDAO;
+import dao.AdresDAO;
+import dao.OVChipkaartDAO;
+import dao.ProductDAO;
+import dao.ReizigerDAO;
 import domain.OVChipkaart;
 import domain.Product;
 
@@ -25,46 +25,16 @@ public class ProductDAOPsql implements ProductDAO {
     /**
      * Instantiates a new Product dao psql.
      *
-     * @param conn the conn
+     * @param conn the connectie
      * @throws SQLException the sql exception
      */
     public ProductDAOPsql(Connection conn) throws SQLException {
         // 1. Connect met de database
         localConn = conn;
-        // 2. Creeer een statement
-        Statement myStatement = localConn.createStatement();
     }
 
-
-//    public List<Product> findByOVChipkaart(OVChipkaart ovChipkaart) {
-//        try {
-//            String query_prod = "SELECT * FROM product WHERE  = ?";
-//
-//            List<Product> alleProducten = new ArrayList<Product>();
-//            PreparedStatement ps = localConn.prepareStatement(query_prod);
-//            ps.setInt(1, ovChipkaart.getKaart_nummer());
-//
-//            ResultSet myResultSet = ps.executeQuery();
-//
-//            while (myResultSet.next()) {
-//                int product_nummer = myResultSet.getInt("product_nummer");
-//                String naam = myResultSet.getString("naam");
-//                String beschrijving = myResultSet.getString("beschrijving");
-//                int prijs = myResultSet.getInt("prijs");
-//                alleProducten.add(new Product(product_nummer, naam, beschrijving, prijs));
-//            }
-//
-//
-//            return alleProducten;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
     /**
-     * @param product de product aanmaken, wijzigingen opslaan
+     * @param product het product aanmaken, wijzigingen opslaan
      * @return boolean = het opslaan gelukt?
      */
     @Override
@@ -101,23 +71,7 @@ public class ProductDAOPsql implements ProductDAO {
             ArrayList<OVChipkaart> ovcList = product.getOvChipkaartenMetProduct();
             for (OVChipkaart ovChipkaart : ovcList) {
                 if (!ovcList.isEmpty()) {
-                    try {
-                        // purge previous links
-                        PreparedStatement ps2 = localConn.prepareStatement("INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?) " + "ON CONFLICT DO NOTHING");
-                        int ovID = ovChipkaart.getKaart_nummer();
-                        int prodID = product.getProduct_nummer();
-                        ps2.setInt(1, ovID);
-                        ps2.setInt(2, prodID);
-                        ps2.setString(3, "actief"); // TODO make a map of the list with products (product and status)
-
-                        if (ps2.executeUpdate() == 0)
-                            System.out.println("Save product-ovchip koppel gefaald, niks veranderd in DB."
-                                    + "ovchipkaartID: " + ovID + "productID: " + prodID);
-                        ps2.close();
-
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    vernieuwKoppeling(product, ovChipkaart);
                 }
             }
             return product;
@@ -128,7 +82,7 @@ public class ProductDAOPsql implements ProductDAO {
 
     /**
      * @param product het up te daten product
-     * @return het updaten gelukt?
+     * @return is het updaten gelukt?
      */
     @Override
     public Product update(Product product) {
@@ -154,39 +108,42 @@ public class ProductDAOPsql implements ProductDAO {
             ArrayList<OVChipkaart> ovcList = product.getOvChipkaartenMetProduct();
             for (OVChipkaart ovChipkaart : ovcList) {
                 if (!ovcList.isEmpty()) {
-                    try {
                         // purge alle gekoppelde items - kunnen in domein verwijderd zijn weet de db niet.
                         try {
                             PreparedStatement ps2 = localConn.prepareStatement(
-                                    "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?");
-                            ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                                    "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?;");
+                            ps2.setInt(1, ovChipkaart.getKaartNummer());
                             int gewijzigdeRijen = ps2.executeUpdate();
                             if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
-                                    + ovChipkaart.getKaart_nummer());
+                                    + ovChipkaart.getKaartNummer());
                             ps2.close();
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
-                        // insert de vernieuwde links:
-                        PreparedStatement ps2 = localConn.prepareStatement("INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?) " + "ON CONFLICT DO NOTHING");
-                        int ovID = ovChipkaart.getKaart_nummer();
-                        int prodID = product.getProduct_nummer();
-                        ps2.setInt(1, ovID);
-                        ps2.setInt(2, prodID);
-                        ps2.setString(3, "actief"); // TODO make a map of the list with products (product and status)
-
-                        if (ps2.executeUpdate() == 0)
-                            System.out.println("Save product-ovchip koppel gefaald, niks veranderd in DB."
-                                    + "ovchipkaartID: " + ovID + "productID: " + prodID);
-                        ps2.close();
-
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    vernieuwKoppeling(product, ovChipkaart);
                 }
             }
 
             return findByID(product.getId());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void vernieuwKoppeling(Product product, OVChipkaart ovChipkaart) {
+        try {
+            // insert de vernieuwde links:
+            PreparedStatement ps2 = localConn.prepareStatement("INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?) " + "ON CONFLICT DO NOTHING");
+            int ovID = ovChipkaart.getKaartNummer();
+            int prodID = product.getProduct_nummer();
+            ps2.setInt(1, ovID);
+            ps2.setInt(2, prodID);
+            ps2.setString(3, "actief"); // TODO make a map of the list with products (product and status)
+
+            if (ps2.executeUpdate() == 0)
+                System.out.println("Save product-ovchip koppel gefaald, niks veranderd in DB."
+                        + "ovchipkaartID: " + ovID + "productID: " + prodID);
+            ps2.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -203,7 +160,10 @@ public class ProductDAOPsql implements ProductDAO {
             ps.setInt(1, product.getId());
 
             int response = ps.executeUpdate();
-            if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
+            if (response == 0) {
+                System.out.println("Delete failed, geen rijen gewijzigd.");
+                return false;
+            }
             else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
             ps.close();
 
@@ -276,7 +236,7 @@ public class ProductDAOPsql implements ProductDAO {
         String query = "select * from product";
         PreparedStatement preparedStatement = localConn.prepareStatement(query);
         ResultSet myResultSet = preparedStatement.executeQuery();
-        ArrayList<Product> alleProducten = new ArrayList<Product>();
+        ArrayList<Product> alleProducten = new ArrayList<>();
 
         try {
             while (myResultSet.next()) {

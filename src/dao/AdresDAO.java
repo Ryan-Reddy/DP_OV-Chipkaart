@@ -1,10 +1,8 @@
-package DAO;
+package dao;
 
 import domain.Adres;
 import domain.Reiziger;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,11 +10,9 @@ import java.util.List;
  */
 public interface AdresDAO {
     Adres save(Adres adres);
-    /** @param adres_id
-     * @return adres */
     Adres findByID(int adres_id);
     Adres update(Adres adres);
     boolean delete(Adres adres);
-    ArrayList<Adres> findByReiziger(Reiziger reiziger);
-    List<Adres> findAll() throws SQLException;
+    Adres findByReiziger(Reiziger reiziger);
+    List<Adres> findAll();
 }

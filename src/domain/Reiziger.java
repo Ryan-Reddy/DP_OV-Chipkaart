@@ -10,13 +10,13 @@ import java.util.ArrayList;
  */
 public class Reiziger {
     private int id;
-    private String voorletters;
-    private String tussenvoegsel;
+    private final String voorletters;
+    private final String tussenvoegsel;
     private String achternaam;
-    private LocalDate geboortedatum;
+    private final LocalDate geboortedatum;
     private Adres adres;
 
-    private ArrayList<OVChipkaart> ovChipkaarts = new ArrayList<>();
+    private ArrayList<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     /**
      * Instantiates a new Reiziger.
@@ -25,9 +25,8 @@ public class Reiziger {
      * @param tussenvoegsel the tussenvoegsel
      * @param achternaam    the achternaam
      * @param geboortedatum the geboortedatum
-     * @throws SQLException the sql exception
      */
-    public Reiziger(String voorletters, String tussenvoegsel, String achternaam, LocalDate geboortedatum) throws SQLException {
+    public Reiziger(String voorletters, String tussenvoegsel, String achternaam, LocalDate geboortedatum) {
         this.voorletters = voorletters;
         this.tussenvoegsel = tussenvoegsel;
         this.achternaam = achternaam;
@@ -85,11 +84,11 @@ public class Reiziger {
     }
     public Adres getAdres() { return adres; }
     public void setAdres(Adres adres) { this.adres = adres; }
-    public ArrayList<OVChipkaart> getOvChipkaarts() {
-        return ovChipkaarts;
+    public ArrayList<OVChipkaart> getOvChipkaarten() {
+        return ovChipkaarten;
     }
-    public void setOvChipkaarts(ArrayList<OVChipkaart> ovChipkaarts) {
-        this.ovChipkaarts = ovChipkaarts;
+    public void setOvChipkaarten(ArrayList<OVChipkaart> ovChipkaarten) {
+        this.ovChipkaarten = ovChipkaarten;
     }
 
     @Override
@@ -97,15 +96,15 @@ public class Reiziger {
         String s = "ID#" + id + ": " + voorletters + " ";
         if (tussenvoegsel != null) {s += tussenvoegsel + " ";}
         s += achternaam + " " + geboortedatum + " } {kaarten= " ;
-        if(ovChipkaarts != null) s += String.valueOf(ovChipkaarts.toString());
+        if(ovChipkaarten != null) s += String.valueOf(ovChipkaarten.toString());
         s += "} ";
 
-        if(adres != null) {s += "{Adres= " + adres.toString();};
+        if(adres != null) {s += "{Adres= " + adres;}
 
         return s + " }";
     }
 
     public void addOVChipkaart(OVChipkaart ovChipkaart) {
-        this.ovChipkaarts.add(ovChipkaart);
+        this.ovChipkaarten.add(ovChipkaart);
     }
 }

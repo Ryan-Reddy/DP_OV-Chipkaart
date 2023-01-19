@@ -1,9 +1,9 @@
-package DAOPsql;
+package daoPsql;
 
-import DAO.AdresDAO;
-import DAO.OVChipkaartDAO;
-import DAO.ProductDAO;
-import DAO.ReizigerDAO;
+import dao.AdresDAO;
+import dao.OVChipkaartDAO;
+import dao.ProductDAO;
+import dao.ReizigerDAO;
 import domain.OVChipkaart;
 import domain.Product;
 import domain.Reiziger;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * The type Ov chipkaart dao psql.
  */
 public class OVChipkaartDAOPsql implements OVChipkaartDAO {
-    Connection localConn;
+    final Connection localConn;
     ReizigerDAO reizigerDAO;
     ProductDAO productDAO;
     AdresDAO adresDAO;
@@ -31,9 +31,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      * Instantiates a new Ov chipkaart dao psql.
      *
      * @param conn the connection
-     * @throws SQLException the sql exception
      */
-    public OVChipkaartDAOPsql(Connection conn) throws SQLException {
+    public OVChipkaartDAOPsql(Connection conn) {
         localConn = conn;
     }
 
@@ -42,7 +41,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         try {
             PreparedStatement ps = localConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-            ps.setDate(1, ovChipkaart.getGeldig_tot());
+            ps.setDate(1, ovChipkaart.getGeldigTot());
             ps.setInt(2, ovChipkaart.getKlasse());
             ps.setDouble(3, ovChipkaart.getSaldo());
             ps.setInt(4, ovChipkaart.getReiziger().getId());
@@ -72,7 +71,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 String query2 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?)";
                 try {
                     PreparedStatement ps2 = localConn.prepareStatement(query2);
-                    ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                    ps2.setInt(1, ovChipkaart.getKaartNummer());
                     ps2.setInt(2, product.getProduct_nummer());
                     ps2.setString(3, "actief"); // TODO make a map of the list with products (product and status)
 
@@ -91,12 +90,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         String query = "UPDATE ov_chipkaart SET kaart_nummer = ?, geldig_tot = ?, klasse = ?, saldo = ?, reiziger_id = ? WHERE kaart_nummer = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
-            ps.setInt(1, ovChipkaart.getKaart_nummer());
-            ps.setDate(2, ovChipkaart.getGeldig_tot());
+            ps.setInt(1, ovChipkaart.getKaartNummer());
+            ps.setDate(2, ovChipkaart.getGeldigTot());
             ps.setInt(3, ovChipkaart.getKlasse());
             ps.setDouble(4, ovChipkaart.getSaldo());
             ps.setInt(5, ovChipkaart.getReiziger().getId());
-            ps.setInt(6, ovChipkaart.getKaart_nummer());
+            ps.setInt(6, ovChipkaart.getKaartNummer());
             ps.executeUpdate();
 
             int response = ps.executeUpdate();
@@ -111,11 +110,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
                         try {
                             PreparedStatement ps2 = localConn.prepareStatement(query2);
-                            ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                            ps2.setInt(1, ovChipkaart.getKaartNummer());
 
                             int gewijzigdeRijen = ps2.executeUpdate();
-                            if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \tnovChip #= "
-                                    + ovChipkaart.getKaart_nummer());
+                            if (gewijzigdeRijen == 0) {
+                                System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \tnovChip #= "
+                                        + ovChipkaart.getKaartNummer());
+                            }
                             ps2.close();
 
                         } catch (SQLException e) {
@@ -127,21 +128,20 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ArrayList<Product> productenList = ovChipkaart.getProductOpDezeKaart();
             if (!productenList.isEmpty()) {
 
-                productenList.stream().forEach(product -> { // product list iterator
+                productenList.forEach(product -> { // product list iterator
                     System.out.println("updating link card-products: " + product);
 
                     String query3 = "INSERT INTO ov_chipkaart_product (kaart_nummer, product_nummer, status) VALUES (?, ?, ?)"
-//                            + "ON CONFLICT (kaart_nummer, product_nummer) DO NOTHING" // als deze al bestaat skip zou nu niet meer moeten zie boven ^
                                 ;
                     try {
                         PreparedStatement ps3 = localConn.prepareStatement(query3);
-                        ps3.setInt(1, ovChipkaart.getKaart_nummer());
+                        ps3.setInt(1, ovChipkaart.getKaartNummer());
                         ps3.setInt(2, product.getProduct_nummer());
                         ps3.setString(3, "actief");
 
                         int gewijzigdeRijen = ps3.executeUpdate();
                         if (gewijzigdeRijen == 0) System.out.println("Update ovchip-product koppel gefaald, niks veranderd in DB. \tovChip #= "
-                                + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
+                                + ovChipkaart.getKaartNummer() + " prod# = " + product.getProduct_nummer());
                         ps3.close();
 
                     } catch (SQLException e) {
@@ -155,7 +155,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         }
     }
 
-    private void updateOv_Chipkaart_ProductStatus(OVChipkaart ovChipkaart, Product product, productStatusEnum status) throws SQLException {
+    private void updateOv_Chipkaart_ProductStatus(OVChipkaart ovChipkaart, Product product, productStatusEnum status) {
         // update status kaart-product
             System.out.println("updating link card-products: ");
              String query2 = "UPDATE ov_chipkaart_product SET " +
@@ -164,12 +164,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 try {
                     PreparedStatement ps2 = localConn.prepareStatement(query2);
                     ps2.setString(1, product.toString().toLowerCase());
-                    ps2.setInt(2, ovChipkaart.getKaart_nummer());
+                    ps2.setInt(2, ovChipkaart.getKaartNummer());
                     ps2.setInt(3, product.getProduct_nummer());
 
                     int gewijzigdeRijen = ps2.executeUpdate();
                     if (gewijzigdeRijen == 0) throw new SQLException("Update ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
-                            + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
+                            + ovChipkaart.getKaartNummer() + " prod# = " + product.getProduct_nummer());
                     ps2.close();
 
                 } catch (SQLException e) {
@@ -186,17 +186,17 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             if (!productenList.isEmpty()) {
                 System.out.println("deleting link card-products: ");
 
-                productenList.stream().forEach(product -> { // product list iterator
+                productenList.forEach(product -> { // product list iterator
                     String query2 = "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ? AND product_nummer = ?";
 
                     try {
                         PreparedStatement ps2 = localConn.prepareStatement(query2);
-                        ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                        ps2.setInt(1, ovChipkaart.getKaartNummer());
                         ps2.setInt(2, product.getProduct_nummer());
 
                         int gewijzigdeRijen = ps2.executeUpdate();
                         if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \tovChip #= "
-                                + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
+                                + ovChipkaart.getKaartNummer() + " prod# = " + product.getProduct_nummer());
                         ps2.close();
 
                     } catch (SQLException e) {
@@ -205,7 +205,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 });
 
             PreparedStatement ps = localConn.prepareStatement("DELETE FROM ov_chipkaart WHERE kaart_nummer = ?");
-            ps.setInt(1, ovChipkaart.getKaart_nummer());
+            ps.setInt(1, ovChipkaart.getKaartNummer());
 
             int response = ps.executeUpdate();
             if (response == 0) System.out.println("Delete failed, geen rijen gewijzigd.");
@@ -249,7 +249,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     reizigerDAO.findByID(rs1.getInt("reiziger_id")),
                     rs1.getInt("kaart_nummer"));
 
-            // haal alle producten op die bij kaart horen, alle ov chips die bij de producten horen en go
+            // haal alle producten op die bij kaart horen, alle ov-chipkaarten die bij de producten horen en go
             PreparedStatement ps2 = localConn.prepareStatement("SELECT prod.product_nummer, prod.naam, prod.beschrijving, prod.prijs FROM product prod " +
                     "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer " +
                     "INNER JOIN ov_chipkaart ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
@@ -318,9 +318,9 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 Collectors.toConcurrentMap(Product::getProduct_nummer, Function.identity())
         );
 
-        // find ov chipkaarten van reiziger
+        // find ov-chipkaarten van reiziger
         String query = "SELECT * FROM ov_chipkaart WHERE reiziger_id = ?";
-        List<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
+        List<OVChipkaart> alleOVChipkaarten = new ArrayList<>();
 
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -336,7 +336,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
                 // find producten bij ovchipkaart
                 PreparedStatement ps2 = localConn.prepareStatement("SELECT product_nummer FROM ov_chipkaart_product WHERE kaart_nummer = ?");
-                ps2.setInt(1, ovChipkaart.getKaart_nummer());
+                ps2.setInt(1, ovChipkaart.getKaartNummer());
 
             ResultSet rs2 = ps2.executeQuery();
             while (rs2.next()) {
@@ -368,7 +368,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         //           product.addKaart
         //      5. return de gewilde ov
 
-        ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
+        ArrayList<OVChipkaart> alleOVChipkaarten = new ArrayList<>();
 
         String query = "select * from ov_chipkaart";
         PreparedStatement preparedStatement = localConn.prepareStatement(query);

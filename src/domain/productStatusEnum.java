@@ -23,5 +23,5 @@ public enum productStatusEnum {
     /**
      * Geupdate product status enum.
      */
-    GEUPDATE;
+    GEUPDATE
 }

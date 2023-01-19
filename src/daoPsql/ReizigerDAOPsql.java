@@ -1,14 +1,14 @@
-package DAOPsql;
+package daoPsql;
 
-import DAO.AdresDAO;
-import DAO.OVChipkaartDAO;
-import DAO.ProductDAO;
-import DAO.ReizigerDAO;
+import dao.AdresDAO;
+import dao.OVChipkaartDAO;
+import dao.ReizigerDAO;
 import domain.Adres;
 import domain.OVChipkaart;
 import domain.Reiziger;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +20,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     static Connection localConn;
     private AdresDAO adresDAO;
     private OVChipkaartDAO ovChipkaartDAO;
-    private ReizigerDAO reizigerDAO;
-    private ProductDAO productDAO;
-    public ReizigerDAOPsql(Connection conn) throws SQLException {
+    public ReizigerDAOPsql(Connection conn) {
         // 1. Connect met de database
-        this.localConn = conn;
+        localConn = conn;
     }
     /**
      * @param reiziger de reiziger aanmaken, wijzigingen opslaan
@@ -45,7 +43,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
             int gewijzigdeRijen = ps.executeUpdate();
             if (gewijzigdeRijen == 0) {
-                throw new SQLException("Creeren van user gefaald, niks veranderd in DB.");
+                throw new SQLException("Creëren van user gefaald, niks veranderd in DB.");
             }
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -79,7 +77,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ps.setString(1, reiziger.getVoorletters());
             ps.setString(2, reiziger.getTussenvoegsel());
             ps.setString(3, reiziger.getAchternaam());
-            ps.setDate(4, (Date) reiziger.getGeboortedatum());
+            ps.setDate(4, reiziger.getGeboortedatum());
             ps.setInt(5, reiziger.getId());
 
             int response = ps.executeUpdate();
@@ -97,10 +95,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     }
     /**
      * @param reiziger de te verwijderen reiziger
-     * @return boolean of het gelukt is
      */
     @Override
-    public boolean delete(Reiziger reiziger) {
+    public void delete(Reiziger reiziger) {
         try {
             PreparedStatement ps = localConn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?");
             ps.setInt(1, reiziger.getId());
@@ -110,7 +107,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             else System.out.println("Delete successful: " + response + " rijen gewijzigd.");
             ps.close();
 
-            return true;
         } catch (SQLException e) {
             throw new RuntimeException("DELETE FAILED" + e);
         }
@@ -122,7 +118,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return the reiziger
      */
     @Override
-    public Reiziger findByID(int ID) throws SQLException {
+    public Reiziger findByID(int ID) {
 
         try {
             PreparedStatement psReiziger =
@@ -140,12 +136,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     rs.getInt("reiziger_id"));
 
             // haal adres van deze reiziger op
-            ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
-            if(adres!=null) reiziger.setAdres(adres.get(0));
+            Adres adres = adresDAO.findByReiziger(reiziger);
+            if(adres!=null) reiziger.setAdres(adres);
 
             // haal ovchipkaarten van deze reiziger op
             List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
-            reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);
+            reiziger.setOvChipkaarten((ArrayList<OVChipkaart>) ovchips);
 
             return reiziger;
         } catch (SQLException e) {
@@ -157,11 +153,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
      * @return lijst van Reizigers wiens geboortedatum overeenkomt met de invoer.
      */
     @Override
-    public List<Reiziger> findByGbDatum(String datum) throws SQLException {
+    public List<Reiziger> findByGbDatum(LocalDate datum) {
         List<Reiziger> alleReizigers = new ArrayList<>();
         try {
             PreparedStatement ps = localConn.prepareStatement("SELECT * FROM reiziger WHERE geboortedatum = ?");
-            ps.setString(1, datum);
+            ps.setDate(1, Date.valueOf(datum));
             ResultSet myResultSet = ps.executeQuery();
 
             while (myResultSet.next()) {
@@ -172,11 +168,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                         myResultSet.getDate("geboortedatum").toLocalDate(),
                         myResultSet.getInt("reiziger_id"));
 
-                        ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
-                        reiziger.setAdres(adres.get(0));
+                        Adres adres = adresDAO.findByReiziger(reiziger);
+                        reiziger.setAdres(adres);
 
                         List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
-                        reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);
+                        reiziger.setOvChipkaarten((ArrayList<OVChipkaart>) ovchips);
                 alleReizigers.add(reiziger);
             }
         } catch (SQLException e) {
@@ -192,7 +188,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         PreparedStatement preparedStatement = localConn.prepareStatement("select * from reiziger");
         ResultSet myResultSet = preparedStatement.executeQuery();
 
-        ArrayList<Reiziger> alleReizigers = new ArrayList<Reiziger>();
+        ArrayList<Reiziger> alleReizigers = new ArrayList<>();
 
         try {
             while (myResultSet.next()) {
@@ -203,11 +199,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                         myResultSet.getDate("geboortedatum").toLocalDate(),
                         myResultSet.getInt("reiziger_id"));
 
-                ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
-                if(adres != null) reiziger.setAdres(adres.get(0));
+                Adres adres = adresDAO.findByReiziger(reiziger);
+                if(adres != null) reiziger.setAdres(adres);
 
                 List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
-                reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);
+                reiziger.setOvChipkaarten((ArrayList<OVChipkaart>) ovchips);
 
                 alleReizigers.add(reiziger);
             }
@@ -216,22 +212,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         }
         return alleReizigers;
     }
-//    @Override
-//    public int getAdresId(int reizigerId) throws SQLException {
-//        // Adres_ID ophalen;
-//        String query = "SELECT * FROM adres WHERE reiziger_id = ?";
-//        PreparedStatement preparedStatement = localConn.prepareStatement(query);
-//        preparedStatement.setInt(1, reizigerId);
-//        ResultSet myResultSet = preparedStatement.executeQuery();
-//        myResultSet.next();
-//
-//        return myResultSet.getInt("adres_id");
-//    }
     @Override
     public void setAdresDAO(AdresDAO adresDAO) { this.adresDAO = adresDAO; }
     @Override
     public void setOvChipkaartDAO(OVChipkaartDAO ovChipkaartDAO) { this.ovChipkaartDAO = ovChipkaartDAO; }
-    @Override
-    public void setProductDAOPsql(ProductDAO productDAOPsql) { this.productDAO = productDAOPsql; }
-
 }

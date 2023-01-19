@@ -1,7 +1,7 @@
 package domain;
 
-import DAO.AdresDAO;
-import DAOPsql.AdresDAOPsql;
+import dao.AdresDAO;
+import daoPsql.AdresDAOPsql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +14,7 @@ public class Adres {
     /**
      * The Adres dao psql.
      */
-    static AdresDAO adresDAOPsql;
+    static final AdresDAO adresDAOPsql;
     static {
         try {
             Connection mijnConn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/ovchip", "postgres", "algra50");
@@ -24,12 +24,12 @@ public class Adres {
         }
     }
 
-    private int adres_ID;
-    private String postcode;
-    private String huisnummer;
-    private String straat;
-    private String woonplaats;
-    private int reiziger_id;
+    private int adresId;
+    private final String postcode;
+    private final String huisnummer;
+    private final String straat;
+    private final String woonplaats;
+    private int reizigerId;
 
     /**
      * Instantiates a new Adres.
@@ -38,46 +38,45 @@ public class Adres {
      * @param huisnummer  the huisnummer
      * @param straat      the straat
      * @param woonplaats  the woonplaats
-     * @param reiziger_id the reiziger id
+     * @param reizigerId the reiziger id
      * @throws SQLException the sql exception
      */
-    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id) throws SQLException {
+    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reizigerId) throws SQLException {
         int sizeOfTable = adresDAOPsql.findAll().size();
-        this.adres_ID = sizeOfTable +1; // correspondeert met de nummers in het systeem
+        this.adresId = sizeOfTable +1; // correspondeert met de nummers in het systeem
         this.postcode = postcode;
         this.huisnummer = huisnummer;
         this.straat = straat;
         this.woonplaats = woonplaats;
-        this.reiziger_id = reiziger_id;
+        this.reizigerId = reizigerId;
     }
 
     /**
      * Instantiates a new Adres.
-     * Gebruikt bij ophalen van adres incl ID uit de db.
+     * Gebruikt bij ophalen van adres inclusief ID uit de db.
      * @param postcode    the postcode
      * @param huisnummer  the huisnummer
      * @param straat      the straat
      * @param woonplaats  the woonplaats
-     * @param reiziger_id the reiziger id
+     * @param reizigerId the reiziger id
      * @param adres_id    the adres id
-     * @throws SQLException the sql exception
      */
-    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reiziger_id, int adres_id) throws SQLException {
-        this.adres_ID = adres_id; // correspondeert met de nummers in het systeem
+    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reizigerId, int adres_id) {
+        this.adresId = adres_id; // correspondeert met de nummers in het systeem
         this.postcode = postcode;
         this.huisnummer = huisnummer;
         this.straat = straat;
         this.woonplaats = woonplaats;
-        this.reiziger_id = reiziger_id;
+        this.reizigerId = reizigerId;
     }
     public String getPostcode() {
         return postcode;
     }
-    public int getAdres_ID() {
-        return adres_ID;
+    public int getAdresId() {
+        return adresId;
     }
-    public void setAdres_ID(int adres_ID) {
-        this.adres_ID = adres_ID;
+    public void setAdresId(int adresId) {
+        this.adresId = adresId;
     }
     public String getHuisnummer() {
         return huisnummer;
@@ -88,26 +87,25 @@ public class Adres {
     public String getWoonplaats() {
         return woonplaats;
     }
-    public int getReiziger_id() {
-        return reiziger_id;
+    public int getReizigerId() {
+        return reizigerId;
     }
 
     /**
      * Sets reiziger id.
      *
-     * @param reiziger_id the reiziger id
+     * @param reizigerId the reiziger id
      */
-    public void setReiziger_id(int reiziger_id) {
-        this.reiziger_id = reiziger_id;
+    public void setReizigerId(int reizigerId) {
+        this.reizigerId = reizigerId;
     }
 
     @Override
     public String toString() {
-        String s = "ID# " + adres_ID +
+        return "ID# " + adresId +
                 " " + postcode + '\'' +
                 " " + huisnummer + '\'' +
                 " " + straat + '\'' +
                 '}';
-        return s;
     }
 }
