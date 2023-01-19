@@ -129,14 +129,8 @@ public class AdresDAOPsql implements AdresDAO {
             if (!rs.next()) {
                 throw new RuntimeException("No Adres found with this adres ID");
             }
-                int adresId = rs.getInt(ADRES_ID);
-                String postcode = rs.getString(POSTCODE);
-                String huisnummer = rs.getString(HUISNUMMER);
-                String straat = rs.getString(STRAAT);
-                String woonplaats = rs.getString(WOONPLAATS);
-                int reizigerId = rs.getInt(REIZIGER_ID);
+            Adres adres = extractAdresFromRs(rs);
 
-                Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reizigerId, adresId);
                 ps.close();
                 return adres;
 
@@ -159,7 +153,7 @@ public class AdresDAOPsql implements AdresDAO {
                         rs.getInt(REIZIGER_ID),
                         rs.getInt(ADRES_ID)
                 );
-            };
+            }
 
             ps.close();
             return adres;
@@ -178,13 +172,7 @@ public class AdresDAOPsql implements AdresDAO {
             ResultSet myResultSet = ps.executeQuery();
             try {
                 while (myResultSet.next()) {
-                    int adresId = myResultSet.getInt(AdresDAOPsql.ADRES_ID);
-                    String postcode = myResultSet.getString(POSTCODE);
-                    String huisnummer = myResultSet.getString(HUISNUMMER);
-                    String straat = myResultSet.getString(STRAAT);
-                    String woonplaats = myResultSet.getString(WOONPLAATS);
-                    int reizigerId = myResultSet.getInt(REIZIGER_ID);
-                    Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reizigerId, adresId);
+                    Adres adres = extractAdresFromRs(myResultSet);
                     alleAdressen.add(adres);
                 }
                 ps.close();
@@ -195,5 +183,16 @@ public class AdresDAOPsql implements AdresDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Adres extractAdresFromRs(ResultSet myResultSet) throws SQLException {
+        int adresId = myResultSet.getInt(AdresDAOPsql.ADRES_ID);
+        String postcode = myResultSet.getString(POSTCODE);
+        String huisnummer = myResultSet.getString(HUISNUMMER);
+        String straat = myResultSet.getString(STRAAT);
+        String woonplaats = myResultSet.getString(WOONPLAATS);
+        int reizigerId = myResultSet.getInt(REIZIGER_ID);
+        Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reizigerId, adresId);
+        return adres;
     }
 }

@@ -241,13 +241,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             if (!rs1.next()) {
                 return null;
             }
-
-            OVChipkaart ovChipkaart = new OVChipkaart(
-                    rs1.getDate("geldig_tot").toLocalDate(),
-                    rs1.getInt("klasse"),
-                    rs1.getDouble("saldo"),
-                    reizigerDAO.findByID(rs1.getInt("reiziger_id")),
-                    rs1.getInt("kaart_nummer"));
+            OVChipkaart ovChipkaart = extractOvChipkaartRs(rs1);
 
             // haal alle producten op die bij kaart horen, alle ov-chipkaarten die bij de producten horen en go
             PreparedStatement ps2 = localConn.prepareStatement("SELECT prod.product_nummer, prod.naam, prod.beschrijving, prod.prijs FROM product prod " +
@@ -274,24 +268,31 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 ps3.setInt(1, ovChipkaartID);
                 ResultSet rs3 = ps3.executeQuery();
                 while (rs3.next()){
-                    OVChipkaart opgehaaldOVChip = new OVChipkaart(
-                            rs3.getDate("geldig_tot").toLocalDate(),
-                            rs3.getInt("klasse"),
-                            rs3.getDouble("saldo"),
-                            reizigerDAO.findByID(rs3.getInt("reiziger_id")),
-                            rs3.getInt("kaart_nummer")
-                            );
+                    OVChipkaart opgehaaldOVChip = extractOvChipkaartRs(rs3);
                     opgehaaldProduct.addOvChipKaart(opgehaaldOVChip);
                 }
+                ps3.close();
                 ovChipkaart.addProductAanKaart(opgehaaldProduct);
             }
-
+            ps2.close();
             return ovChipkaart;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
+
+    private OVChipkaart extractOvChipkaartRs(ResultSet rs1) throws SQLException {
+        OVChipkaart ovChipkaart = new OVChipkaart(
+                rs1.getDate("geldig_tot").toLocalDate(),
+                rs1.getInt("klasse"),
+                rs1.getDouble("saldo"),
+                reizigerDAO.findByID(rs1.getInt("reiziger_id")),
+                rs1.getInt("kaart_nummer")
+        );
+        return ovChipkaart;
+    }
+
     @Override
     public List<OVChipkaart> findByProduct(Product product) throws SQLException {
         PreparedStatement ps = localConn.prepareStatement(
@@ -308,6 +309,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ovChipkaart.addProductAanKaart(product);
             ovChipkaarten.add(ovChipkaart);
         }
+        ps.close();
         return ovChipkaarten;
     }
 
@@ -347,6 +349,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 alleOVChipkaarten.add(ovChipkaart);
             }
             return alleOVChipkaarten;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -39,7 +39,7 @@ public class Product {
         this.beschrijving = beschrijving;
         this.prijs = prijs;
         this.product_nummer = product_nummer;
-        ovChipkaartenMetProduct = new ArrayList<>();        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
+        ovChipkaartenMetProduct = new ArrayList<>();
     }
     public void voegKaartToe(OVChipkaart ovChipkaart) {
         try {

@@ -99,6 +99,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     @Override
     public void delete(Reiziger reiziger) {
         try {
+            adresDAO.delete(reiziger.getAdres());
+            for(OVChipkaart ovChipkaart:reiziger.getOvChipkaarten()) ovChipkaartDAO.delete(ovChipkaart);
+
             PreparedStatement ps = localConn.prepareStatement("DELETE FROM reiziger WHERE reiziger_id = ?");
             ps.setInt(1, reiziger.getId());
 
@@ -161,14 +164,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             ResultSet myResultSet = ps.executeQuery();
 
             while (myResultSet.next()) {
-                Reiziger reiziger = new Reiziger(
-                        myResultSet.getString("voorletters"),
-                        myResultSet.getString("tussenvoegsel"),
-                        myResultSet.getString("achternaam"),
-                        myResultSet.getDate("geboortedatum").toLocalDate(),
-                        myResultSet.getInt("reiziger_id"));
+                Reiziger reiziger = extractReizigerRs(myResultSet);
 
-                        Adres adres = adresDAO.findByReiziger(reiziger);
+                Adres adres = adresDAO.findByReiziger(reiziger);
                         reiziger.setAdres(adres);
 
                         List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
@@ -180,6 +178,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         }
         return alleReizigers;
     }
+
     /**
      * @return lijst met alle Reizigers in de db
      */
@@ -192,12 +191,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
         try {
             while (myResultSet.next()) {
-                Reiziger reiziger = new Reiziger(
-                        myResultSet.getString("voorletters"),
-                        myResultSet.getString("tussenvoegsel"),
-                        myResultSet.getString("achternaam"),
-                        myResultSet.getDate("geboortedatum").toLocalDate(),
-                        myResultSet.getInt("reiziger_id"));
+                Reiziger reiziger = extractReizigerRs(myResultSet);
 
                 Adres adres = adresDAO.findByReiziger(reiziger);
                 if(adres != null) reiziger.setAdres(adres);
@@ -211,6 +205,15 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             throw new RuntimeException(e);
         }
         return alleReizigers;
+    }
+    private Reiziger extractReizigerRs(ResultSet myResultSet) throws SQLException {
+        Reiziger reiziger = new Reiziger(
+                myResultSet.getString("voorletters"),
+                myResultSet.getString("tussenvoegsel"),
+                myResultSet.getString("achternaam"),
+                myResultSet.getDate("geboortedatum").toLocalDate(),
+                myResultSet.getInt("reiziger_id"));
+        return reiziger;
     }
     @Override
     public void setAdresDAO(AdresDAO adresDAO) { this.adresDAO = adresDAO; }

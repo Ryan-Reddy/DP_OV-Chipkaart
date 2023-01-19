@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class Main {
     Reiziger sietske;
+    Adres adresSietske;
     ReizigerDAO reizigerDAOPsql;
     OVChipkaartDAO ovChipkaartDAOPsql;
     ProductDAO productDAOPsql;
@@ -41,10 +42,6 @@ public class Main {
         }
     }
     public Main() throws SQLException {
-        sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 3, 14));
-        Adres adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
-        sietske.setAdres(adresSietske);
-
         Connection conn = getConnection();
         this.reizigerDAOPsql = new ReizigerDAOPsql(conn);
         this.ovChipkaartDAOPsql = new OVChipkaartDAOPsql(conn);
@@ -52,7 +49,6 @@ public class Main {
         this.adresDAOPsql = new AdresDAOPsql(conn);
 
         testController(); // runs the tests!
-
         closeConnection(conn);
     }
     public void testController() throws SQLException {
@@ -85,6 +81,11 @@ public class Main {
         pprint(wideDash);
         pprint("\n---------- Test ReizigerDAO -------------");
         try {
+            sietske = new Reiziger("S", "", "Boers", LocalDate.of(1981, 3, 14));
+            sietske = reizigerDAOPsql.save(this.sietske);
+            adresSietske = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", sietske.getId());
+            sietske.setAdres(adresSietske);
+
             this.reizigerDAOPsql.setAdresDAO(adresDAOPsql);
             reizigerDAOPsql.setOvChipkaartDAO(ovChipkaartDAOPsql);
 
@@ -95,7 +96,7 @@ public class Main {
             pprint("----------\n[Test] [save] ReizigerDAO.save()");
             System.out.print("[Test] [save] Eerst "
                     + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
-            Reiziger newSietske = reizigerDAOPsql.save(sietske);
+
 
             List<Reiziger> reizigersAfterSave = reizigerDAOPsql.findAll();
             pprint(reizigersAfterSave.size() + " reizigers");
@@ -104,14 +105,14 @@ public class Main {
 
             pprint("----------\n[Test] [update] ReizigerDAO.update()");
             pprint("[Test] [update] oude achternaam = "
-                    + sietske.getAchternaam());
-            sietske.setAchternaam("anders");
-            Reiziger updatedSietske = reizigerDAOPsql.update(newSietske);
+                    + this.sietske.getAchternaam());
+            this.sietske.setAchternaam("anders");
+            Reiziger updatedSietske = reizigerDAOPsql.update(sietske);
             pprint("[Test] [update] [RESULT] nieuwe achternaam = " + updatedSietske.getAchternaam()
-                + "[Test] [update] [RESULT] nieuwe sietske.toString() = " + newSietske);
+                + "[Test] [update] [RESULT] nieuwe sietske.toString() = " + sietske);
 
             pprint("\n----------\n[Test] [delete] ReizigerDAO.delete()");
-            reizigerDAOPsql.delete(newSietske);
+            reizigerDAOPsql.delete(sietske);
 
         } catch (Exception e) {
             e.printStackTrace();
