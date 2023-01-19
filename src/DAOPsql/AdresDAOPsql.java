@@ -118,8 +118,6 @@ public class AdresDAOPsql implements AdresDAO {
             if (!rs.next()) {
                 throw new RuntimeException("No Adres found with this adres ID");
             }
-            if (rs.next()) {
-
                 int adres_id2 = rs.getInt("adres_id");
                 String postcode = rs.getString("postcode");
                 String huisnummer = rs.getString("huisnummer");
@@ -129,11 +127,10 @@ public class AdresDAOPsql implements AdresDAO {
 
                 Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reiziger_id, adres_id2);
                 return adres;
-            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     /**
@@ -149,9 +146,8 @@ public class AdresDAOPsql implements AdresDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            if (!rs.next()) {
-                System.out.println("No Adres found with this reiziger ID");
-            }
+            ArrayList<Adres> adressenVanReiziger = new ArrayList<Adres>();
+
             if (rs.next()) {
                 return new Adres(rs.getString("postcode"),
                         rs.getString("huisnummer"),
@@ -159,6 +155,9 @@ public class AdresDAOPsql implements AdresDAO {
                         rs.getString("woonplaats"),
                         rs.getInt("reiziger_id"),
                         rs.getInt("adres_id"));
+            }
+            if (!rs.next()) {
+                System.out.println("No Adres found with this reiziger ID");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -11,6 +11,8 @@ import java.util.List;
  */
 public interface AdresDAO {
     Adres save(Adres adres);
+    /** @param adres_id
+     * @return adres */
     Adres findByID(int adres_id);
     Adres update(Adres adres);
     boolean delete(Adres adres);

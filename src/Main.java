@@ -67,10 +67,10 @@ public class Main {
 
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 
-//        testReizigerDAO(); // dependency injection van de connectie
-//        testAdresDAO();
+        testReizigerDAO(); // dependency injection van de connectie
+        testAdresDAO();
         testOVChipkaartDAO();
-//        testProductDAO();
+        testProductDAO();
         testScenario();
     }
     private void closeConnection(Connection conn) throws SQLException {
@@ -141,58 +141,63 @@ public class Main {
         }
     }
     private void testAdresDAO() {
+        Reiziger testReiziger = null;
+        Adres testReizigerAdres = null;
         try {
             pprint("\n---------- Test AdresDAO -------------");
 
-            // findByID
-            pprint("----------\n[Test] 1 [adresDAO.findByID()] adres_id = 1");
-            pprint(adresDAOPsql.findByID(1).toString());
 
             // findByReiziger
-            pprint("----------\n[Test] 2 [adresDAO.findByReiziger()]  geeft de volgende adressen:");
-            Reiziger testReiziger = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21));
-            testReiziger = reizigerDAOPsql.save(testReiziger);
+            pprint("----------\n[Test] [adresDAO.findByReiziger()]  geeft de volgende adressen:");
+            testReiziger = reizigerDAOPsql.save(new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21)));
             pprint("222222222222");
             System.out.println(testReiziger.toString());
-            Adres testReizigerAdres = new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", testReiziger.getId());
+            testReizigerAdres = adresDAOPsql.save(new Adres("1221JJ", "88", "Bontekoestraat", "Amsterdam", testReiziger.getId()));
             testReiziger.setAdres(testReizigerAdres);
+        } catch (Exception e) { e.printStackTrace(); } try {
+
 
             // findAll
-            pprint("----------\n----------\n[Test] 3 [adresDAO.findAll()] geeft de volgende adressen:");
+            pprint("----------\n[Test] [adresDAO.findAll()] geeft de volgende adressen:");
             adresDAOPsql.findAll().stream().forEach(adres -> pprint(adres.toString()));
             pprint("----------");
+        } catch (Exception e) { e.printStackTrace(); } try {
 
-            // save
-            pprint("----------\n[Test] 4 [save] adresDAO.save()");
-            adresDAOPsql.save(testReizigerAdres);
+            // findByID
+            pprint("----------\n[Test] [adresDAO.findByID()] adres_id = " +testReizigerAdres.getAdres_ID());
+            String s = adresDAOPsql.findByID(testReizigerAdres.getAdres_ID()).toString();
+            pprint(s);
+        } catch (Exception e) { e.printStackTrace(); } try {
 
             // findByReiziger
+            pprint("----------\n[Test] [adresDAO.findByReiziger()] reiziger_id = " +testReiziger.getId());
             pprint(adresDAOPsql.findByReiziger(testReiziger).toString());
-            reizigerDAOPsql.delete(testReiziger);
+        } catch (Exception e) { e.printStackTrace(); } try {
 
             // update
-            pprint("----------\n[Test] 5 [update] adresDAO.update()");
+            pprint("----------\n[Test] [update] adresDAO.update()");
             pprint(String.valueOf(adresDAOPsql.update(testReizigerAdres)));
+        } catch (Exception e) { e.printStackTrace(); } try {
 
             // delete
-            pprint("----------\n[Test] 6 [delete] adresDAO.delete()");
+            pprint("----------\n[Test] [delete] adresDAO.delete()");
             pprint(String.valueOf(adresDAOPsql.delete(testReizigerAdres)));
             //        adresDAO.delete(adresDAO.findByID(reizigerDAO.findByID(3).getAdres_id()));
+        } catch (Exception e) { e.printStackTrace(); } try {
 
-            pprint("----------\n[Test] 7 [findAll] adresDAO.findAll()");
-            pprint("----------\n[Test] 7 [findAll] [SUCCES] grootte lijst alle adressen: " + adresDAOPsql.findAll().size());
+            pprint("----------\n[Test] [findAll] adresDAO.findAll()");
+            pprint("[SUCCES] grootte lijst alle adressen: " + adresDAOPsql.findAll().size());
 
             Reiziger testReizigerLive = new Reiziger("RLJ", "van", "Lil", LocalDate.of(1991, 9, 21));
             Date date = Date.valueOf(LocalDate.of(2026, 9, 11));
+        } catch (Exception e) { e.printStackTrace(); } try {
 
 //            newOvChipKaart = new OVChipkaart(adresDAOPsql.findAll().size() + 2, date, 1, 10.00, 5);
 //            newProduct = new Product("gratis reizen", "sleutel tot de trein, altijd gratis reizen!", 100000);
 //            newOvChipKaart.addProductAanKaart(newProduct);
 //            testReizigerLive.
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
     private void testProductDAO() {
         pprint("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
