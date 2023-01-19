@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="ovchip@localhost" uuid="b2313047-3ac1-4e41-9818-6879c81d70ab">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:5432/ovchip</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
     <data-source source="LOCAL" name="ovchip@localhost [2]" uuid="98462f4d-1ed0-48a7-88b9-c2fd5408882a">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>

@@ -156,7 +156,6 @@ public class ProductDAOPsql implements ProductDAO {
                 if (!ovcList.isEmpty()) {
                     try {
                         // purge alle gekoppelde items - kunnen in domein verwijderd zijn weet de db niet.
-                        System.out.println("deleting link product-ovchip: " + ovChipkaart.getKaart_nummer());
                         try {
                             PreparedStatement ps2 = localConn.prepareStatement(
                                     "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?");

@@ -204,7 +204,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                         myResultSet.getInt("reiziger_id"));
 
                 ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
-                reiziger.setAdres(adres.get(0));
+                if(adres != null) reiziger.setAdres(adres.get(0));
 
                 List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
                 reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);

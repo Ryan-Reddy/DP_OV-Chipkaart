@@ -16,7 +16,7 @@ public class Reiziger {
     private LocalDate geboortedatum;
     private Adres adres;
 
-    private ArrayList<OVChipkaart> ovChipkaarts;
+    private ArrayList<OVChipkaart> ovChipkaarts = new ArrayList<>();
 
     /**
      * Instantiates a new Reiziger.
@@ -97,7 +97,7 @@ public class Reiziger {
         String s = "ID#" + id + ": " + voorletters + " ";
         if (tussenvoegsel != null) {s += tussenvoegsel + " ";}
         s += achternaam + " " + geboortedatum + " } {kaarten= " ;
-        if(ovChipkaarts != null) s = String.valueOf(+ ovChipkaarts.size());
+        if(ovChipkaarts != null) s += String.valueOf(ovChipkaarts.toString());
         s += "} ";
 
         if(adres != null) {s += "{Adres= " + adres.toString();};
@@ -105,4 +105,7 @@ public class Reiziger {
         return s + " }";
     }
 
+    public void addOVChipkaart(OVChipkaart ovChipkaart) {
+        this.ovChipkaarts.add(ovChipkaart);
+    }
 }

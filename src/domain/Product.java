@@ -106,4 +106,9 @@ public class Product {
     public void addOvChipKaart(OVChipkaart ovchippers) {
         ovChipkaartenMetProduct.add(ovchippers);
     }
+
+    public Product setPrijs(int i) {
+        this.prijs = i;
+        return this;
+    }
 }
