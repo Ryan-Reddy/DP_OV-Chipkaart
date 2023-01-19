@@ -26,9 +26,8 @@ public class ProductDAOPsql implements ProductDAO {
      * Instantiates a new Product dao psql.
      *
      * @param conn the connectie
-     * @throws SQLException the sql exception
      */
-    public ProductDAOPsql(Connection conn) throws SQLException {
+    public ProductDAOPsql(Connection conn) {
         // 1. Connect met de database
         localConn = conn;
     }
@@ -219,7 +218,7 @@ public class ProductDAOPsql implements ProductDAO {
     }
 
     /**
-     * @param ovChipkaartDAOPsql
+     * @param ovChipkaartDAOPsql injection
      */
     @Override
     public void setOVChipkaartDAO(OVChipkaartDAO ovChipkaartDAOPsql) {

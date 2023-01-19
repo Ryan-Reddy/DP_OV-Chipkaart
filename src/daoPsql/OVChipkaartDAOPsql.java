@@ -221,7 +221,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     /**
      * uses the input int ID to find OVChipkaart, will return just one.
      *
-     * @param ovChipkaartID
+     * @param ovChipkaartID int ID van de ovChipkaart te zoeken in db
      * @return OVChipkaart object
      */
     public OVChipkaart findByID(int ovChipkaartID) {
@@ -283,14 +283,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     }
 
     private OVChipkaart extractOvChipkaartRs(ResultSet rs1) throws SQLException {
-        OVChipkaart ovChipkaart = new OVChipkaart(
+        return new OVChipkaart(
                 rs1.getDate("geldig_tot").toLocalDate(),
                 rs1.getInt("klasse"),
                 rs1.getDouble("saldo"),
                 reizigerDAO.findByID(rs1.getInt("reiziger_id")),
                 rs1.getInt("kaart_nummer")
         );
-        return ovChipkaart;
     }
 
     @Override
@@ -301,11 +300,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
         List<OVChipkaart> ovChipkaarten = new ArrayList<>();
         while (rs.next()) {
-            int kaartNummer = rs.getInt("kaart_nummer");
             LocalDate geldigTot = rs.getDate("geldig_tot").toLocalDate();
             int klasse = rs.getInt("klasse");
             double saldo = rs.getDouble("saldo");
-            OVChipkaart ovChipkaart = new OVChipkaart(LocalDate.now(), klasse, saldo);
+            Reiziger reiziger = reizigerDAO.findByID(rs.getInt("reiziger_id"));
+            int kaartNummer = rs.getInt("kaart_nummer");
+            OVChipkaart ovChipkaart = new OVChipkaart(geldigTot, klasse, saldo, reiziger, kaartNummer);
             ovChipkaart.addProductAanKaart(product);
             ovChipkaarten.add(ovChipkaart);
         }
@@ -359,7 +359,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
      * Find all OVChipkaarten.
      *
      * @return the OVChipkaarten as ArrayList
-     * @throws SQLException
+     * @throws SQLException wawa
      */
     public ArrayList<OVChipkaart> findAll() throws SQLException {
         // TODO:

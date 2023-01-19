@@ -118,7 +118,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testOVChipkaartDAO() throws SQLException {
+    private void testOVChipkaartDAO() {
         pprint("\n---------- Test ovChipkaartDAO -------------");
         LocalDate geldig_tot = LocalDate.of(2026, 9, 11);
         Reiziger reiziger = reizigerDAOPsql.save(new Reiziger("ovCHIP","test","reiziger", LocalDate.of(1995, 3, 21)));
@@ -162,14 +162,19 @@ public class Main {
         } catch (Exception e) { e.printStackTrace(); } try {
 
             // findByID
-            int adresIdToGet = testReizigerAdres.getAdresId();
+            int adresIdToGet = 0;
+            if (testReizigerAdres != null) {
+                adresIdToGet = testReizigerAdres.getAdresId();
+            }
             pprint("----------\n[Test] [adresDAO.findByID()] adres_id = " + adresIdToGet);
             String s = adresDAOPsql.findByID(testReizigerAdres.getAdresId()).toString();
             pprint(s);
         } catch (Exception e) { e.printStackTrace(); } try {
 
             // findByReiziger
-            pprint("----------\n[Test] [adresDAO.findByReiziger()] reiziger_id = " + testReiziger.getId());
+            if (testReiziger != null) {
+                pprint("----------\n[Test] [adresDAO.findByReiziger()] reiziger_id = " + testReiziger.getId());
+            }
             pprint(adresDAOPsql.findByReiziger(testReiziger).toString());
         } catch (Exception e) { e.printStackTrace(); } try {
 

@@ -115,7 +115,7 @@ public class AdresDAOPsql implements AdresDAO {
     }
 
     /**
-     * @param adresIdInput
+     * @param adresIdInput int ID van het adres te zoeken
      */
     @Override
     public Adres findByID(int adresIdInput) {
@@ -192,7 +192,6 @@ public class AdresDAOPsql implements AdresDAO {
         String straat = myResultSet.getString(STRAAT);
         String woonplaats = myResultSet.getString(WOONPLAATS);
         int reizigerId = myResultSet.getInt(REIZIGER_ID);
-        Adres adres = new Adres(postcode, huisnummer, straat, woonplaats, reizigerId, adresId);
-        return adres;
+        return new Adres(postcode, huisnummer, straat, woonplaats, reizigerId, adresId);
     }
 }

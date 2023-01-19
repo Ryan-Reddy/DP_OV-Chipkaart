@@ -207,13 +207,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         return alleReizigers;
     }
     private Reiziger extractReizigerRs(ResultSet myResultSet) throws SQLException {
-        Reiziger reiziger = new Reiziger(
+        return new Reiziger(
                 myResultSet.getString("voorletters"),
                 myResultSet.getString("tussenvoegsel"),
                 myResultSet.getString("achternaam"),
                 myResultSet.getDate("geboortedatum").toLocalDate(),
                 myResultSet.getInt("reiziger_id"));
-        return reiziger;
     }
     @Override
     public void setAdresDAO(AdresDAO adresDAO) { this.adresDAO = adresDAO; }

@@ -39,9 +39,8 @@ public class Adres {
      * @param straat      the straat
      * @param woonplaats  the woonplaats
      * @param reizigerId the reiziger id
-     * @throws SQLException the sql exception
      */
-    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reizigerId) throws SQLException {
+    public Adres(String postcode, String huisnummer, String straat, String woonplaats, int reizigerId) {
         int sizeOfTable = adresDAOPsql.findAll().size();
         this.adresId = sizeOfTable +1; // correspondeert met de nummers in het systeem
         this.postcode = postcode;
@@ -89,15 +88,6 @@ public class Adres {
     }
     public int getReizigerId() {
         return reizigerId;
-    }
-
-    /**
-     * Sets reiziger id.
-     *
-     * @param reizigerId the reiziger id
-     */
-    public void setReizigerId(int reizigerId) {
-        this.reizigerId = reizigerId;
     }
 
     @Override

@@ -56,9 +56,6 @@ public class OVChipkaart {
         return reiziger;
     }
 
-    public void setReiziger(Reiziger reiziger) {
-        this.reiziger = reiziger;
-    }
     public String getStatus() {
         return status;
     }
