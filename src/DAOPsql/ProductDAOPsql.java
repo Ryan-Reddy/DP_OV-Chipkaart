@@ -6,10 +6,10 @@ import DAO.ProductDAO;
 import DAO.ReizigerDAO;
 import domain.OVChipkaart;
 import domain.Product;
-import domain.productStatusEnum;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Product dao psql.
@@ -294,5 +294,23 @@ public class ProductDAOPsql implements ProductDAO {
             throw new RuntimeException(e);
         }
         return alleProducten;
+    }
+
+    @Override
+    public List<Product> findAlleProductenZonderOvChipkaart() throws SQLException {
+        String query = "select * from product";
+        PreparedStatement ps = localConn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+
+        List<Product> producten = new ArrayList<>();
+        while (rs.next()) {
+            int productNummer = rs.getInt("product_nummer");
+            String naam = rs.getString("naam");
+            String beschrijving = rs.getString("beschrijving");
+            int prijs = rs.getInt("prijs");
+            Product product = new Product(naam, beschrijving, prijs, productNummer);
+            producten.add(product);
+        }
+        return producten;
     }
 }

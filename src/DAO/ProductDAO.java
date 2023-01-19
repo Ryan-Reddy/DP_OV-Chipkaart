@@ -15,4 +15,6 @@ public interface ProductDAO {
     List<Product> findAll() throws SQLException;
     Product findByID(int id);
     void setOVChipkaartDAO(OVChipkaartDAO ovChipkaartDAOPsql);
+
+    List<Product> findAlleProductenZonderOvChipkaart() throws SQLException;
 }

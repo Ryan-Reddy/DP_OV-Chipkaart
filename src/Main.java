@@ -64,6 +64,7 @@ public class Main {
 
         ovChipkaartDAOPsql.setAdresDAO(adresDAOPsql);
         ovChipkaartDAOPsql.setReizigerDAO(reizigerDAOPsql);
+        ovChipkaartDAOPsql.setProductDAO(productDAOPsql);
 
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 

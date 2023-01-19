@@ -13,6 +13,9 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * The type Ov chipkaart dao psql.
@@ -236,8 +239,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         try {
             PreparedStatement ps = localConn.prepareStatement("SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?");
             ps.setInt(1, ovChipkaartID);
-
             ResultSet rs1 = ps.executeQuery();
+
             if (!rs1.next()) {
                 return null;
             }
@@ -250,7 +253,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                     rs1.getInt("kaart_nummer"));
 
             // haal alle producten op die bij kaart horen, alle ov chips die bij de producten horen en go
-            PreparedStatement ps2 = localConn.prepareStatement("SELECT prod FROM product prod " +
+            PreparedStatement ps2 = localConn.prepareStatement("SELECT prod.product_nummer, prod.naam, prod.beschrijving, prod.prijs FROM product prod " +
                     "INNER JOIN ov_chipkaart_product ovcp ON prod.product_nummer = ovcp.product_nummer " +
                     "INNER JOIN ov_chipkaart ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
                     "WHERE ovcp.kaart_nummer = ?;");
@@ -266,7 +269,8 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                                 );
 
                 // haal alle ovchipkaarten op per product:
-                PreparedStatement ps3 = localConn.prepareStatement("SELECT ovc FROM product AS prod " +
+                PreparedStatement ps3 = localConn.prepareStatement("SELECT ovc.kaart_nummer, ovc.geldig_tot, ovc.klasse, ovc.saldo, ovc.reiziger_id " +
+                        "FROM product AS prod " +
                                 "INNER JOIN ov_chipkaart_product AS ovcp ON prod.product_nummer = ovcp.product_nummer " +
                                 "INNER JOIN ov_chipkaart AS ovC ON ovc.kaart_nummer = ovcp.kaart_nummer " +
                                 "WHERE ovcp.kaart_nummer = ?;");
@@ -312,10 +316,14 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
 
     @Override
         public List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException {
+        Map<Integer, Product> producten =
+                productDAO.findAlleProductenZonderOvChipkaart().stream().collect(
+                Collectors.toConcurrentMap(Product::getProduct_nummer, Function.identity())
+        );
+
+        // find ov chipkaarten van reiziger
         String query = "SELECT * FROM ov_chipkaart WHERE reiziger_id = ?";
         List<OVChipkaart> alleOVChipkaarten = new ArrayList<OVChipkaart>();
-//        this.reizigerDAO =  new ReizigerDAOPsql(localConn);
-//        this.adresDAO = new AdresDAOPsql(localConn);
 
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
@@ -323,7 +331,23 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
             ResultSet myResultSet = ps.executeQuery();
 
             while (myResultSet.next()) {
-                alleOVChipkaarten.add(new OVChipkaart(myResultSet.getDate("geldig_tot").toLocalDate(), myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"), reiziger, myResultSet.getInt("kaart_nummer")));
+                OVChipkaart ovChipkaart =
+                        new OVChipkaart(myResultSet.getDate("geldig_tot").toLocalDate(),
+                                myResultSet.getInt("klasse"), myResultSet.getDouble("saldo"),
+                                reiziger,
+                                myResultSet.getInt("kaart_nummer"));
+
+                // find producten bij ovchipkaart
+                PreparedStatement ps2 = localConn.prepareStatement("SELECT product_nummer FROM ov_chipkaart_product WHERE kaart_nummer = ?");
+                ps2.setInt(1, ovChipkaart.getKaart_nummer());
+
+            ResultSet rs2 = ps2.executeQuery();
+            while (rs2.next()) {
+                Product product = producten.get(rs2.getInt("product_nummer"));
+                ovChipkaart.addProductAanKaart(product);
+                product.addOvChipKaart(ovChipkaart);
+            }
+                alleOVChipkaarten.add(ovChipkaart);
             }
             return alleOVChipkaarten;
         } catch (SQLException e) {
