@@ -56,6 +56,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     throw new SQLException("Opslaan van user gefaald, geen ID response.");
                 }
             }
+            Adres adres= reiziger.getAdres();
+            if(adres!=null) adresDAO.save(adres);
             ps.close();
 
             return reiziger;
@@ -84,6 +86,9 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             if (response == 0) System.out.println("Update failed, geen rijen gewijzigd.");
             else System.out.println("Update successful: " + response + " rijen gewijzigd.");
             ps.close();
+
+            Adres adres= reiziger.getAdres();
+            if(adres!=null) adresDAO.save(adres);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -127,8 +132,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
             if(!rs.next()) throw new RuntimeException("No Reiziger found with this Reiziger ID");
 
-            System.out.println("Reiziger.findByID found with this ID" + rs.getInt("reiziger_id"));
-
             String tussenvoegsel = rs.getString("tussenvoegsel");
             Reiziger reiziger = new Reiziger(rs.getString("voorletters"),
                     tussenvoegsel,
@@ -137,14 +140,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                     rs.getInt("reiziger_id"));
 
             // haal adres van deze reiziger op
-            Adres adres = adresDAO.findByReiziger(reiziger);
-            reiziger.setAdres(adres);
+            ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
+            if(adres!=null) reiziger.setAdres(adres.get(0));
 
             // haal ovchipkaarten van deze reiziger op
             List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
             reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);
-
-            System.out.println(reiziger);
 
             return reiziger;
         } catch (SQLException e) {
@@ -171,8 +172,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                         myResultSet.getDate("geboortedatum").toLocalDate(),
                         myResultSet.getInt("reiziger_id"));
 
-                        Adres adres = adresDAO.findByReiziger(reiziger);
-                        reiziger.setAdres(adres);
+                        ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
+                        reiziger.setAdres(adres.get(0));
 
                         List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
                         reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);
@@ -202,8 +203,8 @@ public class ReizigerDAOPsql implements ReizigerDAO {
                         myResultSet.getDate("geboortedatum").toLocalDate(),
                         myResultSet.getInt("reiziger_id"));
 
-                Adres adres = adresDAO.findByReiziger(reiziger);
-                reiziger.setAdres(adres);
+                ArrayList<Adres> adres = adresDAO.findByReiziger(reiziger);
+                reiziger.setAdres(adres.get(0));
 
                 List<OVChipkaart> ovchips = ovChipkaartDAO.findByReiziger(reiziger);
                 reiziger.setOvChipkaarts((ArrayList<OVChipkaart>) ovchips);

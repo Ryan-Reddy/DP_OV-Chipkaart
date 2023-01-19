@@ -4,6 +4,7 @@ import domain.Adres;
 import domain.Reiziger;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,6 @@ public interface AdresDAO {
     Adres findByID(int adres_id);
     Adres update(Adres adres);
     boolean delete(Adres adres);
-    Adres findByReiziger(Reiziger reiziger);
+    ArrayList<Adres> findByReiziger(Reiziger reiziger);
     List<Adres> findAll() throws SQLException;
 }

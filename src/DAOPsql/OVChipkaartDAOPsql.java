@@ -114,7 +114,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                             ps2.setInt(1, ovChipkaart.getKaart_nummer());
 
                             int gewijzigdeRijen = ps2.executeUpdate();
-                            if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
+                            if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \tnovChip #= "
                                     + ovChipkaart.getKaart_nummer());
                             ps2.close();
 
@@ -140,7 +140,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                         ps3.setString(3, "actief");
 
                         int gewijzigdeRijen = ps3.executeUpdate();
-                        if (gewijzigdeRijen == 0) System.out.println("Update ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
+                        if (gewijzigdeRijen == 0) System.out.println("Update ovchip-product koppel gefaald, niks veranderd in DB. \tovChip #= "
                                 + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
                         ps3.close();
 
@@ -158,9 +158,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
     private void updateOv_Chipkaart_ProductStatus(OVChipkaart ovChipkaart, Product product, productStatusEnum status) throws SQLException {
         // update status kaart-product
             System.out.println("updating link card-products: ");
-
-                System.out.println(product.toString());
-                String query2 = "UPDATE ov_chipkaart_product SET " +
+             String query2 = "UPDATE ov_chipkaart_product SET " +
                         "status = ? " +
                         "WHERE kaart_nummer = ? AND product_nummer= ?;";
                 try {
@@ -189,7 +187,6 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                 System.out.println("deleting link card-products: ");
 
                 productenList.stream().forEach(product -> { // product list iterator
-                    System.out.println(product.toString());
                     String query2 = "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ? AND product_nummer = ?";
 
                     try {
@@ -198,7 +195,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
                         ps2.setInt(2, product.getProduct_nummer());
 
                         int gewijzigdeRijen = ps2.executeUpdate();
-                        if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \novChip #= "
+                        if (gewijzigdeRijen == 0) System.out.println("Delete ovchip-product koppel gefaald, niks veranderd in DB. \tovChip #= "
                                 + ovChipkaart.getKaart_nummer() + " prod# = " + product.getProduct_nummer());
                         ps2.close();
 

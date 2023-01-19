@@ -272,9 +272,9 @@ public class Main {
             //      3. Je zoekt per product welke OV-chipkaarten daarbij horen.
         System.out.println("\n----------## zoek per product welke OV-chipkaarten daarbij horen");
 
-        Product p = productDAOPsql.findByID(productA.getId());
+        Product p = productDAOPsql.findByID(2);
         ArrayList<OVChipkaart> list = p.getOvChipkaartenMetProduct();
-        System.out.println(list);
+        for(OVChipkaart oc:list) System.out.println(oc.getKaart_nummer());
 
             //      4. Je zoekt per OV-chipkaart welke producten er op staanJe update een attribuut van het product (bijvoorbeeld de prijs).
             //      5. Daarna laat je zien dat de verandering zowel op database-niveau als op Java-klasse-niveau zichtbaar is bij een willekeurige OV-chipkaart die dat product heeft geregistreerd.
@@ -284,7 +284,12 @@ public class Main {
 
         //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
         pprint("----------\n[Test] [update] deleting scenarioOVChipkaart");
-//        ovChipkaartDAOPsql.delete(scenarioOVChipkaart2);
+        ovChipkaartDAOPsql.delete(scenarioOVChipkaart2);
+        pprint("scenarioOVChipkaart uit db bestaat niet meer: " + (ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaart_nummer()) == null));
+        pprint("PRODUCT A uit db bestaat nog wel: " + (productDAOPsql.findByID(productA.getId()) != null));
+        pprint("PRODUCT B uit db bestaat nog wel: " + (productDAOPsql.findByID(productB.getId()) != null));
+
+
         //TODO toon dat de producten nog bestaan
     }
     /**

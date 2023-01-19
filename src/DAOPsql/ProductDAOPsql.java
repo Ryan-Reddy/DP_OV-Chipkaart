@@ -156,7 +156,7 @@ public class ProductDAOPsql implements ProductDAO {
                 if (!ovcList.isEmpty()) {
                     try {
                         // purge alle gekoppelde items - kunnen in domein verwijderd zijn weet de db niet.
-                        System.out.println("deleting link product-ovchip: ");
+                        System.out.println("deleting link product-ovchip: " + ovChipkaart.getKaart_nummer());
                         try {
                             PreparedStatement ps2 = localConn.prepareStatement(
                                     "DELETE FROM ov_chipkaart_product WHERE kaart_nummer = ?");
@@ -217,7 +217,7 @@ public class ProductDAOPsql implements ProductDAO {
     /**
      * Find by id product.
      *
-     * @param product the product
+     * @param id the productid
      * @return informatie over het product, of null.
      */
     public Product findByID(int id) {
@@ -246,9 +246,7 @@ public class ProductDAOPsql implements ProductDAO {
 
                 while (rs2.next()) {
                     int kaart_nummer = rs2.getInt("kaart_nummer");
-                    System.out.println(kaart_nummer);
                     OVChipkaart ovChipkaart = ovChipkaartDAO.findByID(kaart_nummer);
-                    System.out.println("adding ovchipkaart" + ovChipkaart);
                     product.addOvChipKaart(ovChipkaart);
                 }
                 rs2.close();

@@ -101,7 +101,6 @@ public class OVChipkaart {
      */
     public boolean addProductAanKaart(Product product) {
         try {
-            System.out.println("voegt product ID#:" + product.getId() + " toe aan kaart: " + this.kaart_nummer);
             product.voegKaartToe(this);
             this.productOpDezeKaart.add(product);
             return true;

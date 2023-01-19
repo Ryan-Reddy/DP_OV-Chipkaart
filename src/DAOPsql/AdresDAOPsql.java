@@ -27,7 +27,10 @@ public class AdresDAOPsql implements AdresDAO {
 
     public Adres save(Adres adres) {
         String query = "INSERT INTO adres (postcode, huisnummer, straat, woonplaats, reiziger_id) " +
-                "VALUES (?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?)" +
+                "ON CONFLICT (reiziger_id) DO " +
+                "UPDATE SET " +
+                "postcode = ?, huisnummer = ?, straat = ?, woonplaats = ?, reiziger_id = ?";
         try {
             PreparedStatement ps = localConn.prepareStatement(query,
                     Statement.RETURN_GENERATED_KEYS);
@@ -37,6 +40,12 @@ public class AdresDAOPsql implements AdresDAO {
             ps.setString(3, adres.getStraat());
             ps.setString(4, adres.getWoonplaats());
             ps.setInt(5, adres.getReiziger_id());
+
+            ps.setString(6, adres.getPostcode());
+            ps.setString(7, adres.getHuisnummer());
+            ps.setString(8, adres.getStraat());
+            ps.setString(9, adres.getWoonplaats());
+            ps.setInt(10, adres.getReiziger_id());
 
             int gewijzigdeRijen = ps.executeUpdate();
             if (gewijzigdeRijen == 0) {
@@ -59,7 +68,8 @@ public class AdresDAOPsql implements AdresDAO {
 
     @Override
     public Adres update(Adres adres) {
-        String query = "UPDATE adres SET adres_id =?, postcode =?, huisnummer =?, straat =?, woonplaats =?, reiziger_id =? WHERE reiziger_id = ?";
+        String query = "UPDATE adres SET adres_id =?, postcode =?, huisnummer =?, straat =?, woonplaats =?, reiziger_id =? WHERE reiziger_id = ? ";
+
         try {
             PreparedStatement ps = localConn.prepareStatement(query);
             ps.setInt(1, adres.getAdres_ID());
@@ -137,32 +147,33 @@ public class AdresDAOPsql implements AdresDAO {
      * @param reiziger
      * @return
      */
-    public Adres findByReiziger(Reiziger reiziger) {
+    public ArrayList<Adres> findByReiziger(Reiziger reiziger) {
         try {
             PreparedStatement ps = localConn.prepareStatement("SELECT * FROM adres WHERE reiziger_id = ?");
             ps.setInt(1, reiziger.getId());
 
-            System.out.println("reached AdresDAOPsql.findByReiziger using r ID: " + reiziger.getId());
+//            System.out.println("reached AdresDAOPsql.findByReiziger using r ID: " + reiziger.getId());
 
             ResultSet rs = ps.executeQuery();
 
             ArrayList<Adres> adressenVanReiziger = new ArrayList<Adres>();
 
             if (rs.next()) {
-                return new Adres(rs.getString("postcode"),
+                adressenVanReiziger.add(new Adres(rs.getString("postcode"),
                         rs.getString("huisnummer"),
                         rs.getString("straat"),
                         rs.getString("woonplaats"),
                         rs.getInt("reiziger_id"),
-                        rs.getInt("adres_id"));
+                        rs.getInt("adres_id"))
+                );
             }
             if (!rs.next()) {
-                System.out.println("No Adres found with this reiziger ID");
+                return null;
             }
+            return adressenVanReiziger;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
