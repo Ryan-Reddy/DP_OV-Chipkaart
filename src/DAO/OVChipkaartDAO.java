@@ -1,6 +1,7 @@
 package DAO;
 
 import domain.OVChipkaart;
+import domain.Product;
 import domain.Reiziger;
 
 import java.sql.SQLException;
@@ -15,6 +16,9 @@ public interface OVChipkaartDAO {
     boolean delete(OVChipkaart ovChipkaart);
     OVChipkaart findByID(int ovChipkaartID);
     List<OVChipkaart> findAll() throws SQLException;
+
+    List<OVChipkaart> findByProduct(Product product) throws SQLException;
+
     List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException;
     void setReizigerDAO(ReizigerDAO reizigerDAO);
     void setAdresDAO(AdresDAO adresDAO);

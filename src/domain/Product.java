@@ -24,7 +24,7 @@ public class Product {
             throw new RuntimeException(e);
         }
     }
-    private ArrayList<OVChipkaart> alleKaartenMetProduct;
+    private ArrayList<OVChipkaart> ovChipkaartenMetProduct;
     /**
      * Instantiates a new Product.
      *
@@ -37,7 +37,7 @@ public class Product {
         this.naam = naam;
         this.beschrijving = beschrijving;
         this.prijs = prijs;
-        alleKaartenMetProduct = new ArrayList<>();
+        ovChipkaartenMetProduct = new ArrayList<>();
     }
     /**
      * Instantiates a new Product.
@@ -52,11 +52,11 @@ public class Product {
         this.beschrijving = beschrijving;
         this.prijs = prijs;
         this.product_nummer = product_nummer;
-        alleKaartenMetProduct = new ArrayList<>();        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
+        ovChipkaartenMetProduct = new ArrayList<>();        // TODO connect met andere tabel via ov_chipkaart_productDAOSQL
     }
     public boolean voegKaartToe(OVChipkaart ovChipkaart) {
         try {
-            return alleKaartenMetProduct.add(ovChipkaart);
+            return ovChipkaartenMetProduct.add(ovChipkaart);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -64,7 +64,7 @@ public class Product {
     }
     public boolean verwijderKaart(OVChipkaart ovChipkaart) {
         try {
-            return alleKaartenMetProduct.remove(ovChipkaart);
+            return ovChipkaartenMetProduct.remove(ovChipkaart);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -87,7 +87,7 @@ public class Product {
     }
     @Override
     public String toString() {
-        return "\n Product #" + product_nummer + " " + naam +
+        return "Product #" + product_nummer + " " + naam +
                 "\t\t\t beschrijving='" + beschrijving +
                 ", prijs=" + prijs;
     }
@@ -99,4 +99,11 @@ public class Product {
         return product_nummer;
     }
 
+    public ArrayList<OVChipkaart> getOvChipkaartenMetProduct() {
+        return ovChipkaartenMetProduct;
+    }
+
+    public void addOvChipKaart(OVChipkaart ovchippers) {
+        ovChipkaartenMetProduct.add(ovchippers);
+    }
 }

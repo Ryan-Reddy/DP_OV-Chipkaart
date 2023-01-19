@@ -17,13 +17,6 @@ public class OVChipkaart {
     private Reiziger reiziger;
     private String status;
 
-    public Reiziger getReiziger() {
-        return reiziger;
-    }
-
-    public void setReiziger(Reiziger reiziger) {
-        this.reiziger = reiziger;
-    }
 
     private List<Product> productOpDezeKaart;
 
@@ -46,12 +39,27 @@ public class OVChipkaart {
         this.reiziger = reiziger;
         productOpDezeKaart = new ArrayList<>();
     }
-    public OVChipkaart(LocalDate geldig_tot, int klasse, Double saldo, Reiziger reiziger) {
-        this.geldig_tot = Date.valueOf(geldig_tot.plusYears(2)); // twee jaar geldig, alleen nieuwe.
+    public OVChipkaart(LocalDate vandaag, int klasse, Double saldo, Reiziger reiziger) {
+        this.geldig_tot = Date.valueOf(vandaag.plusYears(2)); // twee jaar geldig, alleen nieuwe.
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
         productOpDezeKaart = new ArrayList<>();
+    }
+
+    public OVChipkaart(LocalDate vandaag, int klasse, double saldo) {
+        this.geldig_tot = Date.valueOf(vandaag);
+        this.klasse = klasse;
+        this.saldo = saldo;
+        productOpDezeKaart = new ArrayList<>();
+    }
+
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
     public String getStatus() {
         return status;

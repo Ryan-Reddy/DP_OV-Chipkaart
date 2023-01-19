@@ -67,10 +67,10 @@ public class Main {
 
         productDAOPsql.setOVChipkaartDAO(ovChipkaartDAOPsql);
 
-        testReizigerDAO(); // dependency injection van de connectie
-        testAdresDAO();
-        testOVChipkaartDAO();
-        testProductDAO();
+//        testReizigerDAO(); // dependency injection van de connectie
+//        testAdresDAO();
+//        testOVChipkaartDAO();
+//        testProductDAO();
         testScenario();
     }
     private void closeConnection(Connection conn) throws SQLException {
@@ -256,25 +256,35 @@ public class Main {
         Product productA = productDAOPsql.save( // productA
                 new Product("A", "A", 10));
         scenarioOVChipkaart.addProductAanKaart(productA);
-        System.out.println("+ updated kaart incl productA: " + ovChipkaartDAOPsql.update(scenarioOVChipkaart));
+        System.out.println("+ updated kaart incl productA: " + ovChipkaartDAOPsql.findByID(scenarioOVChipkaart.getKaart_nummer()));
 
         Product productB = productDAOPsql.save( // productB
                 new Product("B", "B", 10));
         scenarioOVChipkaart.addProductAanKaart(productB);
-        System.out.println("+ updated kaart incl productA + productB: " + ovChipkaartDAOPsql.update(scenarioOVChipkaart));
+        OVChipkaart scenarioOVChipkaart2 = ovChipkaartDAOPsql.update(scenarioOVChipkaart);
+        System.out.println("+ updated kaart incl productA + productB: " + ovChipkaartDAOPsql.findByID(scenarioOVChipkaart2.getKaart_nummer()));
 
-        //TODO implementeer updateOv_Chipkaart_ProductStatus
+        // updateOv_Chipkaart
+//        ovChipkaartDAOPsql.update(scenarioOVChipkaart)
 
-        //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
-        pprint("----------\n[Test] [update] deleting scenarioOVChipkaart");
-        ovChipkaartDAOPsql.delete(scenarioOVChipkaart);
 
             //      3. Je zoekt per product welke OV-chipkaarten daarbij horen.
+        System.out.println("\n----------## zoek per product welke OV-chipkaarten daarbij horen");
+
+        Product p = productDAOPsql.findByID(productA.getId());
+        ArrayList<OVChipkaart> list = p.getOvChipkaartenMetProduct();
+        System.out.println(list);
+
             //      4. Je zoekt per OV-chipkaart welke producten er op staanJe update een attribuut van het product (bijvoorbeeld de prijs).
             //      5. Daarna laat je zien dat de verandering zowel op database-niveau als op Java-klasse-niveau zichtbaar is bij een willekeurige OV-chipkaart die dat product heeft geregistreerd.
             //      6. Je hebt een pprint-statement voor een reiziger (reiziger1.toString() o.i.d.) dat de gekoppelde OV-chipkaarten en gekoppelde producten laat zien.
             //
             //          Je laat de tests zowel zien op de code die gebruik maakt van Hibernate als op de code die gebruik maakt van DAIO's
+
+        //      2. Je verwijdert de OV-chipkaart, maar de producten blijven bestaan.
+        pprint("----------\n[Test] [update] deleting scenarioOVChipkaart");
+//        ovChipkaartDAOPsql.delete(scenarioOVChipkaart2);
+        //TODO toon dat de producten nog bestaan
     }
     /**
      * pprint.
