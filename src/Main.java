@@ -224,7 +224,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private void testScenario() throws SQLException {
+    private void testScenario() {
         pprint("---------- Test testScenario -------------");
 
         //      Je maakt een reiziger,
